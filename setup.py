@@ -16,6 +16,8 @@ setup(
         "opencv-python",
         "scikit-learn",
         "Pillow",
+        "seaborn",
+        "basemap",
         # Rignak # Origin and installation method unclear, please install manually if needed.
     ],
     classifiers=[
