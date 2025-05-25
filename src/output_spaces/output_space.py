@@ -33,9 +33,17 @@ class OutputSpace:
         return len(self.tags)
 
     def get_array(self, filename: str) -> np.ndarray:
-        hot_encoded = np.zeros(self.n)
-        for tag in self.filename_to_tags[filename]:
-            hot_encoded[tag.index] = 1
+        hot_encoded = np.zeros(self.n, dtype=float) # self.n is correctly the number of limited tags
+        # self.tags is the dictionary of *limited and re-indexed* tags.
+        # self.filename_to_tags contains Tag objects; their 'name' attribute is reliable.
+        # Their 'index' attribute should have been updated by sort_tags if they are part of the limited set.
+        for tag_from_file in self.filename_to_tags[filename]:
+            # Check if this tag is still part of the final (limited) set of tags
+            if tag_from_file.name in self.tags: 
+                # If yes, its index should be valid for the hot_encoded array
+                # Use the index from the Tag object in self.tags, as this is guaranteed to be re-indexed.
+                final_tag_object = self.tags[tag_from_file.name]
+                hot_encoded[final_tag_object.index] = 1.0
         return hot_encoded
 
     @LazyProperty
@@ -92,15 +100,26 @@ class OutputSpace:
         self._tags = tags
         self._filenames = list(self._filename_to_tags.keys())
         self.sort_tags()
-        logger(f"Found {self.n} tags.")
+        logger(f"Found {len(self._tags)} tags.")
         logger(f"Setup output space OK", indent=-1)
 
     def sort_tags(self) -> None:
-        tag_names = [
-            name for number_of_use, name in sorted(
-                [(tag.number_of_use, tag.name) for tag in self._tags.values()],
-                reverse=True)[:self.limit]
-        ]
-        self._tag_names = tag_names
-        for i, tag_name in enumerate(tag_names):
-            self._tags[tag_name].index = i
+        # Sort all existing Tag objects: primary key number_of_use (desc), secondary key name (asc)
+        sorted_tags_all = sorted(
+            list(self._tags.values()), # Get a list of Tag objects from the current _tags dict
+            key=lambda tag: (-tag.number_of_use, tag.name) 
+        )
+        
+        # Apply limit to the sorted list of Tag objects
+        limited_sorted_tags = sorted_tags_all[:self.limit]
+        
+        # Rebuild _tags dictionary to only include limited tags and update indices
+        new_tags_dict: typing.Dict[str, Tag] = {}
+        self._tag_names = [] # Reset and rebuild _tag_names
+        
+        for i, tag_object in enumerate(limited_sorted_tags):
+            tag_object.index = i # Update the index on the Tag object itself
+            new_tags_dict[tag_object.name] = tag_object
+            self._tag_names.append(tag_object.name)
+            
+        self._tags = new_tags_dict # self._tags now only contains the limited & re-indexed tags
