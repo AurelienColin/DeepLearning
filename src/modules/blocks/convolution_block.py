@@ -13,7 +13,7 @@ class ConvolutionBlock(tf.keras.layers.Layer):
         self.residual_block: tf.keras.layers.Layer = ResidualBlock(self.n_kernels, self.n_stride)
         self.pooling: tf.keras.layers.Layer = tf.keras.layers.AveragePooling2D(pool_size=(2, 2))
 
-    def call(self, inputs: tf.Tensor) -> tf.Tensor:
+    def call(self, inputs: tf.Tensor) -> typing.Tuple[tf.Tensor, tf.Tensor]:
         layer = self.residual_block(inputs)
         pooled_layer = self.pooling(layer)
         return pooled_layer, layer
