@@ -1,0 +1,27 @@
+Metadata-Version: 2.4
+Name: image_similarity
+Version: 0.1.0
+Summary: A project for image similarity tasks
+Author: Your Name
+Author-email: your.email@example.com
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: tensorflow
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: matplotlib
+Requires-Dist: opencv-python
+Requires-Dist: scikit-learn
+Requires-Dist: Pillow
+Requires-Dist: seaborn
+Requires-Dist: basemap
+Requires-Dist: rignak@ git+https://github.com/AurelienColin/miscellaneous.git#egg=rignak
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: requires-dist
+Dynamic: summary
