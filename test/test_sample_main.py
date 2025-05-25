@@ -1,7 +1,7 @@
 import os
 import tempfile
 import unittest
-from typing import Any, Literal, Tuple
+from typing import Any, Literal, Tuple, Dict
 
 import numpy as np
 from PIL import Image
