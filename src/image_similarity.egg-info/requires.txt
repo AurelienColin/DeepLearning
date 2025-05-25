@@ -1,0 +1,10 @@
+tensorflow
+pandas
+numpy
+matplotlib
+opencv-python
+scikit-learn
+Pillow
+seaborn
+basemap
+rignak@ git+https://github.com/AurelienColin/miscellaneous.git#egg=rignak
