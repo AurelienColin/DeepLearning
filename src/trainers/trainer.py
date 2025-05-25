@@ -18,7 +18,14 @@ matplotlib.use('agg')
 
 tf.config.run_functions_eagerly(True)
 gpus = tf.config.experimental.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(gpus[0], True)
+if gpus:
+    try:
+        # Currently, memory growth needs to be set per GPU
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+    except RuntimeError as e:
+        # Memory growth must be set before GPUs have been initialized
+        print(f"Error setting memory growth: {e}")
 
 
 @dataclass
