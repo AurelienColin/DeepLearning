@@ -7,6 +7,15 @@ from src.output_spaces.output_space import OutputSpace
 class TaggerSpace(OutputSpace):
 
     def setup(self) -> None:
+        if not self.sources:
+            # Initialize to an empty state
+            self._tag_names = []
+            self._tags = {}
+            self._filename_to_tags = {}
+            self._filenames = []
+            # _n and _class_weights are LazyProperties and will reflect this empty state.
+            return
+
         json_filename = self.sources[0]
         dirname = os.path.dirname(json_filename)
         with open(json_filename, 'r') as file:
