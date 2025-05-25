@@ -18,7 +18,7 @@ setup(
         "Pillow",
         "seaborn",
         "basemap",
-        # Rignak # Origin and installation method unclear, please install manually if needed.
+        "rignak @ git+https://github.com/AurelienColin/miscellaneous.git#egg=rignak",
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",

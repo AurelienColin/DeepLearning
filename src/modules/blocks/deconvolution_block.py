@@ -10,6 +10,9 @@ class DeconvolutionBlock(tf.keras.layers.Layer):
         super().__init__(**kwargs)
         self.n_kernels: int = n_kernels
         self.n_stride: int = n_stride
+
+    def build(self, input_shape: tf.TensorShape):
+        super().build(input_shape)
         self.upsampling: tf.keras.layers.Layer = tf.keras.layers.UpSampling2D(size=(2, 2), interpolation="bilinear")
         self.concat: tf.keras.layers.Layer = tf.keras.layers.Concatenate()
         self.residual_block: tf.keras.layers.Layer = ResidualBlock(self.n_kernels, self.n_stride)
