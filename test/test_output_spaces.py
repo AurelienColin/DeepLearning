@@ -66,44 +66,56 @@ class TestOutputSpaceBase(unittest.TestCase):
 
 
 class TestTaggerSpace(TestOutputSpaceBase):
-    def test_setup_and_properties(self) -> None:
+    def test_sources_after_setup(self) -> None:
+        """Tests the 'sources' property of TaggerSpace after setup."""
         ts: TaggerSpace = TaggerSpace(sources=[self.annotations_filename])
-        # Force setup by accessing a lazy property
-        _ = ts.tag_names
-
-        # Test ts.sources
+        _ = ts.tag_names  # Force setup
         self.assertEqual(ts.sources, [self.annotations_filename])
 
-        # Test ts.filenames
-        self.assertEqual(len(ts.filenames), len(self.image_files_to_create)) # Should be 4
+    def test_filenames_after_setup(self) -> None:
+        """Tests the 'filenames' property of TaggerSpace after setup."""
+        ts: TaggerSpace = TaggerSpace(sources=[self.annotations_filename])
+        _ = ts.tag_names  # Force setup
+        self.assertEqual(len(ts.filenames), len(self.image_files_to_create))
         expected_abs_filenames: Set[str] = {
             os.path.join(self.dummy_data_path, f) for f in self.image_files_to_create
         }
         self.assertEqual(set(ts.filenames), expected_abs_filenames)
 
-        # Test ts.tag_names and ts.tags
-        # Expected counts from valid files: tagA: 3, tagB: 3, tagC: 2.
-        # Sorted by freq (desc) then name (asc): tagA, tagB, tagC
-        expected_tag_names_ordered: List[str] = ["tagA", "tagB", "tagC"] 
-        
+    def test_tag_names_and_count_after_setup(self) -> None:
+        """Tests 'tag_names' and the count of tags after setup."""
+        ts: TaggerSpace = TaggerSpace(sources=[self.annotations_filename])
+        _ = ts.tag_names  # Force setup
+        expected_tag_names_ordered: List[str] = ["tagA", "tagB", "tagC"]
         self.assertEqual(ts.tag_names, expected_tag_names_ordered)
         self.assertEqual(len(ts.tag_names), 3)
         self.assertEqual(len(ts.tags), 3)
 
+    def test_tag_object_properties_after_setup(self) -> None:
+        """Tests properties of individual Tag objects within TaggerSpace after setup."""
+        ts: TaggerSpace = TaggerSpace(sources=[self.annotations_filename])
+        _ = ts.tag_names  # Force setup
+        expected_tag_names_ordered: List[str] = ["tagA", "tagB", "tagC"]
         tag_counts: Dict[str, int] = {"tagA": 3, "tagB": 3, "tagC": 2}
         for i, tag_name in enumerate(expected_tag_names_ordered):
             self.assertIn(tag_name, ts.tags)
             tag_object: Tag = ts.tags[tag_name]
             self.assertEqual(tag_object.name, tag_name)
-            self.assertEqual(tag_object.index, i) 
+            self.assertEqual(tag_object.index, i)
             self.assertEqual(tag_object.number_of_use, tag_counts[tag_name])
             self.assertEqual(tag_object.dataset_size, self.expected_raw_dataset_size)
 
-        # Test ts.n
-        self.assertEqual(ts.n, 3) 
+    def test_n_value_after_setup(self) -> None:
+        """Tests the 'n' property (number of unique tags) of TaggerSpace after setup."""
+        ts: TaggerSpace = TaggerSpace(sources=[self.annotations_filename])
+        _ = ts.tag_names  # Force setup
+        self.assertEqual(ts.n, 3)
 
-        # Test ts.filename_to_tags
-        self.assertEqual(len(ts.filename_to_tags), len(self.image_files_to_create)) 
+    def test_filename_to_tags_structure_and_content_after_setup(self) -> None:
+        """Tests the 'filename_to_tags' mapping after TaggerSpace setup."""
+        ts: TaggerSpace = TaggerSpace(sources=[self.annotations_filename])
+        _ = ts.tag_names  # Force setup
+        self.assertEqual(len(ts.filename_to_tags), len(self.image_files_to_create))
 
         f1_path: str = os.path.join(self.dummy_data_path, "image1.png")
         self.assertIn(f1_path, ts.filename_to_tags)
@@ -116,29 +128,38 @@ class TestTaggerSpace(TestOutputSpaceBase):
         f3_path: str = os.path.join(self.dummy_data_path, "image3.png")
         self.assertIn(f3_path, ts.filename_to_tags)
         self.assertEqual(sorted([t.name for t in ts.filename_to_tags[f3_path]]), sorted(["tagA"]))
-        
+
         f5_path: str = os.path.join(self.dummy_data_path, "image5.png")
         self.assertIn(f5_path, ts.filename_to_tags)
         self.assertEqual(sorted([t.name for t in ts.filename_to_tags[f5_path]]), sorted(["tagA", "tagB", "tagC"]))
 
-    def test_get_array(self) -> None:
+    def test_get_array_for_file_with_subset_of_tags(self) -> None:
+        """Tests get_array for a file associated with a subset of all known tags."""
         ts: TaggerSpace = TaggerSpace(sources=[self.annotations_filename])
-        _ = ts.tag_names 
+        _ = ts.tag_names  # Force setup
 
         f1_path: str = os.path.join(self.dummy_data_path, "image1.png")
         arr1: np.ndarray = ts.get_array(f1_path)
+        
         expected_arr1: np.ndarray = np.zeros(ts.n, dtype=float)
-        expected_arr1[ts.tags["tagA"].index] = 1.0 
-        expected_arr1[ts.tags["tagB"].index] = 1.0 
+        expected_arr1[ts.tags["tagA"].index] = 1.0
+        expected_arr1[ts.tags["tagB"].index] = 1.0
         np.testing.assert_array_equal(arr1, expected_arr1)
+
+    def test_get_array_for_file_with_all_tags(self) -> None:
+        """Tests get_array for a file associated with all known tags."""
+        ts: TaggerSpace = TaggerSpace(sources=[self.annotations_filename])
+        _ = ts.tag_names  # Force setup
 
         f5_path: str = os.path.join(self.dummy_data_path, "image5.png")
         arr5: np.ndarray = ts.get_array(f5_path)
+
         expected_arr5: np.ndarray = np.zeros(ts.n, dtype=float)
-        expected_arr5[ts.tags["tagA"].index] = 1.0 
-        expected_arr5[ts.tags["tagB"].index] = 1.0 
-        expected_arr5[ts.tags["tagC"].index] = 1.0 
+        expected_arr5[ts.tags["tagA"].index] = 1.0
+        expected_arr5[ts.tags["tagB"].index] = 1.0
+        expected_arr5[ts.tags["tagC"].index] = 1.0
         np.testing.assert_array_equal(arr5, expected_arr5)
+        # For image5, all tags are present, so the array should be all ones.
         np.testing.assert_array_equal(arr5, np.ones(ts.n, dtype=float))
 
     def test_class_weights(self) -> None:
@@ -154,46 +175,72 @@ class TestTaggerSpace(TestOutputSpaceBase):
         
         np.testing.assert_array_almost_equal(weights, expected_weights)
 
-    def test_enforced_tag_names(self) -> None:
-        enforced_tags_list: List[str] = ["tagA", "tagC"] 
+    def test_setup_with_enforced_tag_names(self) -> None:
+        """Tests TaggerSpace setup properties when enforced_tag_names is used."""
+        enforced_tags_list: List[str] = ["tagA", "tagC"]
         ts: TaggerSpace = TaggerSpace(sources=[self.annotations_filename], enforced_tag_names=enforced_tags_list)
-        _ = ts.tag_names
+        _ = ts.tag_names  # Force setup
 
         self.assertEqual(ts.tag_names, enforced_tags_list)
         self.assertEqual(ts.n, len(enforced_tags_list))
         
-        self.assertEqual(ts.tags["tagA"].number_of_use, 3) 
-        self.assertEqual(ts.tags["tagC"].number_of_use, 2) 
+        self.assertEqual(ts.tags["tagA"].number_of_use, 3)
+        self.assertEqual(ts.tags["tagC"].number_of_use, 2)
         self.assertEqual(ts.tags["tagA"].dataset_size, self.expected_raw_dataset_size)
         self.assertEqual(ts.tags["tagC"].dataset_size, self.expected_raw_dataset_size)
         self.assertNotIn("tagB", ts.tags)
 
+    def test_get_array_with_enforced_tags_file1(self) -> None:
+        """Tests get_array with enforced_tag_names for image1.png."""
+        enforced_tags_list: List[str] = ["tagA", "tagC"]
+        ts: TaggerSpace = TaggerSpace(sources=[self.annotations_filename], enforced_tag_names=enforced_tags_list)
+        _ = ts.tag_names  # Force setup
+
         f1_path: str = os.path.join(self.dummy_data_path, "image1.png")
+        # Original tags for image1.png: ["tagA", "tagB"]. With enforcement ["tagA", "tagC"], only "tagA" should be active.
         arr1: np.ndarray = ts.get_array(f1_path)
-        expected_arr1: np.ndarray = np.zeros(ts.n, dtype=float) 
+        
+        expected_arr1: np.ndarray = np.zeros(ts.n, dtype=float)
         expected_arr1[ts.tags["tagA"].index] = 1.0
         np.testing.assert_array_equal(arr1, expected_arr1)
 
+    def test_get_array_with_enforced_tags_file2(self) -> None:
+        """Tests get_array with enforced_tag_names for image2.jpg."""
+        enforced_tags_list: List[str] = ["tagA", "tagC"]
+        ts: TaggerSpace = TaggerSpace(sources=[self.annotations_filename], enforced_tag_names=enforced_tags_list)
+        _ = ts.tag_names  # Force setup
+
         f2_path: str = os.path.join(self.dummy_data_path, "image2.jpg")
+        # Original tags for image2.jpg: ["tagB", "tagC"]. With enforcement ["tagA", "tagC"], only "tagC" should be active.
         arr2: np.ndarray = ts.get_array(f2_path)
+        
         expected_arr2: np.ndarray = np.zeros(ts.n, dtype=float)
         expected_arr2[ts.tags["tagC"].index] = 1.0
         np.testing.assert_array_equal(arr2, expected_arr2)
 
-    def test_limit_tags(self) -> None:
+    def test_setup_with_tag_limit(self) -> None:
+        """Tests TaggerSpace setup properties when a tag limit is applied."""
         limit: int = 2
         ts: TaggerSpace = TaggerSpace(sources=[self.annotations_filename], limit=limit)
-        _ = ts.tag_names
+        _ = ts.tag_names  # Force setup
 
-        self.assertEqual(ts.n, limit) # After fix in sort_tags, this should pass
+        self.assertEqual(ts.n, limit)
         self.assertEqual(ts.tag_names, ["tagA", "tagB"]) 
-
         self.assertNotIn("tagC", ts.tags)
         self.assertNotIn("tagC", ts.tag_names)
 
+    def test_get_array_with_tag_limit(self) -> None:
+        """Tests get_array when a tag limit is applied."""
+        limit: int = 2
+        ts: TaggerSpace = TaggerSpace(sources=[self.annotations_filename], limit=limit)
+        _ = ts.tag_names  # Force setup
+
         f5_path: str = os.path.join(self.dummy_data_path, "image5.png")
+        # Original tags for image5.png: ["tagA", "tagB", "tagC"]. 
+        # With limit=2, space has ["tagA", "tagB"]. So, for image5.png, "tagA" and "tagB" should be active.
         arr5: np.ndarray = ts.get_array(f5_path)
-        expected_arr5: np.ndarray = np.zeros(ts.n, dtype=float)
+        
+        expected_arr5: np.ndarray = np.zeros(ts.n, dtype=float) # ts.n is 2
         expected_arr5[ts.tags["tagA"].index] = 1.0
         expected_arr5[ts.tags["tagB"].index] = 1.0
         np.testing.assert_array_equal(arr5, expected_arr5)
@@ -254,22 +301,21 @@ class TestTaggerSpace(TestOutputSpaceBase):
         with self.assertRaises(KeyError):
             ts.get_array(unknown_image_abs_path)
 
-    def test_enforced_tags_not_in_dataset(self) -> None:
-        # Case 1: Enforced tags are entirely new
-        ts1 = TaggerSpace(sources=[self.annotations_filename], enforced_tag_names=["newTagX", "newTagY"])
-        _ = ts1.tag_names 
-        self.assertEqual(ts1.tag_names, []) # common_setup filters by enforced_tag_names
+    def test_enforced_tags_are_entirely_new(self) -> None:
+        """Tests behavior when enforced_tag_names contains only tags not in the dataset."""
+        ts1: TaggerSpace = TaggerSpace(sources=[self.annotations_filename], enforced_tag_names=["newTagX", "newTagY"])
+        _ = ts1.tag_names  # Force setup
+        self.assertEqual(ts1.tag_names, [])
         self.assertEqual(ts1.n, 0)
         self.assertEqual(ts1.tags, {})
 
-        # Case 2: Mix of existing and new enforced tags
-        # Existing tags in dummy_json_content: tagA, tagB, tagC
-        # enforced_tag_names will filter these. If an enforced tag is not in data, it's not added.
-        # If a tag from data is not in enforced, it's skipped.
-        ts2 = TaggerSpace(sources=[self.annotations_filename], enforced_tag_names=["tagA", "newTagX"])
-        _ = ts2.tag_names
-        # Only "tagA" should be present as "newTagX" is not in the dataset
-        # and "tagB", "tagC" are filtered out.
+    def test_enforced_tags_mix_existing_and_new(self) -> None:
+        """Tests behavior when enforced_tag_names contains a mix of existing and new tags."""
+        ts2: TaggerSpace = TaggerSpace(sources=[self.annotations_filename], enforced_tag_names=["tagA", "newTagX"])
+        _ = ts2.tag_names  # Force setup
+        
+        # Only "tagA" should be present as "newTagX" is not in the dataset,
+        # and "tagB", "tagC" are filtered out because they are not in enforced_tag_names.
         self.assertEqual(ts2.tag_names, ["tagA"])
         self.assertEqual(ts2.n, 1)
         self.assertIn("tagA", ts2.tags)
@@ -277,26 +323,30 @@ class TestTaggerSpace(TestOutputSpaceBase):
         self.assertEqual(ts2.tags["tagA"].number_of_use, 3) # Original count from data
         self.assertEqual(ts2.tags["tagA"].dataset_size, self.expected_raw_dataset_size)
 
-
-    def test_limit_variations(self) -> None:
-        # Test limit = 0
-        ts0 = TaggerSpace(sources=[self.annotations_filename], limit=0)
-        _ = ts0.tag_names
+    def test_limit_zero(self) -> None:
+        """Tests TaggerSpace behavior when the tag limit is set to 0."""
+        ts0: TaggerSpace = TaggerSpace(sources=[self.annotations_filename], limit=0)
+        _ = ts0.tag_names  # Force setup
         self.assertEqual(ts0.tag_names, [])
         self.assertEqual(ts0.n, 0)
         self.assertEqual(ts0.tags, {})
 
-        # Test limit = 1 (Sorted order: tagA, tagB, tagC)
-        ts1 = TaggerSpace(sources=[self.annotations_filename], limit=1)
-        _ = ts1.tag_names
+    def test_limit_one(self) -> None:
+        """Tests TaggerSpace behavior when the tag limit is set to 1."""
+        ts1: TaggerSpace = TaggerSpace(sources=[self.annotations_filename], limit=1)
+        _ = ts1.tag_names  # Force setup
         self.assertEqual(ts1.n, 1)
-        self.assertEqual(ts1.tag_names, ["tagA"]) # tagA has 3 uses, then tagB has 3 uses. A before B.
+        # Expected order: tagA (3 uses), tagB (3 uses), tagC (2 uses). A before B alphabetically.
+        self.assertEqual(ts1.tag_names, ["tagA"]) 
         self.assertIn("tagA", ts1.tags)
         self.assertNotIn("tagB", ts1.tags)
+        self.assertNotIn("tagC", ts1.tags)
 
-        # Test limit larger than available unique tags (3 unique tags: tagA, tagB, tagC)
-        ts10 = TaggerSpace(sources=[self.annotations_filename], limit=10)
-        _ = ts10.tag_names
+    def test_limit_greater_than_available_tags(self) -> None:
+        """Tests TaggerSpace behavior when tag limit exceeds the number of unique tags."""
+        # There are 3 unique tags (tagA, tagB, tagC) in the dummy data.
+        ts10: TaggerSpace = TaggerSpace(sources=[self.annotations_filename], limit=10)
+        _ = ts10.tag_names  # Force setup
         self.assertEqual(ts10.n, 3) 
         self.assertEqual(ts10.tag_names, ["tagA", "tagB", "tagC"])
 
