@@ -2,7 +2,7 @@ import os.path
 import typing
 
 import pandas as pd
-from Rignak.custom_display import Display
+from rignak.custom_display import Display
 
 from src.callbacks.example_callback import ExampleCallback
 

@@ -1,9 +1,10 @@
+import os.path
 import typing
 
 import numpy as np
 import tensorflow as tf
-from Rignak.lazy_property import LazyProperty
-from Rignak.logging_utils import logger
+from rignak.lazy_property import LazyProperty
+from rignak.logging_utils import logger
 
 from src.callbacks.example_callback import ExampleCallback
 from src.callbacks.example_callback_with_logs import ExampleCallbackWithLogs
@@ -13,6 +14,7 @@ from src.generators.base_generators import BatchGenerator
 from src.generators.image_to_tag.classification_generator import ClassificationGenerator
 from src.models.image_to_tag.categorizer_wrapper import CategorizerWrapper
 from src.trainers.trainer import Trainer
+import glob
 
 
 class CategorizerTrainer(Trainer):
@@ -31,7 +33,6 @@ class CategorizerTrainer(Trainer):
     @LazyProperty
     def class_weights(self) -> np.ndarray:
         return self.original_training_generator.output_space.class_weights
-
 
     @LazyProperty
     def callback_generator(self, **kwargs) -> BatchGenerator:
@@ -67,3 +68,21 @@ class CategorizerTrainer(Trainer):
             )
         ]
         return callbacks
+
+    def set_filenames(self) -> None:
+        logger(f"Setup filenames", indent=1)
+        root, base_pattern = os.path.split(self.pattern)
+        class_names = glob.glob(root)
+
+        training_filenames = []
+        validation_filenames = []
+        for class_name in class_names:
+            class_pattern = os.path.join(class_name, base_pattern)
+            class_training_filenames, class_validation_filenames = self.split_names_on_pattern(class_pattern)
+            training_filenames.extend(class_training_filenames)
+            validation_filenames.extend(class_validation_filenames)
+
+        self._training_filenames = training_filenames
+        self._validation_filenames = validation_filenames
+
+        logger(f"Setup filenames OK", indent=-1)

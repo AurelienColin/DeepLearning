@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from PIL import Image, ImageOps
-from Rignak.lazy_property import LazyProperty
-from Rignak.logging_utils import logger
+from rignak.lazy_property import LazyProperty
+from rignak.logging_utils import logger
 
 
 def get_args() -> argparse.Namespace:
@@ -77,5 +77,5 @@ class Processor:
 
 
 if __name__ == "__main__":
-    # python src/scripts/reshape_dataset.py --input_folder "E:\\datasets/style_transfer" --output_folder "E:\\datasets/style_transfer128" --width 128 --height 128
+    # python src/scripts/reshape_dataset.py --input_folder "~/Documents/E/datasets/style_transfer" --output_folder "~/Documents/E/datasets/style_transfer128" --width 128 --height 128
     Processor.static_run()

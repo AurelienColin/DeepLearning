@@ -2,7 +2,7 @@ import typing
 
 import numpy as np
 import pandas as pd
-from Rignak.custom_display import Display
+from rignak.custom_display import Display
 
 from src.callbacks.callback import Callback
 

@@ -13,6 +13,7 @@ class BatchGenerator:
         self.filenames: typing.Sequence[str] = np.array(filenames)
         self.batch_size: int = batch_size
         self.shape: typing.Tuple[int, int, int] = shape
+        self.output_space: typing.Optional[OutputSpace] = None
 
     def __iter__(self):
         return self
@@ -61,5 +62,4 @@ def compose_generators(
 ) -> BatchGenerator:
     for next_generator in composition:
         generator = next_generator(generator)
-
     return generator

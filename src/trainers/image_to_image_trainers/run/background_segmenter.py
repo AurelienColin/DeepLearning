@@ -1,19 +1,19 @@
 import typing
 
-from Rignak.lazy_property import LazyProperty
+from rignak.lazy_property import LazyProperty
 
 from src.generators.base_generators import PostProcessGenerator
 from src.generators.image_to_image.foreground_generator import ForegroundGenerator
 from src.trainers.image_to_image_trainers.highlighter_trainer import HighlighterTrainer
-
+from config import DATASET_ROOT
 
 class BackgroundSegmenter(HighlighterTrainer):
     def __init__(self, *args, **kwargs):
         super().__init__(
-            name="overlay",
-            pattern='E:\\datasets/overlay/*',
-            input_shape=(256, 384, 3),
-            batch_size=4,
+            name=kwargs.pop('name', "overlay"),
+            pattern=kwargs.pop('pattern', DATASET_ROOT + '/overlay/*'),
+            input_shape=kwargs.pop('input_shape', (256, 384, 3)),
+            batch_size=kwargs.pop('batch_size', 4),
             *args, **kwargs)
         self.base_generator = ForegroundGenerator
 

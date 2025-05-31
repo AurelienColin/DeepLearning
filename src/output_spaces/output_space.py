@@ -3,8 +3,8 @@ import typing
 from dataclasses import dataclass
 
 import numpy as np
-from Rignak.lazy_property import LazyProperty
-from Rignak.logging_utils import logger
+from rignak.lazy_property import LazyProperty
+from rignak.logging_utils import logger
 
 from src.output_spaces.tag import Tag
 

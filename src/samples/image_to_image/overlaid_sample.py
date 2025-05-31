@@ -2,8 +2,8 @@ import random
 
 import numpy as np
 from PIL import Image
-from Rignak.lazy_property import LazyProperty
-from Rignak.logging_utils import logger
+from rignak.lazy_property import LazyProperty
+from rignak.logging_utils import logger
 
 from src.samples.image_to_image.rotated_sample import RotatedSample
 
@@ -95,8 +95,8 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     sample = OverlaidSample(
-        "E:\\datasets/overlay_example/foreground/0.jpg",
-        "E:\\datasets/overlay_example/background/0.jpg",
+        "~/Documents/E/datasets/overlay_example/foreground/0.jpg",
+        "~/Documents/E/datasets/overlay_example/background/0.jpg",
         (256, 512)
     )
 

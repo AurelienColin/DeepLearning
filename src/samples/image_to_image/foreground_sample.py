@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.ndimage
 from PIL import Image
-from Rignak.lazy_property import LazyProperty
+from rignak.lazy_property import LazyProperty
 
 from src.samples.image_to_image.rotated_sample import RotatedSample
 
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     sample = ForegroundSample(
-        "E:\\datasets/overlay/validation/foreground/1798118_processed.png",
+        "~/Documents/E/datasets/overlay/validation/foreground/1798118_processed.png",
         (384, 256)
     )
 
