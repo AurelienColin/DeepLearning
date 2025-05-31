@@ -5,8 +5,8 @@ from dataclasses import dataclass
 import matplotlib
 import numpy as np
 import tensorflow as tf
-from Rignak.lazy_property import LazyProperty
-from Rignak.logging_utils import logger
+from rignak.lazy_property import LazyProperty
+from rignak.logging_utils import logger
 
 from src.callbacks.history_callback import HistoryCallback
 from src.generators.base_generators import BatchGenerator, PostProcessGenerator, compose_generators
@@ -92,21 +92,23 @@ class Trainer:
         self._model_wrapper.on_start()
         logger(f"Setup model_wrapper OK", indent=-1)
 
-    def set_filenames(self) -> None:
-        logger(f"Setup filenames", indent=1)
-        filenames = glob.glob(self.pattern)
+    @staticmethod
+    def split_names_on_pattern(pattern: str) -> typing.Tuple[typing.Sequence[str], typing.Sequence[str]]:
+        filenames = glob.glob(pattern)
         n_filenames = len(filenames)
+
         if n_filenames < 2:
-            raise ValueError(f"Pattern `{self.pattern}` has {n_filenames} matchs.")
+            raise FileNotFoundError(f"Pattern `{pattern}` has {n_filenames} matchs.")
         elif n_filenames > 2:
             np.random.shuffle(filenames)
             index = int(n_filenames * 0.75)
-            self._training_filenames = filenames[:index]
-            self._validation_filenames = filenames[index:]
+            return filenames[:index], filenames[index:]
         else:
-            self._training_filenames = [filenames[0]]
-            self._validation_filenames = [filenames[1]]
+            return (filenames[0],), (filenames[1],)
 
+    def set_filenames(self) -> None:
+        logger(f"Setup filenames", indent=1)
+        self._training_filenames, self._validation_filenames = self.split_names_on_pattern(self.pattern)
         logger(f"Setup filenames OK", indent=-1)
 
     @LazyProperty
@@ -125,7 +127,7 @@ class Trainer:
             model_wrapper=self.model_wrapper,
             output_path=self.model_wrapper.output_folder,
             batch_size=self.batch_size,
-            training_steps=self.training_steps
+            training_steps=self.training_steps,
         )]
         return callbacks
 
@@ -159,25 +161,44 @@ class Trainer:
         )
 
     @LazyProperty
-    def training_generator(self) -> BatchGenerator:
+    def training_generator(self) -> tf.data.Dataset:
         logger(f"Setup training_generator", indent=1)
         generator = self.get_generator(base_generator=self.original_training_generator)
+        dataset = self.generator_to_dataset(generator)
+        dataset.output_space = generator.output_space
         logger(f"Setup training_generator OK", indent=-1)
-        return generator
+        return dataset
 
     @LazyProperty
-    def test_generator(self, **kwargs) -> BatchGenerator:
+    def test_generator(self, **kwargs) -> tf.data.Dataset:
         logger(f"Setup test_generator", indent=1)
         generator = self.get_generator(self.validation_filenames, self.batch_size, self.input_shape)
+        dataset = self.generator_to_dataset(generator)
+        dataset.output_space = generator.output_space
         logger(f"Setup test_generator OK", indent=-1)
-        return generator
+        return dataset
 
     @LazyProperty
     def callback_generator(self, **kwargs) -> BatchGenerator:
         logger(f"Setup callback_generator", indent=1)
         generator = self.get_generator(self.validation_filenames, self.batch_size, self.input_shape)
+        # generator = self.generator_to_dataset(generator)
         logger(f"Setup callback_generator OK", indent=-1)
         return generator
+
+    @staticmethod
+    def generator_to_dataset(generator: BatchGenerator) -> tf.data.Dataset:
+        sample_x, sample_y = next(generator)
+        output_shapes = (tf.TensorShape((None, *sample_x.shape[1:])),
+                         tf.TensorShape((None, *sample_y.shape[1:])))
+        output_types = (tf.float32, tf.float32)
+
+        dataset = tf.data.Dataset.from_generator(
+            lambda: generator,
+            output_types=output_types,
+            output_shapes=output_shapes
+        )
+        return dataset
 
     def run(self):
         logger(f"Run trainer")
@@ -191,5 +212,4 @@ class Trainer:
             epochs=self.epochs,
             callbacks=self.callbacks,
             class_weight=self.class_weight,
-            workers=1
         )

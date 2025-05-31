@@ -1,21 +1,16 @@
 from src.trainers.image_to_image_trainers.blurry_autoencoder_trainer import BlurryAutoEncoderTrainer
+from config import DATASET_ROOT
 
 
 class GochiusaBlurryEncoderTrainer(BlurryAutoEncoderTrainer):
-    def __init__(
-            self,
-            name="GochiUsa",
-            pattern='E:\\datasets/GochiUsa/*/*.png',
-            input_shape=(96, 96, 3),
-            batch_size=12,
-            *args,
-            **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super(GochiusaBlurryEncoderTrainer, self).__init__(
-            name=name, pattern=pattern, input_shape=input_shape, batch_size=batch_size,
+            name=kwargs.pop('name', "GochiUsa"),
+            pattern=kwargs.pop('pattern', DATASET_ROOT + '/GochiUsa/*/*.png'),
+            input_shape=kwargs.pop('input_shape', (96, 96, 3)),
+            batch_size=kwargs.pop('batch_size', 12),
             *args, **kwargs
         )
-
 
 
 if __name__ == "__main__":

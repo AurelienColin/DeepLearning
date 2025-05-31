@@ -2,7 +2,7 @@ import typing
 
 import tensorflow as tf
 
-from Rignak.lazy_property import LazyProperty
+from rignak.lazy_property import LazyProperty
 from src.modules.custom_objects import CUSTOM_OBJECTS
 
 
@@ -10,7 +10,7 @@ class LossFromModel(tf.keras.losses.Loss):
     def __init__(self, name: str, input_shape: typing.Sequence[int], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name: str = name
-        # self.input_shape: typing.Sequence[int] = input_shape
+        self.input_shape: typing.Sequence[int] = input_shape
         self._model: typing.Optional[tf.keras.models.Model] = None
         self._input_layer: typing.Optional[tf.keras.layers.Layer] = None
         self._tracker: typing.Optional[tf.keras.metrics.Metric] = None

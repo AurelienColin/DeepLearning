@@ -28,4 +28,4 @@ def split_json(file_path: str, split_ratio: float = 0.75):
 if __name__ == "__main__":
     filename = sys.argv[1]
     split_json(filename)
-    # python src/scripts/split_metadata.json.py E:\\datasets/tags/metadata.json
+    # python src/scripts/split_metadata.json.py ~/Documents/E/datasets/tags/metadata.json

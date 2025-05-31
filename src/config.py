@@ -1,0 +1,5 @@
+import os
+
+DATASET_ROOT_ENVIRON_KEY: str = 'RIGNAK_ML_DATASET_ROOT'
+DATASET_ROOT_DEFAULT_VALUE: str = os.path.expanduser('~/Documents/E/datasets/')
+DATASET_ROOT: str = os.environ.get(DATASET_ROOT_ENVIRON_KEY, DATASET_ROOT_DEFAULT_VALUE)

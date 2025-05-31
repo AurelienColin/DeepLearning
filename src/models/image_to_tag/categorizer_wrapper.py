@@ -2,7 +2,7 @@ import typing
 from dataclasses import dataclass
 
 import tensorflow as tf
-from Rignak.lazy_property import LazyProperty
+from rignak.lazy_property import LazyProperty
 
 from src.losses import losses
 from src.models.model_wrapper import ModelWrapper

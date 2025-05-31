@@ -36,5 +36,5 @@ def process_images(pattern):
 
 
 # Example usage
-pattern = "E:\\datasets/overlay/*/foreground/*.png"
+pattern = "~/Documents/E/datasets/overlay/*/foreground/*.png"
 process_images(pattern)

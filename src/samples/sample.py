@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import PIL.Image
 import cv2
 import numpy as np
-from Rignak.lazy_property import LazyProperty
+from rignak.lazy_property import LazyProperty
 
 
 @dataclass

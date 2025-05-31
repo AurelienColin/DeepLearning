@@ -5,9 +5,9 @@ from dataclasses import dataclass
 os.environ['CUDA_VISIBLE_DEVICES'] = "-1"
 
 import tensorflow as tf
-from Rignak.logging_utils import logger
+from rignak.logging_utils import logger
 
-from Rignak.lazy_property import LazyProperty
+from rignak.lazy_property import LazyProperty
 
 from src.scripts.make_loss_from_encoder import Processor
 
