@@ -1,4 +1,4 @@
-import unittest
+import pytest # Added for consistency, though not strictly needed by current test content
 from unittest.mock import MagicMock, call
 import typing
 import numpy as np
@@ -23,54 +23,50 @@ class MockPostProcessor2(PostProcessGenerator):
         inputs, outputs = next(self.generator)
         return inputs * 2, outputs * 2 # Example modification
 
-class TestComposeGenerators(unittest.TestCase):
+# Removed TestComposeGenerators class wrapper, tests are now functions
 
-    def test_no_composition(self) -> None:
-        mock_batch_gen: BatchGenerator = MagicMock(spec=BatchGenerator)
-        composed_gen = compose_generators(generator=mock_batch_gen, composition=[])
-        self.assertIs(composed_gen, mock_batch_gen)
+def test_no_composition() -> None:
+    mock_batch_gen: BatchGenerator = MagicMock(spec=BatchGenerator)
+    composed_gen = compose_generators(generator=mock_batch_gen, composition=[])
+    assert composed_gen is mock_batch_gen
 
-    def test_single_composition(self) -> None:
-        mock_batch_gen: BatchGenerator = MagicMock(spec=BatchGenerator)
-        
-        # Using a real mock class type for assertion
-        composed_gen = compose_generators(generator=mock_batch_gen, composition=[MockPostProcessor1])
-        
-        self.assertIsInstance(composed_gen, MockPostProcessor1)
-        self.assertIs(composed_gen.generator, mock_batch_gen)
+def test_single_composition() -> None:
+    mock_batch_gen: BatchGenerator = MagicMock(spec=BatchGenerator)
 
-    def test_multiple_compositions(self) -> None:
-        mock_batch_gen: BatchGenerator = MagicMock(spec=BatchGenerator)
-        
-        # Using real mock class types for assertion
-        composed_gen = compose_generators(generator=mock_batch_gen, composition=[MockPostProcessor1, MockPostProcessor2])
-        
-        self.assertIsInstance(composed_gen, MockPostProcessor2)
-        self.assertIsInstance(composed_gen.generator, MockPostProcessor1)
-        self.assertIs(composed_gen.generator.generator, mock_batch_gen)
+    # Using a real mock class type for assertion
+    composed_gen = compose_generators(generator=mock_batch_gen, composition=[MockPostProcessor1])
 
-    def test_composition_instantiation_order(self) -> None:
-        mock_batch_gen: BatchGenerator = MagicMock(spec=BatchGenerator)
-        
-        # More direct way to test instantiation if needed, using Mocks for the classes themselves
-        MockPP1Class: MagicMock = MagicMock(spec=PostProcessGenerator)
-        MockPP2Class: MagicMock = MagicMock(spec=PostProcessGenerator)
-        
-        # Make them return mock instances when called
-        mock_pp1_instance = MagicMock(spec=PostProcessGenerator)
-        MockPP1Class.return_value = mock_pp1_instance
-        
-        mock_pp2_instance = MagicMock(spec=PostProcessGenerator)
-        MockPP2Class.return_value = mock_pp2_instance
+    assert isinstance(composed_gen, MockPostProcessor1)
+    assert composed_gen.generator is mock_batch_gen
 
-        composition_list: typing.List[typing.Type[PostProcessGenerator]] = [MockPP1Class, MockPP2Class]
-        
-        composed_gen = compose_generators(generator=mock_batch_gen, composition=composition_list)
+def test_multiple_compositions() -> None:
+    mock_batch_gen: BatchGenerator = MagicMock(spec=BatchGenerator)
 
-        MockPP1Class.assert_called_once_with(mock_batch_gen)
-        MockPP2Class.assert_called_once_with(mock_pp1_instance)
-        self.assertIs(composed_gen, mock_pp2_instance)
+    # Using real mock class types for assertion
+    composed_gen = compose_generators(generator=mock_batch_gen, composition=[MockPostProcessor1, MockPostProcessor2])
 
+    assert isinstance(composed_gen, MockPostProcessor2)
+    assert isinstance(composed_gen.generator, MockPostProcessor1)
+    assert composed_gen.generator.generator is mock_batch_gen
 
-if __name__ == '__main__':
-    unittest.main()
+def test_composition_instantiation_order() -> None:
+    mock_batch_gen: BatchGenerator = MagicMock(spec=BatchGenerator)
+
+    # More direct way to test instantiation if needed, using Mocks for the classes themselves
+    MockPP1Class: MagicMock = MagicMock(spec=PostProcessGenerator)
+    MockPP2Class: MagicMock = MagicMock(spec=PostProcessGenerator)
+
+    # Make them return mock instances when called
+    mock_pp1_instance = MagicMock(spec=PostProcessGenerator)
+    MockPP1Class.return_value = mock_pp1_instance
+
+    mock_pp2_instance = MagicMock(spec=PostProcessGenerator)
+    MockPP2Class.return_value = mock_pp2_instance
+
+    composition_list: typing.List[typing.Type[PostProcessGenerator]] = [MockPP1Class, MockPP2Class]
+
+    composed_gen = compose_generators(generator=mock_batch_gen, composition=composition_list)
+
+    MockPP1Class.assert_called_once_with(mock_batch_gen)
+    MockPP2Class.assert_called_once_with(mock_pp1_instance)
+    assert composed_gen is mock_pp2_instance
