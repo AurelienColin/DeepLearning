@@ -1,5 +1,5 @@
 import numpy as np
-from Rignak.lazy_property import LazyProperty
+from rignak.lazy_property import LazyProperty
 
 from src.output_spaces.output_space import OutputSpace
 from src.samples.sample import Sample

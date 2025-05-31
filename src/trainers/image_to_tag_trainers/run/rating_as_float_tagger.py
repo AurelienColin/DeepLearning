@@ -1,11 +1,13 @@
 from src.generators.image_to_tag.custom.rating_as_float_generator import RatingAsFloatGenerator
 from src.trainers.image_to_tag_trainers.run.rating_tagger import RatingTagger
-from Rignak.lazy_property import LazyProperty
+from rignak.lazy_property import LazyProperty
 import typing
 import tensorflow as tf
 from src.callbacks.example_callback_with_logs import ExampleCallbackWithLogs
 from src.callbacks.plotters.image_to_tag.regression_plotter import RegressionPlotter
 from src.models.image_to_tag.regression_wrapper import RegressionWrapper
+
+
 class RatingAsFloatTagger(RatingTagger):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -32,8 +34,6 @@ class RatingAsFloatTagger(RatingTagger):
         )
 
         return callbacks
-
-
 
 
 if __name__ == "__main__":

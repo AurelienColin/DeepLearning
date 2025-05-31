@@ -1,7 +1,7 @@
 import shutil
 import typing
 
-from Rignak.custom_display import Display
+from rignak.custom_display import Display
 
 from src.callbacks.callback import Callback
 

@@ -1,8 +1,8 @@
 import typing
 
 import numpy as np
-from Rignak.custom_display import Display
-from Rignak.lazy_property import LazyProperty
+from rignak.custom_display import Display
+from rignak.lazy_property import LazyProperty
 
 import src.trainers.image_to_image_trainers.run.benchmark.utils
 from src.callbacks.plotters.plot_from_arrays import PlotterFromArrays
@@ -82,7 +82,7 @@ class ImageToTagExamplePlotter(PlotterFromArrays):
         for i, indices in enumerate(self.indices):
             limit = 1e-3
             y = np.clip(self.logs[:, i, indices], limit, 1 - limit)
-            src.trainers.image_to_image_trainers.run.benchmark.utils.plot(
+            self.display[i].plot(
                 None,
                 y,
                 ylabel="Prediction",

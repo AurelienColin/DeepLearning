@@ -8,10 +8,10 @@ os.environ['CUDA_VISIBLE_DEVICES'] = "-1"
 
 import numpy as np
 import tensorflow as tf
-from Rignak.logging_utils import logger
+from rignak.logging_utils import logger
 
 from src.generators.base_generators import BatchGenerator
-from Rignak.lazy_property import LazyProperty
+from rignak.lazy_property import LazyProperty
 from src.modules.layers.scale_layer import ScaleLayer
 from src.modules.custom_objects import CUSTOM_OBJECTS
 
@@ -23,7 +23,7 @@ def get_args() -> argparse.Namespace:
                         default=".tmp/20250115_095140/model.h5")
     parser.add_argument("--pooling_factor", type=int, default=4, help="Factor for reducing the dimensions.")
     parser.add_argument("--image_size", type=int, default=96, help="Size of the model inputs.")
-    parser.add_argument("--dataset", type=str, default="E://GochiUsa/*/*.png", help="Path of the input images.")
+    parser.add_argument("--dataset", type=str, default="~/Documents/E/GochiUsa/*/*.png", help="Path of the input images.")
     return parser.parse_args()
 
 

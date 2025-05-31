@@ -1,6 +1,6 @@
 import typing
 
-from Rignak.lazy_property import LazyProperty
+from rignak.lazy_property import LazyProperty
 
 from src.generators.base_generators import PostProcessGenerator
 from src.generators.image_to_image.in_out_substract_generator import InOutSubstractGenerator

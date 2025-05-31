@@ -1,11 +1,12 @@
 import typing
+import warnings
 from dataclasses import dataclass
 
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras.backend as K
-from Rignak.lazy_property import LazyProperty
-from Rignak.logging_utils import logger
+from rignak.lazy_property import LazyProperty
+from rignak.logging_utils import logger
 
 from src.generators.base_generators import BatchGenerator
 from src.losses.from_model.blurriness import Blurriness
@@ -229,7 +230,11 @@ class DiffusionModelWrapper(UnetWrapper):
             validation_steps: int,
             epochs: int,
             callbacks: typing.Sequence[tf.keras.callbacks.Callback],
-            workers: int):
+            class_weight: None = None
+            ):
+        if not class_weight:
+            warnings.warn("`class_weight` not yet implemented. Will ignore the parameter.")
+
         self.on_fit_start(callbacks)
 
         logger.set_iterator(epochs)
@@ -243,9 +248,6 @@ class DiffusionModelWrapper(UnetWrapper):
     def on_fit_start(self, callbacks: typing.Sequence[tf.keras.callbacks.Callback]) -> None:
         self.model.train_step = self.train_step
         self.model.test_step = self.test_step
-
-        for callback in callbacks:
-            callback.model = self.model
 
     def run_epoch(
             self,
@@ -271,7 +273,7 @@ class DiffusionModelWrapper(UnetWrapper):
     ) -> typing.Dict[str, Array_or_Tensor]:
         logs: typing.Dict[str, Array_or_Tensor] = {}
         for _ in range(num_steps):
-            packed_images = next(dataset)
+            packed_images = next(iter(dataset))
             metrics = step_function(packed_images)
             for key, value in metrics.items():
                 full_key = f"{key_prefix}{key}"

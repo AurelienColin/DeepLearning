@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import tensorflow as tf
 import tensorflow.keras.backend as K
-from Rignak.lazy_property import LazyProperty
+from rignak.lazy_property import LazyProperty
 
 from src.losses.losses import edge_loss, mae, Loss
 from src.models.model_wrapper import ModelWrapper

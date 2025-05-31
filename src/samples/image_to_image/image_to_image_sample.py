@@ -1,7 +1,7 @@
 import numpy as np
 
 from src.samples.sample import Sample
-from Rignak.lazy_property import LazyProperty
+from rignak.lazy_property import LazyProperty
 
 
 class ImageToImageSample(Sample):
