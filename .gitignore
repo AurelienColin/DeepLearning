@@ -1,0 +1,11 @@
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore other common unnecessary files
+*.swp
+*.swo
+*.bak
+*.cache
+
