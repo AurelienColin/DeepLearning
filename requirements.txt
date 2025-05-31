@@ -1,9 +1,0 @@
-tensorflow
-pandas
-numpy
-matplotlib
-opencv-python
-scikit-learn
-Pillow
-# Rignak # Origin and installation method unclear, please install manually if needed.
-pytest
