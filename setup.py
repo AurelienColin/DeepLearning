@@ -16,6 +16,7 @@ setup(
         "matplotlib",
         "opencv-python",
         "scikit-learn",
+        'basemap',
         "Pillow",
         # The rignak dependency is external (from GitHub) and needs to be installed separately.
         # e.g., pip install git+https://github.com/Rignak/rignak.git
