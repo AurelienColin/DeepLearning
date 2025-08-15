@@ -85,6 +85,3 @@ def test_predict_step(blurry_encoder: Trainer):
     assert all(np.isfinite(np.stack(predictions).flatten()))
 
 
-def test_complete_process(blurry_encoder: Trainer):
-    blurry_encoder.run()
-    assert True

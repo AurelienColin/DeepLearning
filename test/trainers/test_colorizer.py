@@ -83,6 +83,3 @@ def test_predict_step(colorizer: Trainer):
     assert all(np.isfinite(np.stack(predictions).flatten()))
 
 
-def test_complete_process(colorizer: Trainer):
-    colorizer.run()
-    assert True

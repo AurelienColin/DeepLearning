@@ -46,8 +46,6 @@ def get_xy(
 
 def main(pattern: str) -> None:
     filenames = sorted(glob.glob(pattern))
-    print(f"{len(filenames)=}")
-
     xs, ys = get_xy(filenames)
 
     export_filename = os.path.dirname(os.path.dirname(pattern)) + "/comparison.png"

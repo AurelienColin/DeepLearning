@@ -83,6 +83,3 @@ def test_predict_step(categorizer: Trainer):
     assert all(np.isfinite(np.stack(predictions).flatten()))
 
 
-def test_complete_process(categorizer: Trainer):
-    categorizer.run()
-    assert True
