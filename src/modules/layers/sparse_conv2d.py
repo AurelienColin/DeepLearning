@@ -13,11 +13,11 @@ from rignak.logging_utils import logger
 
 class SparseConv2D(tf.keras.layers.Layer):
     def __init__(self,
-                 filters: int,
+                 n_kernels: int,
                  kernel_size: int,
                  n_non_zero: int,
                  strides: int = 1,
-                 padding: str = 'valid',
+                 padding: str = 'same',
                  use_bias: bool = True,
                  kernel_initializer: str = 'glorot_uniform',
                  bias_initializer: str = 'zeros',
@@ -27,8 +27,8 @@ class SparseConv2D(tf.keras.layers.Layer):
         n_non_zero = np.clip(n_non_zero, 1, kernel_size ** 2)
 
         # Store arguments
-        self._original_filters: int = filters
-        self._filters: typing.Optional[int] = None
+        self._original_kernels: int = n_kernels
+        self._kernels: typing.Optional[int] = None
         self.kernel_size: typing.Tuple[int, int] = (kernel_size, kernel_size)
         self.n_non_zero: int = n_non_zero
         self.strides: typing.Tuple[int, int] = (strides, strides)
@@ -42,18 +42,18 @@ class SparseConv2D(tf.keras.layers.Layer):
         self.bias: typing.Optional[tf.Tensor] = None
 
     @LazyProperty
-    def filters(self) -> int:
+    def kernels(self) -> int:
         n_positions = self.kernel_size[0] * self.kernel_size[1]
 
         num = math.factorial(n_positions)
         denum = math.factorial(self.n_non_zero) * math.factorial(n_positions - self.n_non_zero)
-        max_possible_filters = int(num / denum)
+        max_possible_kernels = int(num / denum)
 
-        if self._original_filters > max_possible_filters:
+        if self._original_kernels > max_possible_kernels:
             logger.warning(
-                f"Requested {self._original_filters} filters. Capping filters to {max_possible_filters}."
+                f"Requested {self._original_kernels} kernels. Capping kernels to {max_possible_kernels}."
             )
-        return min(max_possible_filters, self._original_filters)
+        return min(max_possible_kernels, self._original_kernels)
 
     @LazyProperty
     def indices(self)-> tf.Tensor:
@@ -63,7 +63,7 @@ class SparseConv2D(tf.keras.layers.Layer):
 
         chosen_patterns_set = set()
         # Loop until we have collected enough unique patterns
-        while len(chosen_patterns_set) < self.filters:
+        while len(chosen_patterns_set) < self.kernels:
             rand_indices = np.random.choice(n_total_coords, size=self.n_non_zero, replace=False)
             combination = all_coords[rand_indices]
             combination_sorted = combination[np.lexsort((combination[:, 1], combination[:, 0]))]
@@ -81,7 +81,7 @@ class SparseConv2D(tf.keras.layers.Layer):
 
         self.sparse_kernel = self.add_weight(
             name='sparse_kernel',
-            shape=(self.n_non_zero, in_channels, self.filters),
+            shape=(self.n_non_zero, in_channels, self.kernels),
             initializer=self.kernel_initializer,
             trainable=True
         )
@@ -89,7 +89,7 @@ class SparseConv2D(tf.keras.layers.Layer):
         if self.use_bias:
             self.bias = self.add_weight(
                 name='bias',
-                shape=(self.filters,),
+                shape=(self.kernels,),
                 initializer=self.bias_initializer,
                 trainable=True
             )
@@ -110,28 +110,28 @@ class SparseConv2D(tf.keras.layers.Layer):
         # 4D index (h, w, in_channel, out_channel) for every non-zero weight.
 
         # Get the (h, w) coordinates for each filter's pattern
-        # Shape: (filters, n_non_zero, 2)
+        # Shape: (kernels, n_non_zero, 2)
         hw_coords = self.indices
 
         # Tile these coordinates to prepare for merging with in/out channel indices
-        # Shape becomes: (filters, in_channels, n_non_zero, 2)
+        # Shape becomes: (kernels, in_channels, n_non_zero, 2)
         hw_coords = tf.expand_dims(hw_coords, axis=1)
         hw_coords = tf.tile(hw_coords, [1, in_channels, 1, 1])
 
-        # Create indices for the output channels (filters)
-        # Shape becomes: (filters, in_channels, n_non_zero, 1)
-        out_channel_indices = tf.range(self.filters, dtype=tf.int32)
-        out_channel_indices = tf.reshape(out_channel_indices, (self.filters, 1, 1, 1))
+        # Create indices for the output channels (kernels)
+        # Shape becomes: (kernels, in_channels, n_non_zero, 1)
+        out_channel_indices = tf.range(self.kernels, dtype=tf.int32)
+        out_channel_indices = tf.reshape(out_channel_indices, (self.kernels, 1, 1, 1))
         out_channel_indices = tf.tile(out_channel_indices, [1, in_channels, self.n_non_zero, 1])
 
         # Create indices for the input channels
-        # Shape becomes: (filters, in_channels, n_non_zero, 1)
+        # Shape becomes: (kernels, in_channels, n_non_zero, 1)
         in_channel_indices = tf.range(in_channels, dtype=tf.int32)
         in_channel_indices = tf.reshape(in_channel_indices, (1, in_channels, 1, 1))
-        in_channel_indices = tf.tile(in_channel_indices, [self.filters, 1, self.n_non_zero, 1])
+        in_channel_indices = tf.tile(in_channel_indices, [self.kernels, 1, self.n_non_zero, 1])
 
         # Concatenate all parts to form the final indices for scatter_nd
-        # The final shape is (filters, in_channels, n_non_zero, 4)
+        # The final shape is (kernels, in_channels, n_non_zero, 4)
         scatter_indices = tf.concat([
             hw_coords[..., 0:1],  # h
             hw_coords[..., 1:2],  # w
@@ -141,12 +141,12 @@ class SparseConv2D(tf.keras.layers.Layer):
 
         # Now, prepare the `updates` tensor (the actual weight values)
         # We need to transpose `self.sparse_kernel` to match the order of `scatter_indices`
-        # Original shape: (n_non_zero, in_channels, filters)
-        # Target shape: (filters, in_channels, n_non_zero)
+        # Original shape: (n_non_zero, in_channels, kernels)
+        # Target shape: (kernels, in_channels, n_non_zero)
         updates = tf.transpose(self.sparse_kernel, perm=[2, 1, 0])
 
         # Construct the dense kernel
-        dense_kernel_shape = (kernel_h, kernel_w, in_channels, self.filters)
+        dense_kernel_shape = (kernel_h, kernel_w, in_channels, self.kernels)
         dense_kernel = tf.scatter_nd(scatter_indices, updates, dense_kernel_shape)
 
         # --- 2. Perform the convolution using the reconstructed dense kernel ---
@@ -167,7 +167,7 @@ class SparseConv2D(tf.keras.layers.Layer):
         """Enables serialization of the layer."""
         config = super(SparseConv2D, self).get_config()
         config.update({
-            'filters': self.filters,
+            'kernels': self.kernels,
             'kernel_size': self.kernel_size,
             'n_non_zero': self.n_non_zero,
             'strides': self.strides,
