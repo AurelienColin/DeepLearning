@@ -8,8 +8,8 @@ from rignak.logging_utils import logger
 
 from src.callbacks.example_callback import ExampleCallback
 from src.callbacks.example_callback_with_logs import ExampleCallbackWithLogs
-from src.callbacks.plotters.image_to_tag.confuson_matrice_plotter import ConfusionMatricePlotter
-from src.callbacks.plotters.image_to_tag.image_to_tag_example_plotter import ImageToTagExamplePlotter
+from callbacks.plotters.image_to_tag.confusion_matrix.flat_confusion_matrix_plotter import FlatConfusionMatricePlotter
+from callbacks.plotters.image_to_tag.example_plotter.flat_example_plotter import ImageToFlatTagExamplePlotter
 from src.generators.base_generators import BatchGenerator
 from src.generators.image_to_tag.classification_generator import ClassificationGenerator
 from src.models.image_to_tag.categorizer_wrapper import CategorizerWrapper
@@ -24,7 +24,7 @@ class CategorizerTrainer(Trainer):
 
     @property
     def output_shape(self) -> typing.Sequence[int]:
-        return self.original_training_generator.output_space.n,
+        return len(self.original_training_generator.output_space),
 
     @property
     def get_model_wrapper(self) -> typing.Type:
@@ -49,7 +49,7 @@ class CategorizerTrainer(Trainer):
             ExampleCallback(
                 model_wrapper=self.model_wrapper,
                 output_path=self.model_wrapper.output_folder + "/examples",
-                function=ImageToTagExamplePlotter(
+                function=ImageToFlatTagExamplePlotter(
                     inputs,
                     outputs,
                     self.model_wrapper,
@@ -59,7 +59,7 @@ class CategorizerTrainer(Trainer):
             ExampleCallbackWithLogs(
                 model_wrapper=self.model_wrapper,
                 output_path=self.model_wrapper.output_folder + "/confusion",
-                function=ConfusionMatricePlotter(
+                function=FlatConfusionMatricePlotter(
                     self.callback_generator,
                     self.validation_steps,
                     self.model_wrapper

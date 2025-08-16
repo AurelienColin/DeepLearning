@@ -1,4 +1,5 @@
-import os.path
+import os
+
 
 import numpy as np
 from keras.src.models.functional import Functional

@@ -8,13 +8,20 @@ from src.samples.image_to_tag.image_to_tag_sample import ImageToTagSample
 
 
 class ClassificationGenerator(BatchGenerator):
-    def __init__(self, *args, enforced_tag_names: typing.Optional[typing.Sequence[str]] = None, **kwargs):
-        self.output_space: typing.Optional[OutputSpace] = None
+    def __init__(
+            self,
+            *args,
+            enforced_tag_names: typing.Optional[typing.Sequence[str]] = None,
+            output_space: typing.Optional[OutputSpace] = None,
+            **kwargs
+    ):
         self.enforced_tag_names: typing.Optional[typing.Sequence[str]] = enforced_tag_names
         super().__init__(*args, **kwargs)
+        self.output_space: typing.Optional[OutputSpace] = output_space
 
-        self.set_output_space()
-        self.filenames = self.output_space.filenames
+        if self.output_space is None:
+            self.set_output_space()
+        self.filenames: typing.Sequence[str] = self.output_space.filenames
 
     def set_output_space(self):
         if len(self.filenames) > 1:

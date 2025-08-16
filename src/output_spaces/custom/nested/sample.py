@@ -1,6 +1,6 @@
-from ML.src.output_spaces.custom import hierarchical_tags
 import typing
-from ML.src.scripts.utils.download_from_danbooru import JsonDownloader
+from src.scripts.utils.download_from_danbooru import JsonDownloader
+from src.output_spaces.custom.nested.nested_tags import categories
 import numpy as np
 from dataclasses import dataclass
 from rignak.lazy_property import LazyProperty
@@ -12,7 +12,8 @@ class Sample:
 
     _tags: typing.Optional[str] = None
     _url: typing.Optional[str] = None
-    _output: typing.Tuple[np.ndarray] = None
+    _output: typing.Optional[np.ndarray] = None
+    _filename: typing.Optional[str] = None
 
     @LazyProperty
     def tags(self) -> str:
@@ -31,15 +32,15 @@ class Sample:
         return url
 
     @LazyProperty
-    def output(self) -> typing.Tuple[np.ndarray]:
+    def output(self) -> np.ndarray:
         output = []
-        for category in hierarchical_tags.categories:
+        for category in categories:
             category_output = np.zeros(len(category.subcategories))
             res = category.accept(self.tags.split())
             if res is not None:
                 category_output[res[0]] = 1
             output.append(category_output)
-        return tuple(output)
+        return np.concatenate(output)
 
 
 def get_samples(tags: str, n_entries: int) -> typing.List[Sample]:

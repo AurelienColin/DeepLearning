@@ -11,11 +11,11 @@ from src.callbacks.plotters.plotter_from_generator import PlotterFromGenerator
 class RegressionPlotter(PlotterFromGenerator):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs, ncols=1, nrows=1, thumbnail_size=(10, 10))
-        self.ncols = self.generator.output_space.n
+        self.ncols = len(self.generator.output_space)
 
     @reset_display
     def __call__(self) -> typing.Tuple[Display, typing.Dict[str, typing.Sequence]]:
-        n = self.generator.output_space.n
+        n = len(self.generator.output_space)
 
         results = np.zeros((self.generator.batch_size * self.steps, n, 2))
         for i in range(self.steps):

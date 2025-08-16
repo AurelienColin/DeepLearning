@@ -24,11 +24,19 @@ class Category:
     blacklist: typing.Tuple[str, ...] = ()
     priority: int = 0
 
+    def __len__(self) -> int:
+        return len(self._subcategories)
+
     @property
     def subcategories(self) -> typing.Tuple[typing.Union[str, "Category"], ...]:
         if self._subcategories is None:
             self._subcategories = (self.name,)
         return self._subcategories
+
+    @property
+    def labels(self)-> typing.List[str]:
+        return [(subcategory.name if isinstance(subcategory, Category) else subcategory) for subcategory in
+                self.subcategories]
 
     def get_tags(self) -> str:
         tags = ' '.join((f'-{blacklisted_tag}' for blacklisted_tag in self.blacklist))
