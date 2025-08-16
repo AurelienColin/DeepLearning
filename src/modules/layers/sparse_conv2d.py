@@ -21,8 +21,10 @@ class SparseConv2D(tf.keras.layers.Layer):
                  use_bias: bool = True,
                  kernel_initializer: str = 'glorot_uniform',
                  bias_initializer: str = 'zeros',
+                 n_stride: int = 1,
+                 activation: typing.Optional[str] = None,
                  **kwargs):
-        super(SparseConv2D, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         n_non_zero = np.clip(n_non_zero, 1, kernel_size ** 2)
 
@@ -36,6 +38,7 @@ class SparseConv2D(tf.keras.layers.Layer):
         self.use_bias: bool = use_bias
         self.kernel_initializer: tf.keras.initializers.Initializer = tf.keras.initializers.get(kernel_initializer)
         self.bias_initializer: tf.keras.initializers = tf.keras.initializers.get(bias_initializer)
+        self.activation = tf.keras.activations.get(activation)
 
         self._indices: typing.Optional[tf.Tensor] = None
         self.sparse_kernel: typing.Optional[tf.Tensor] = None
@@ -56,7 +59,7 @@ class SparseConv2D(tf.keras.layers.Layer):
         return min(max_possible_kernels, self._original_kernels)
 
     @LazyProperty
-    def indices(self)-> tf.Tensor:
+    def indices(self) -> tf.Tensor:
         y, x = np.mgrid[0:self.kernel_size[0], 0:self.kernel_size[1]]
         all_coords = np.stack([y.ravel(), x.ravel()], axis=-1)
         n_total_coords = len(all_coords)
@@ -70,8 +73,7 @@ class SparseConv2D(tf.keras.layers.Layer):
             chosen_patterns_set.add(tuple(map(tuple, combination_sorted)))
 
         chosen_patterns = np.array(list(chosen_patterns_set))
-        return tf.constant(chosen_patterns, dtype=tf.int32)
-
+        return tf.Variable(initial_value=chosen_patterns, dtype=tf.int32, trainable=False)
 
     def build(self, input_shape: typing.Sequence[int]):
         if self.built:
@@ -160,7 +162,7 @@ class SparseConv2D(tf.keras.layers.Layer):
         # --- 3. Add bias if enabled ---
         if self.use_bias:
             outputs = tf.nn.bias_add(outputs, self.bias)
-
+        outputs = self.activation(outputs)
         return outputs
 
     def get_config(self):

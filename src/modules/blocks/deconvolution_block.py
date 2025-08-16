@@ -6,16 +6,31 @@ from src.modules.blocks.residual_block import ResidualBlock
 
 
 class DeconvolutionBlock(tf.keras.layers.Layer):
-    def __init__(self, n_kernels: int, n_stride: int, **kwargs):
+    def __init__(
+            self,
+            n_kernels: int,
+            n_stride: int,
+            superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = None,
+            superseeded_conv_kwargs: typing.Optional[dict] = None,
+            **kwargs
+    ):
         super().__init__(**kwargs)
         self.n_kernels: int = n_kernels
         self.n_stride: int = n_stride
+
+        self.superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = superseeded_conv_layer
+        self.superseeded_conv_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = superseeded_conv_kwargs
 
     def build(self, input_shape: tf.TensorShape):
         super().build(input_shape)
         self.upsampling: tf.keras.layers.Layer = tf.keras.layers.UpSampling2D(size=(2, 2), interpolation="bilinear")
         self.concat: tf.keras.layers.Layer = tf.keras.layers.Concatenate()
-        self.residual_block: tf.keras.layers.Layer = ResidualBlock(self.n_kernels, self.n_stride)
+        self.residual_block: tf.keras.layers.Layer = ResidualBlock(
+            self.n_kernels,
+            self.n_stride,
+            superseeded_conv_layer=self.superseeded_conv_layer,
+            superseeded_conv_kwargs=self.superseeded_conv_kwargs,
+        )
 
     def call(
             self,

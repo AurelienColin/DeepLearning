@@ -4,7 +4,6 @@ import numpy as np
 from rignak.custom_display import Display
 from rignak.lazy_property import LazyProperty
 
-import src.trainers.image_to_image_trainers.run.benchmark.utils
 from src.callbacks.plotters.plot_from_arrays import PlotterFromArrays
 from src.callbacks.plotters.plotter import reset_display
 from src.losses.losses import cross_entropy, one_minus_dice
@@ -68,7 +67,8 @@ class ImageToTagExamplePlotter(PlotterFromArrays):
             exponent = 3
             kwargs = dict(alpha=0.5, title=title, xscale="logit", epsilon=10 ** -exponent)
             for values, color in zip((reduced_output, reduced_prediction), ('tab:blue', 'tab:orange')):
-                subplot = self.display[self.ncols + i]
+                values = np.clip(values, kwargs['epsilon'], 1-kwargs['epsilon'])
+                subplot = self.display[2*self.ncols + i]
                 subplot.barh(labels, values, color=color, **kwargs)
 
                 x_tick_labels = (
@@ -77,12 +77,13 @@ class ImageToTagExamplePlotter(PlotterFromArrays):
                     *[f"$1-10^{{{x}}}$" for x in range(1, exponent)]
                 )
                 subplot.ax.set_xticklabels(x_tick_labels)
+                subplot.ax.set_ylim(-0.5, len(labels)-.5)
 
     def call_for_logs(self):
         for i, indices in enumerate(self.indices):
             limit = 1e-3
             y = np.clip(self.logs[:, i, indices], limit, 1 - limit)
-            self.display[i].plot(
+            self.display[self.ncols + i].plot(
                 None,
                 y,
                 ylabel="Prediction",

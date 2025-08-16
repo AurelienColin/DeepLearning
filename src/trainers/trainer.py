@@ -60,6 +60,9 @@ class Trainer:
     _original_training_generator: typing.Optional[BatchGenerator] = None
     base_generator: typing.Optional[typing.Type] = None
 
+    superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = None
+    superseeded_conv_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = None
+
     @property
     def class_weight(self) -> typing.Optional[np.ndarray]:
         return None
@@ -87,6 +90,8 @@ class Trainer:
             self.n_stride,
             training_generator=self.training_generator,
             test_generator=self.test_generator,
+            superseeded_conv_layer=self.superseeded_conv_layer,
+            superseeded_conv_kwargs=self.superseeded_conv_kwargs,
             **{key: value for key, value in kwargs.items() if value is not None}
         )
         self._model_wrapper.on_start()

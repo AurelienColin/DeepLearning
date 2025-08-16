@@ -6,18 +6,36 @@ from src.modules.layers.atrous_conv2d import AtrousConv2D
 
 
 class ResidualBlock(tf.keras.layers.Layer):
-    def __init__(self, n_kernels: int, n_stride: int, **kwargs):
+    def __init__(
+            self,
+            n_kernels: int,
+            n_stride: int,
+            superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = None,
+            superseeded_conv_kwargs: typing.Optional[dict] = None,
+            **kwargs
+    ):
         super().__init__(**kwargs)
         self.n_kernels: int = n_kernels
         self.n_stride: int = n_stride
         self.batch_norm: tf.keras.layers.Layer = tf.keras.layers.BatchNormalization()
-        self.atrous_conv2ds: typing.Sequence[tf.keras.layers.Layer] = (
-            AtrousConv2D(self.n_kernels, activation='swish', n_stride=self.n_stride),
-            AtrousConv2D(self.n_kernels, activation=None, n_stride=self.n_stride)
+
+        self.superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = superseeded_conv_layer
+        self.superseeded_conv_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = superseeded_conv_kwargs
+
+        self.conv2ds: typing.Sequence[tf.keras.layers.Layer] = (
+            self.get_convolution_layer(n_kernels=self.n_kernels, activation='swish', n_stride=self.n_stride),
+            self.get_convolution_layer(n_kernels=self.n_kernels, activation=None, n_stride=self.n_stride)
         )
         self.add: tf.keras.layers.Layer = tf.keras.layers.Add()
-
         self.residual_conv: typing.Optional[tf.keras.layers.Layer] = None
+
+    def get_convolution_layer(self, **kwargs) -> tf.keras.layers.Layer:
+        if self.superseeded_conv_kwargs is not None:
+            kwargs.update(self.superseeded_conv_kwargs)
+
+        conv_layer_class = AtrousConv2D if self.superseeded_conv_layer is None else self.superseeded_conv_layer
+        conv_layer = conv_layer_class(**kwargs)
+        return conv_layer
 
     def build(self, input_shape: typing.Sequence[int]) -> None:
         if input_shape[-1] != self.n_kernels:
@@ -27,7 +45,7 @@ class ResidualBlock(tf.keras.layers.Layer):
         residual = self.residual_conv(inputs) if self.residual_conv else inputs
 
         x = self.batch_norm(inputs)
-        for conv_layer in self.atrous_conv2ds:
+        for conv_layer in self.conv2ds:
             x = conv_layer(x)
 
         return self.add([x, residual])

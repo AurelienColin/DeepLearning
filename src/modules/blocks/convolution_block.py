@@ -6,11 +6,23 @@ from src.modules.blocks.residual_block import ResidualBlock
 
 
 class ConvolutionBlock(tf.keras.layers.Layer):
-    def __init__(self, n_kernels: int, n_stride: int, **kwargs):
+    def __init__(
+            self,
+            n_kernels: int,
+            n_stride: int,
+            superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = None,
+            superseeded_conv_kwargs: typing.Optional[dict] = None,
+            **kwargs
+    ):
         super().__init__(**kwargs)
         self.n_kernels: int = n_kernels
         self.n_stride: int = n_stride
-        self.residual_block: tf.keras.layers.Layer = ResidualBlock(self.n_kernels, self.n_stride)
+        self.residual_block: tf.keras.layers.Layer = ResidualBlock(
+            self.n_kernels,
+            self.n_stride,
+            superseeded_conv_layer=superseeded_conv_layer,
+            superseeded_conv_kwargs=superseeded_conv_kwargs,
+        )
         self.pooling: tf.keras.layers.Layer = tf.keras.layers.AveragePooling2D(pool_size=(2, 2))
 
     def call(self, inputs: tf.Tensor) -> typing.Tuple[tf.Tensor, tf.Tensor]:

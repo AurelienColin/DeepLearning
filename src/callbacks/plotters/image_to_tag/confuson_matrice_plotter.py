@@ -50,7 +50,8 @@ class ConfusionMatricePlotter(PlotterFromGenerator):
             ylabel="True labels",
             xlabel="Predicted labels",
             labels=self.generator.output_space.tag_names,
-            cmap_name="Blues"
+            cmap_name="Blues",
+            xticks_rotation=30,
         )
         return self.display, logs
 

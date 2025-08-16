@@ -16,6 +16,10 @@ class CategorizerWrapper(ModelWrapper):
     _encoded_layer: typing.Optional[tf.keras.layers.Layer] = None
     _encoded_inherited_layers: typing.Optional[typing.Sequence[tf.keras.layers.Layer]] = None
 
+    superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = None
+    superseeded_conv_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = None
+
+
     @LazyProperty
     def loss(self) -> typing.Callable[[tf.Tensor, tf.Tensor], tf.Tensor]:
         return losses.Loss((losses.cross_entropy,), class_weights=self.training_generator.output_space.class_weights)
@@ -26,7 +30,13 @@ class CategorizerWrapper(ModelWrapper):
 
     @LazyProperty
     def output_layer(self) -> tf.keras.layers.Layer:
-        current_layer, _ = build_encoder(self.input_layer, self.layer_kernels, self.n_stride)
+        current_layer, _ = build_encoder(
+            self.input_layer,
+            self.layer_kernels,
+            self.n_stride,
+            superseeded_conv_layer=self.superseeded_conv_layer,
+            superseeded_conv_kwargs=self.superseeded_conv_kwargs,
+        )
         current_layer = tf.keras.layers.GlobalAveragePooling2D()(current_layer)
 
         n_intermediate = abs(int((self.layer_kernels[-1] - self.output_shape[-1]) / 2))

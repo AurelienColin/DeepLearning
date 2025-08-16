@@ -7,7 +7,13 @@ from src.modules.layers.padded_conv2d import PaddedConv2D
 
 
 class AtrousConv2D(tf.keras.layers.Layer):
-    def __init__(self, n_kernels: int, n_stride: int, activation: typing.Optional[str] = None, **kwargs):
+    def __init__(
+            self,
+            n_kernels: int,
+            n_stride: int,
+            activation: typing.Optional[str] = None,
+            **kwargs
+    ):
         super().__init__(**kwargs)
         self.n_stride: int = n_stride
         self.n_kernels: int = n_kernels

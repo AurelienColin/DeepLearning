@@ -49,8 +49,9 @@ class HistoryCallback(Callback):
 
         for i, (key, values) in enumerate(self.logs.items()):
             x = np.array(self.x)
-            y = np.array(values).T
-            display[i].plot(x, y, xlabel='kimgs', yscale="log", title=key, labels=(key, 'val_' + key))
+            y = np.array(values)
+            display[i].plot(x, y[0], xlabel='kimgs', yscale="log", title=key, labels=key)
+            display[i].plot(x, y[1], xlabel='kimgs', yscale="log", title=key, labels='val_' + key)
 
         display.show(export_filename=self.model_wrapper.output_folder + "/history.png")
         pd.DataFrame(

@@ -4,7 +4,13 @@ import tensorflow as tf
 
 
 class PaddedConv2D(tf.keras.layers.Layer):
-    def __init__(self, n_kernels: int, dilation_rate: int, activation: typing.Optional[str], **kwargs):
+    def __init__(
+            self,
+            n_kernels: int,
+            dilation_rate: int,
+            activation: typing.Optional[str],
+            n_stride: int = 1,
+            **kwargs):
         super().__init__(**kwargs)
         self.n_kernels: int = n_kernels
         self.dilation_rate: int = dilation_rate
