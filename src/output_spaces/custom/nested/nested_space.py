@@ -34,10 +34,17 @@ class NestedSpace:
 
     @LazyProperty
     def class_weights(self) -> np.ndarray:
-        logger("Compute class weight")
+        logger("Compute class weight", indent=1)
         weights = np.zeros(len(self))
         for sample in self.samples.values():
             weights += sample.output
+
+        labels = [label for category in self.categories for label in category.labels]
+        for label, weight in zip(labels, weights):
+            if not weight:
+                logger(f"No sample for `{label}`")
+        logger("Compute class weight OK", indent=-1)
+
         weights = np.clip(len(self.samples)/weights, 1E-5, 1E4)
         return weights
 

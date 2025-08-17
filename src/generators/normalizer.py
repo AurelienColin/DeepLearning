@@ -22,8 +22,7 @@ class Normalizer(PostProcessGenerator):
             self.stds += np.mean(np.abs(inputs - self.means), axis=(0, 1, 2))
         self.stds = self.stds / self.ITERATIONS
 
-    def __next__(self):
-        inputs, outputs = next(self.generator)
+    def __call__(self, inputs: np.ndarray, outputs: np.ndarray) -> typing.Tuple[np.ndarray, np.ndarray]:
         inputs = (inputs - self.means) / self.stds
         outputs = (outputs - self.means) / self.stds
         return inputs, outputs

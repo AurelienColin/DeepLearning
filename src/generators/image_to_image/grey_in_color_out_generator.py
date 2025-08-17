@@ -7,8 +7,7 @@ from src.generators.base_generators import PostProcessGenerator
 
 class GreyInColorOutGenerator(PostProcessGenerator):
 
-    def __next__(self) -> typing.Tuple[np.ndarray, np.ndarray]:
-        inputs, outputs = next(self.generator)
+    def __call__(self, inputs: np.ndarray, outputs: np.ndarray) -> typing.Tuple[np.ndarray, np.ndarray]:
 
         inputs = np.mean(inputs, axis=3, keepdims=True)
         return inputs, outputs

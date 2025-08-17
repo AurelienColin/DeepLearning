@@ -7,8 +7,7 @@ from src.generators.base_generators import PostProcessGenerator
 
 class InOutSubstractGenerator(PostProcessGenerator):
 
-    def __next__(self) -> typing.Tuple[np.ndarray, np.ndarray]:
-        inputs, outputs = next(self.generator)
+    def __call__(self, inputs: np.ndarray, outputs: np.ndarray) -> typing.Tuple[np.ndarray, np.ndarray]:
 
         monochrome_input = np.mean(inputs, axis=-1)
         # monochrome_input = gaussian_filter(monochrome_input, sigma=1)

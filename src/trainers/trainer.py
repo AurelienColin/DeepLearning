@@ -41,6 +41,8 @@ class Trainer:
     epochs: int = 100
     n_stride: int = 4
 
+    on_start: bool= True
+
     layer_kernels: typing.Optional[typing.Sequence[int]] = None
     enforced_tag_names: typing.Optional[typing.Sequence[str]] = None
 
@@ -93,7 +95,8 @@ class Trainer:
             superseeded_conv_kwargs=self.superseeded_conv_kwargs,
             **{key: value for key, value in kwargs.items() if value is not None}
         )
-        self._model_wrapper.on_start()
+        if self.on_start:
+            self._model_wrapper.on_start()
         logger(f"Setup model_wrapper OK", indent=-1)
 
     @staticmethod

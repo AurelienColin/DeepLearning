@@ -17,8 +17,7 @@ class BlurryGenerator(PostProcessGenerator):
         )
         return array
 
-    def __next__(self) -> typing.Tuple[np.ndarray, np.ndarray]:
-        inputs, outputs = next(self.generator)
+    def __call__(self, inputs: np.ndarray, outputs: np.ndarray) -> typing.Tuple[np.ndarray, np.ndarray]:
         sigmas = np.random.exponential(self.SIGMAX_MAX, size=inputs.shape[0])
         inputs = np.stack([self.blur(array, sigma) for array, sigma in zip(inputs, sigmas)], axis=0)
         outputs = np.stack([self.blur(array, sigma) for array, sigma in zip(outputs, sigmas)], axis=0)

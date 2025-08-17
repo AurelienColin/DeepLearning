@@ -1,7 +1,7 @@
 import typing
 from dataclasses import dataclass
 
-COLORS = ('white', 'black', 'grey', 'blue', 'green', 'red', 'purple', 'pink', 'yellow', 'orange', 'aqua', 'brown')
+COLORS = ('blue', 'green', 'red', 'purple', 'pink', 'yellow', 'orange', 'aqua', 'brown','white', 'black', 'grey')
 WHITELIST = ('solo',)
 BLACKLIST = ('from_behind', 'comic', 'animated')
 
@@ -10,8 +10,9 @@ def accept(substring: str, tags: typing.List[str]) -> bool:
     required_tags = substring.split()
     ok = False
     for required_tag in required_tags:
-        if required_tag.startswith('-'):
-            ok = required_tag not in tags
+        if required_tag.startswith('-') and required_tag[1:] in tags:
+            ok = False
+            break
         else:
             ok = required_tag in tags
     return ok
@@ -34,7 +35,7 @@ class Category:
         return self._subcategories
 
     @property
-    def labels(self)-> typing.List[str]:
+    def labels(self) -> typing.List[str]:
         return [(subcategory.name if isinstance(subcategory, Category) else subcategory) for subcategory in
                 self.subcategories]
 
@@ -116,7 +117,7 @@ categories: typing.List[Category] = [
     ),
     Category(
         'hair_color',
-        tuple(Category(f'{color}_hair') for color in COLORS),
+        tuple(Category(f'{color}_hair'.replace('yellow', 'blonde')) for color in COLORS),
         blacklist=('multicolored_hair', 'streaked_hair')
     ),
     Category(
@@ -138,24 +139,24 @@ categories: typing.List[Category] = [
         (
             Category('navel'),
             Category('covered_navel'),
-            Category('no_navel', ('-covered_navel -navel',))
+            Category('no_navel', ('1girl -covered_navel -navel',))
         )),
     Category(
         'breast_peek',
         (
-            Category('nipples'),
-            Category('cleavage'),
-            Category('sideboob'),
-            Category('backboob'),
-            Category('underboob'),
-            Category('no_breasts', ('-nipples -cleavage -sideboob -backboob -underboob',))
+            Category('nipples', priority=2),
+            Category('cleavage', priority=1),
+            Category('sideboob', priority=1),
+            Category('backboob', priority=1),
+            Category('underboob', priority=1),
+            Category('no_breasts', ('1girl -nipples -cleavage -sideboob -backboob -underboob',))
         )),
     Category(
         'nipples',
         (
             Category('nipples'),
             Category('covered_nipples'),
-            Category('no_nipples', ('-covered_nipples -nipples',)),
+            Category('no_nipples', ('1girl -covered_nipples -nipples',)),
         )),
     Category(
         'top_types',

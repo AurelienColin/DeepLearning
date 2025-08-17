@@ -44,8 +44,17 @@ class PostProcessGenerator:
     def __iter__(self):
         return self
 
-    def __next__(self) -> typing.Tuple[np.ndarray, np.ndarray]:
+    def __call__(self, inputs: np.ndarray, outputs: np.ndarray) -> typing.Tuple[np.ndarray, np.ndarray]:
         raise NotImplementedError
+
+    def __next__(self) -> typing.Tuple[np.ndarray, np.ndarray]:
+        return self(*next(self.generator))
+
+    def batch_processing(
+            self,
+            filenames: typing.Iterable[typing.Tuple[str, str]]
+    ) -> typing.Tuple[np.ndarray, np.ndarray]:
+        return self(*self.generator.batch_processing(filenames))
 
     @property
     def output_space(self) -> OutputSpace:
