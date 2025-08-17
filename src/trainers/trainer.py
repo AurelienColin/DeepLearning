@@ -87,7 +87,6 @@ class Trainer:
             self.name,
             self.input_shape,
             self.batch_size,
-            self.n_stride,
             training_generator=self.training_generator,
             test_generator=self.test_generator,
             superseeded_conv_layer=self.superseeded_conv_layer,

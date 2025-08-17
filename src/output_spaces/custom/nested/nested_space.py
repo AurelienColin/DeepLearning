@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import numpy as np
 from rignak.lazy_property import LazyProperty
 import json
-
+from rignak.src.logging_utils import logger
 
 @dataclass
 class NestedSpace:
@@ -15,6 +15,7 @@ class NestedSpace:
 
     _samples: typing.Optional[typing.Dict[str, Sample]] = None
     _size: typing.Optional[int] = None
+    _class_weights: typing.Optional[np.ndarray] = None
 
     def __len__(self) -> int:
         return sum((len(category) for category in self.categories))
@@ -31,9 +32,14 @@ class NestedSpace:
     def filenames(self) -> typing.List[str]:
         return list(self.samples.keys())
 
-    @property
+    @LazyProperty
     def class_weights(self) -> np.ndarray:
-        return np.ones(len(self))
+        logger("Compute class weight")
+        weights = np.zeros(len(self))
+        for sample in self.samples.values():
+            weights += sample.output
+        weights = np.clip(len(self.samples)/weights, 1E-5, 1E4)
+        return weights
 
     @property
     def n_outputs(self) -> int:

@@ -9,14 +9,12 @@ class DeconvolutionBlock(tf.keras.layers.Layer):
     def __init__(
             self,
             n_kernels: int,
-            n_stride: int,
             superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = None,
             superseeded_conv_kwargs: typing.Optional[dict] = None,
             **kwargs
     ):
         super().__init__(**kwargs)
         self.n_kernels: int = n_kernels
-        self.n_stride: int = n_stride
 
         self.superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = superseeded_conv_layer
         self.superseeded_conv_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = superseeded_conv_kwargs
@@ -27,7 +25,6 @@ class DeconvolutionBlock(tf.keras.layers.Layer):
         self.concat: tf.keras.layers.Layer = tf.keras.layers.Concatenate()
         self.residual_block: tf.keras.layers.Layer = ResidualBlock(
             self.n_kernels,
-            self.n_stride,
             superseeded_conv_layer=self.superseeded_conv_layer,
             superseeded_conv_kwargs=self.superseeded_conv_kwargs,
         )
@@ -44,7 +41,7 @@ class DeconvolutionBlock(tf.keras.layers.Layer):
 
     def get_config(self) -> typing.Dict:
         config = super().get_config()
-        config.update(dict(n_kernels=self.n_kernels, n_stride=self.n_stride))
+        config.update(dict(n_kernels=self.n_kernels))
         return config
 
     @classmethod

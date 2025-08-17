@@ -33,7 +33,6 @@ class CategorizerWrapper(ModelWrapper):
         current_layer, _ = build_encoder(
             self.input_layer,
             self.layer_kernels,
-            self.n_stride,
             superseeded_conv_layer=self.superseeded_conv_layer,
             superseeded_conv_kwargs=self.superseeded_conv_kwargs,
         )

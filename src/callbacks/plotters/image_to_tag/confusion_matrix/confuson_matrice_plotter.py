@@ -18,7 +18,6 @@ class ConfusionMatricePlotter(PlotterFromGenerator):
             _truth: np.ndarray,
             _prediction: np.ndarray
     ) -> np.ndarray:
-        print(f"{_truth.shape=}, {_prediction.shape=}, {_confusion_matrice.shape=}")
         true_indices = np.argmax(_truth, axis=-1)
         pred_indices = np.argmax(_prediction, axis=-1)
         np.add.at(_confusion_matrice, (true_indices, pred_indices), 1)

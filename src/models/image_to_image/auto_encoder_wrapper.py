@@ -39,7 +39,6 @@ class AutoEncoderWrapper(ModelWrapper):
         current_layer, self._encoded_inherited_layers = build_encoder(
             self.input_layer,
             self.layer_kernels,
-            self.n_stride
         )
         self._encoded_layer = tf.keras.layers.Lambda(lambda x: K.tanh(x))(current_layer)
 
@@ -58,7 +57,6 @@ class AutoEncoderWrapper(ModelWrapper):
             self.encoded_layer,
             self.encoded_inherited_layers,
             self.layer_kernels,
-            self.n_stride
         )
         output_layer = tf.keras.layers.Conv2D(
             self.output_shape[-1],

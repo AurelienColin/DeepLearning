@@ -16,7 +16,6 @@ class ModelWrapper:
     name: str
     input_shape: typing.Sequence[int]
     batch_size: int
-    n_stride: int
     _output_shape: typing.Optional[typing.Sequence[int]] = None
     learning_rate: float = 1e-5
     loss_weights: typing.Sequence[float] = (1.,)

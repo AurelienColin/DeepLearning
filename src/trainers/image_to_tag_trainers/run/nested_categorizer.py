@@ -1,9 +1,6 @@
 from src.trainers.image_to_tag_trainers.nested_categorizer_trainer import NestedCategorizerTrainer
 import os
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-
-
 class DanbooruNestedCategorizerTrainer(NestedCategorizerTrainer):
     def __init__(self, *args, **kwargs):
         super().__init__(
@@ -11,7 +8,7 @@ class DanbooruNestedCategorizerTrainer(NestedCategorizerTrainer):
             pattern=kwargs.pop('pattern', '.tmp/dataset/hierarchical/data.json'),
             input_shape=kwargs.pop('input_shape', (96, 96, 3)),
             batch_size=kwargs.pop('batch_size', 12),
-            epochs=1,
+            epochs=25,
             *args, **kwargs
         )
 

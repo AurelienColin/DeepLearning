@@ -31,12 +31,14 @@ class NestedConfusionMatricePlotter(ConfusionMatricePlotter):
             jmin = 0
             for i, confusion_matrice in enumerate(confusion_matrices):
                 jmax = jmin + len(self.categories[i])
-
-                confusion_matrices[i] = self.update_confusion_matrice(
-                    confusion_matrice,
-                    outputs[:, jmin:jmax],
-                    predictions[:, jmin:jmax]
-                )
+                partial_outputs = outputs[:, jmin:jmax]
+                partial_predictions = predictions[:, jmin:jmax]
+                if partial_outputs.sum():
+                    confusion_matrices[i] = self.update_confusion_matrice(
+                        confusion_matrice,
+                        partial_outputs,
+                        partial_predictions
+                    )
                 jmin = jmax
 
         for i, confusion_matrice in enumerate(confusion_matrices):

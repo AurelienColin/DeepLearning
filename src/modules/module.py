@@ -11,7 +11,6 @@ from src.modules.blocks.deconvolution_block import DeconvolutionBlock
 def build_encoder(
         current_layer: tf.keras.layers.Layer,
         layer_kernels: typing.Sequence[int],
-        n_stride: int,
         superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = None,
         superseeded_conv_kwargs: typing.Optional[dict] = None,
 ) -> typing.Tuple[tf.keras.layers.Layer, typing.Sequence[tf.keras.layers.Layer]]:
@@ -19,7 +18,6 @@ def build_encoder(
     for n_kernels in layer_kernels:
         current_layer, unpooled_layer = ConvolutionBlock(
             n_kernels,
-            n_stride,
             superseeded_conv_layer=superseeded_conv_layer,
             superseeded_conv_kwargs=superseeded_conv_kwargs,
         )(current_layer)
@@ -31,7 +29,6 @@ def build_decoder(
         current_layer: tf.keras.layers.Layer,
         inherited_layers: typing.Sequence[tf.keras.layers.Layer],
         layer_kernels: typing.Sequence[int],
-        n_stride: int,
         superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = None,
         superseeded_conv_kwargs: typing.Optional[dict] = None,
 ) -> tf.keras.layers.Layer:
@@ -40,7 +37,6 @@ def build_decoder(
     for n_kernels, inherited_layer in zip(layer_kernels[::-1], inherited_layers[::-1]):
         current_layer = DeconvolutionBlock(
             n_kernels,
-            n_stride,
             superseeded_conv_layer=superseeded_conv_layer,
             superseeded_conv_kwargs=superseeded_conv_kwargs
         )(current_layer, inherited_layer)

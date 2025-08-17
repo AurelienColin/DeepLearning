@@ -32,16 +32,16 @@ class CategorizerWrapper(ModelWrapper):
         current_layer, _ = build_encoder(
             self.input_layer,
             self.layer_kernels,
-            self.n_stride,
             superseeded_conv_layer=self.superseeded_conv_layer,
             superseeded_conv_kwargs=self.superseeded_conv_kwargs,
         )
         current_layer = tf.keras.layers.GlobalAveragePooling2D()(current_layer)
-        current_layer = tf.keras.layers.Dense(self.layer_kernels[-1], activation="relu")(current_layer)
+        current_layer = tf.keras.layers.Dense(self.layer_kernels[-1], activation="swish")(current_layer)
 
         output_layers = []
         for category in self.training_generator.output_space.categories:
-            output_layer = tf.keras.layers.Dense(len(category), activation="softmax")(current_layer)
+            intermediate_layer = tf.keras.layers.Dense(16, activation="swish")(current_layer)
+            output_layer = tf.keras.layers.Dense(len(category), activation="softmax")(intermediate_layer)
             output_layers.append(output_layer)
 
         output_layer = tf.keras.layers.concatenate(output_layers)
