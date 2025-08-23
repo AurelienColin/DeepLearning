@@ -21,7 +21,7 @@ class Plotter:
     model_wrapper: ModelWrapper
     ncols: int
     nrows: int
-    thumbnail_size: typing.Tuple[int, int] = (4, 4)
+    thumbnail_size: typing.Tuple[int, int] = (6, 6)
 
     _display: typing.Optional[Display] = None
 
@@ -45,8 +45,15 @@ class Plotter:
         return new_array
 
     def imshow(self, index: int, image: np.ndarray, **kwargs) -> None:
-        kwargs = dict(vmin=0, vmax=255, grid=False, axis_display=False, colorbar_display=False, **kwargs)
-        self.display[index].imshow(image[:, :, :3], **kwargs)
+        kwargs = dict(vmin=kwargs.pop('vmin', 0), vmax=kwargs.pop('vmax', 255),
+                      grid=False, colorbar_display=False, aspect=1, **kwargs)
+        if image.ndim == 4:
+            if image.shape[-1] == 1:
+                image = image[:, :, 0]
+            elif image.shape[-1] > 3:
+                image = image[:, :, :3]
+
+        self.display[index].imshow(image, **kwargs)
 
     def __call__(self):
         raise NotImplementedError

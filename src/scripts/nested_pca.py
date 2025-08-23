@@ -190,7 +190,7 @@ class Processor:
 
 
 if __name__ == "__main__":
-    # python src/scripts/nested_pca.py --model_folder "/ssd/OneDrive/Mes_documents/Documents/python_scripts/ML/.tmp/DanbooruNested_CategorizerWrapper_20250817_143113"
+    # python src/scripts/nested_pca.py --model_folder "/ssd/OneDrive/Mes_documents/Documents/python_scripts/ML/.tmp/DanbooruNested_CategorizerWrapper_20250818_105641"
 
     args = get_args()
     Processor(model_folder=args.model_folder).run()

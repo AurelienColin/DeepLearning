@@ -11,7 +11,7 @@ from src.modules.module import build_encoder
 
 @dataclass
 class CategorizerWrapper(ModelWrapper):
-    layer_kernels: typing.Sequence[int] = (32, 64, 128)
+    layer_kernels: typing.Sequence[int] = (32, 48, 64, 96, 128)
 
     _encoded_layer: typing.Optional[tf.keras.layers.Layer] = None
     _encoded_inherited_layers: typing.Optional[typing.Sequence[tf.keras.layers.Layer]] = None
@@ -21,7 +21,10 @@ class CategorizerWrapper(ModelWrapper):
 
     @LazyProperty
     def loss(self) -> typing.Callable[[tf.Tensor, tf.Tensor], tf.Tensor]:
-        return losses.Loss((losses.cross_entropy,), class_weights=self.training_generator.output_space.class_weights)
+        return losses.Loss(
+            (losses.cross_entropy_positive,),
+            class_weights=self.training_generator.output_space.class_weights
+        )
 
     @LazyProperty
     def metrics(self) -> typing.Sequence[typing.Callable[[tf.Tensor, tf.Tensor], tf.Tensor]]:

@@ -27,6 +27,7 @@ class OverlayGenerator(BatchGenerator):
         self.background_filenames: typing.Sequence[str] = np.array(background_filenames)
         self.batch_size: int = batch_size
         self.shape: typing.Tuple[int, int, int] = shape
+        self.output_space: typing.Optional[OutputSpace] = None
 
     def __iter__(self):
         return self

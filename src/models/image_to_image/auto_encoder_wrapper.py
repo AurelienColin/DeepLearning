@@ -18,6 +18,10 @@ class AutoEncoderWrapper(ModelWrapper):
     _encoded_layer: typing.Optional[tf.keras.layers.Layer] = None
     _encoded_inherited_layers: typing.Optional[typing.Sequence[tf.keras.layers.Layer]] = None
 
+
+    superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = None
+    superseeded_conv_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = None
+
     def desactivate_edge_loss(self) -> None:
         self._loss = mae
 
@@ -39,6 +43,8 @@ class AutoEncoderWrapper(ModelWrapper):
         current_layer, self._encoded_inherited_layers = build_encoder(
             self.input_layer,
             self.layer_kernels,
+            superseeded_conv_layer=self.superseeded_conv_layer,
+            superseeded_conv_kwargs=self.superseeded_conv_kwargs,
         )
         self._encoded_layer = tf.keras.layers.Lambda(lambda x: K.tanh(x))(current_layer)
 
@@ -57,6 +63,8 @@ class AutoEncoderWrapper(ModelWrapper):
             self.encoded_layer,
             self.encoded_inherited_layers,
             self.layer_kernels,
+            superseeded_conv_layer=self.superseeded_conv_layer,
+            superseeded_conv_kwargs=self.superseeded_conv_kwargs,
         )
         output_layer = tf.keras.layers.Conv2D(
             self.output_shape[-1],

@@ -30,6 +30,10 @@ class NestedCategorizerTrainer(CategorizerTrainer):
     def get_model_wrapper(self) -> typing.Type:
         return CategorizerWrapper
 
+    @LazyProperty
+    def class_weights(self) -> np.ndarray:
+        return self.output_space.class_weights
+
 
     def get_base_generator(self, *args, base_generator: typing.Optional[BatchGenerator] = None) -> BatchGenerator:
         generator = ClassificationGenerator(*args, output_space=self.output_space)

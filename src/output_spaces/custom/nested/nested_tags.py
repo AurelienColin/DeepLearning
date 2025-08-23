@@ -1,8 +1,7 @@
 import typing
 from dataclasses import dataclass
 
-COLORS = ('blue', 'green', 'red', 'purple', 'pink', 'yellow', 'orange', 'aqua', 'brown','white', 'black', 'grey')
-WHITELIST = ('solo',)
+COLORS = ('blue', 'green', 'red', 'purple', 'pink', 'yellow', 'orange', 'aqua', 'brown', 'white', 'black', 'grey')
 BLACKLIST = ('from_behind', 'comic', 'animated')
 
 
@@ -13,8 +12,8 @@ def accept(substring: str, tags: typing.List[str]) -> bool:
         if required_tag.startswith('-') and required_tag[1:] in tags:
             ok = False
             break
-        else:
-            ok = required_tag in tags
+        if required_tag in tags:
+            ok = True
     return ok
 
 
@@ -24,6 +23,8 @@ class Category:
     _subcategories: typing.Optional[typing.Tuple[typing.Union[str, "Category"], ...]] = None
     blacklist: typing.Tuple[str, ...] = ()
     priority: int = 0
+
+    whitelist: typing.Tuple[str, ...] = ('solo',)
 
     def __len__(self) -> int:
         return len(self._subcategories)
@@ -56,6 +57,10 @@ class Category:
             else:
                 for request_tag in subcategory.get_request_tags():
                     tags.append(" -".join((request_tag, *self.blacklist)))
+        for i, tag in enumerate(tags):
+            tag = " ".join((tag, *self.whitelist))
+            tag = " ".join(set(tag.split()))
+            tags[i] = tag
         return tags
 
     def accept(self, tags: typing.List[str]) -> typing.Optional[typing.Tuple[int, str]]:
@@ -65,7 +70,8 @@ class Category:
         for subcategory in self.subcategories:
             if (isinstance(subcategory, Category) and subcategory.accept(tags)) \
                     or (isinstance(subcategory, str) and accept(subcategory, tags)):
-                accepted[self.priority] = accepted.get(self.priority, []) + [subcategory]
+                priority = subcategory.priority if isinstance(subcategory, Category) else 0
+                accepted[priority] = accepted.get(priority, []) + [subcategory]
 
         if accepted:
             accepted_category = accepted[max(accepted.keys())][-1]
@@ -91,8 +97,9 @@ categories: typing.List[Category] = [
     Category(
         'gender',
         (
-            Category('1girl', blacklist=('1boy', 'multiple_boys')),
-            Category('1boy', blacklist=('1girl', 'multiple_girls')),
+            Category('1girl', blacklist=('1boy', 'multiple_boys', '1other', 'multiple_others')),
+            Category('1boy', blacklist=('1girl', 'multiple_girls', '1other', 'multiple_others')),
+            Category('1other', blacklist=('1girl', 'multiple_girls', '1boy', 'multiple_boys'))
         )
     ),
     Category(
@@ -130,33 +137,29 @@ categories: typing.List[Category] = [
     Category(
         'sleeves_length',
         (
-            "sleeveless",
-            Category('short_sleeves', priority=1),
-            Category('long_sleeves', priority=1),
+            Category('short_sleeves'),
+            Category('long_sleeves'),
         )),
     Category(
         'navel',
         (
             Category('navel'),
             Category('covered_navel'),
-            Category('no_navel', ('1girl -covered_navel -navel',))
         )),
     Category(
         'breast_peek',
         (
-            Category('nipples', priority=2),
-            Category('cleavage', priority=1),
-            Category('sideboob', priority=1),
-            Category('backboob', priority=1),
-            Category('underboob', priority=1),
-            Category('no_breasts', ('1girl -nipples -cleavage -sideboob -backboob -underboob',))
+            Category('nipples', priority=1),
+            Category('cleavage'),
+            Category('sideboob'),
+            Category('backboob'),
+            Category('underboob'),
         )),
     Category(
         'nipples',
         (
             Category('nipples'),
             Category('covered_nipples'),
-            Category('no_nipples', ('1girl -covered_nipples -nipples',)),
         )),
     Category(
         'top_types',
@@ -193,15 +196,43 @@ categories: typing.List[Category] = [
             for color in COLORS
         )
     ),
-    Category('skirt_type', ('pleated_skirt', 'pencil_skirt')),
+    Category(
+        'position',
+        (
+            'from_above',
+            'from_side',
+            'from_below',
+            'from_behind',
+            Category('other', ('-from_above -from_side -from_below -from_behind', )),
+        )
+    ),
+    Category(
+        'location',
+        ('bathroom', 'bedroom', 'changing_room', 'classroom', 'dressing_room', 'gym_storeroom', 'gym', 'infirmary',
+         'kitchen', 'library', 'pool', 'beach', 'desert', 'forest', 'mountain', 'street', 'cafe', 'office',
+         'onsen', 'shrine')),
+
     Category('neckwear', ('necktie', 'neckerchief', 'bowtie')),
-    Category('expressions', ('angry', 'annoyed', 'sad', 'scared', 'surprised', 'grin')),
+    Category('expressions', ('angry', 'annoyed', 'sad', 'scared', 'surprised', 'grin', 'expressionless')),
     Category(
         'composition',
-        ('portrait', 'upper_body', 'cowboy_shot', 'feet_out_of_frame', 'full_body')
+        ('portrait', 'upper_body', 'cowboy_shot', 'feet_out_of_frame', 'full_body', 'armpit_focus', 'ass_focus',
+         'back_focus', 'breast_focus', 'eye_focus', 'foot_focus', 'hand_focus', 'hip_focus', 'navel_focus',
+         'thigh_focus',)
     ),
     Category(
         'position',
         ('standing', 'sitting', 'squatting', 'kneeling', 'on_back', 'on_side', 'on_stomach')
+    ),
+    Category(
+        'humans',
+        (
+            Category(
+                'no',
+                ('scenery no_humans',),
+                blacklist=('1boy', '1girl', '1other', 'multiple_boys', 'multiple_girls', 'multiple_others')
+            ),
+            Category('yes', ('solo',))
+        )
     )
 ]

@@ -64,15 +64,21 @@ def mae(
 def cross_entropy(
         y_true: tf.Tensor,
         y_pred: tf.Tensor,
+        *args, **kwargs
+) -> tf.Tensor:
+    positive_loss = cross_entropy_positive(y_true, y_pred, *args, **kwargs)
+    negative_loss = cross_entropy_positive(1-y_true, 1-y_pred, *args, **kwargs)
+    return positive_loss + negative_loss
+
+def cross_entropy_positive(
+        y_true: tf.Tensor,
+        y_pred: tf.Tensor,
         class_weights: typing.Optional[tf.Tensor] = None,
         epsilon: float = Loss.epsilon
 ) -> tf.Tensor:
     positive_loss = y_true * tf.math.log(y_pred + epsilon)
-    negative_loss = (1 - y_true) * tf.math.log((1 - y_pred) + epsilon)
-    loss = positive_loss + negative_loss
-    loss = Loss.apply_class_weights(loss, class_weights)
+    loss = Loss.apply_class_weights(positive_loss, class_weights)
     return -tf.reduce_mean(loss)
-
 
 def one_minus_dice(
         y_true: tf.Tensor,

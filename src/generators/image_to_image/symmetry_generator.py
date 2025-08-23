@@ -10,6 +10,6 @@ class VerticalSymmetryGenerator(PostProcessGenerator):
         directions = np.random.randint(0, 1, inputs.shape[0]) * 2 - 1
         for i, direction in enumerate(directions):
             inputs[i] = inputs[i, :, ::direction]
-            if outputs.ndim == inputs.ndim:
+            if outputs.ndim > 2:
                 outputs[i] = outputs[i, :, ::direction]
         return inputs, outputs

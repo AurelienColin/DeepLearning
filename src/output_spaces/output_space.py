@@ -23,7 +23,7 @@ class OutputSpace:
 
     @LazyProperty
     def class_weights(self) -> np.ndarray:
-        weights = np.array([len(self) / tag.number_of_use for tag in self.tags.values()])
+        weights = np.array([1 / tag.number_of_use for tag in self.tags.values()])
         weights = weights / np.nanmean(weights)
         return weights
 

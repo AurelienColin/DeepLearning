@@ -18,7 +18,6 @@ def plot(
     for i_metric, (metric_name, ys_single_loss) in enumerate(ys.items()):
         for j_parameter, (parameter_value, ys_single_parameter) in enumerate(ys_single_loss.items()):
             ys_single_parameter = np.array(ys_single_parameter).T
-            print(f"{parameter_value=}, {ys_single_parameter.shape=}")
             color = colors[j_parameter]
             if ys_single_parameter.shape[0]:
                 middle = np.nanmedian(ys_single_parameter, axis=1)

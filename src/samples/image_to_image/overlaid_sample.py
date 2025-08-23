@@ -35,7 +35,11 @@ class OverlaidSample(RotatedSample):
             background = background.convert("RGB")
 
         # logger('Random rotation up to 20 degrees')
-        foreground = self.rotate_with_pil(foreground, maximum_angle=self.maximum_rotation, fillcolor=self.fillcolor)
+        foreground = self.rotate_with_pil(
+            foreground,
+            maximum_angle=self.maximum_rotation,
+            fillcolor=self.fillcolor
+        )
 
         # logger('Random downscaling')
         minimum_factor = max(self.shape[0] / foreground.size[0], self.shape[1] / foreground.size[1])
@@ -49,7 +53,7 @@ class OverlaidSample(RotatedSample):
 
         scale_factor = random.uniform(minimum_factor, maximum_factor)
         new_size = (int(foreground.size[0] * scale_factor), int(foreground.size[1] * scale_factor))
-        foreground = foreground.resize(new_size, Image.ANTIALIAS)
+        foreground = foreground.resize(new_size, Image.LANCZOS)
 
         # logger('Convert foreground to RGBA to handle transparency')
         foreground = foreground.convert("RGBA")
@@ -79,8 +83,8 @@ class OverlaidSample(RotatedSample):
             foreground = foreground.crop((0, 0, 0 + bbox[2], 0 + bbox[3]))
 
         # logger('Resize to the exact output shape')
-        background = background.resize(self.shape[:2], Image.ANTIALIAS)
-        foreground = foreground.resize(self.shape[:2], Image.ANTIALIAS)
+        background = background.resize(self.shape[:2], Image.LANCZOS)
+        foreground = foreground.resize(self.shape[:2], Image.LANCZOS)
 
         background = np.array(background)  # [:, :, :3]
         foreground = np.array(foreground)  # [:, :, 3]

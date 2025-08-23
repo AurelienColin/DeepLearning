@@ -1,10 +1,10 @@
 import os.path
 from dataclasses import dataclass
-import typing
+
 from rignak.src.logging_utils import logger
-from ML.src.output_spaces.custom import hierarchical_tags
+from ML.src.output_spaces.custom.nested import nested_tags
 from rignak.src.custom_requests.request_utils import download_file
-from ML.src.output_spaces.custom.sample import get_samples
+from ML.src.output_spaces.custom.nested.sample import get_samples
 import json
 from ML.src.scripts.utils.download_from_danbooru import JsonDownloader
 
@@ -12,19 +12,18 @@ from ML.src.scripts.utils.download_from_danbooru import JsonDownloader
 @dataclass
 class Downloader:
     root_folder: str = ".tmp/dataset/hierarchical"
-    entry_per_subcategory: int = 100
+    entry_per_subcategory: int = 1000
 
     def run(self):
         requests = []
-        for category in hierarchical_tags.categories:
+        for category in nested_tags.categories:
             requests += category.get_request_tags()
 
         urls = []
         samples = []
         logger.set_iterator(len(requests))
         for request in requests:
-            request = ' '.join((request, *hierarchical_tags.WHITELIST))
-            request = ' -'.join((request, *hierarchical_tags.BLACKLIST))
+            request = ' -'.join((request, *nested_tags.BLACKLIST))
 
             current_samples = get_samples(request, self.entry_per_subcategory)
             for sample in current_samples:
@@ -35,7 +34,7 @@ class Downloader:
                 if sample.url not in urls and sample.url.endswith('.jpg'):
                     urls.append(sample.url)
                     samples.append(sample)
-            logger.iterate(f"{request} | {len(samples)} samples found.")
+            logger.iterate(f"{request}\t|\t{len(current_samples)} samples found.\t|\tTotal is {len(samples)}.")
 
         json_data = []
         for i, sample in enumerate(samples):
@@ -57,5 +56,7 @@ class Downloader:
             download_file(entry['url'], entry['filename'], headers=headers)
             logger.iterate()
 
+
 if __name__ == "__main__":
+    # python src/scripts/utils/download_hierarchical_dataset_from_danbooru.py
     Downloader().run()

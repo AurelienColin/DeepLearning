@@ -1,6 +1,6 @@
 import numpy as np
 import scipy.ndimage
-from PIL import Image
+import PIL.Image
 from rignak.lazy_property import LazyProperty
 
 from src.samples.image_to_image.rotated_sample import RotatedSample
@@ -22,19 +22,15 @@ class ForegroundSample(RotatedSample):
         return self._output_data
 
     def setup(self) -> None:
-        print(f"{self.filename=}")
-        foreground = Image.open(self.filename)
+        foreground = PIL.Image.open(self.filename)
         assert foreground.mode == "RGBA"
 
         foreground = self.rotate_with_pil(foreground)
 
         scale_factor = min(self.shape[0] / foreground.size[1], self.shape[1] / foreground.size[0])
-        print(self.shape[0] / foreground.size[0])
-        print(self.shape[1] / foreground.size[1])
 
         new_size = (int(foreground.size[0] * scale_factor), int(foreground.size[1] * scale_factor))
-        print(new_size)
-        foreground = np.array(foreground.resize(new_size, Image.ANTIALIAS)).astype(np.float32) / 255
+        foreground = np.array(foreground.resize(new_size, PIL.Image.LANCZOS)).astype(np.float32) / 255
         foreground = self.pad(foreground)
 
         _input_data = foreground[:, :, :3]
@@ -43,6 +39,7 @@ class ForegroundSample(RotatedSample):
 
         _input_data[_output_data < 0.5] = self.fillcolor[:3]
         _output_data = scipy.ndimage.binary_opening(_output_data, iterations=1, structure=np.ones((3, 3)))
+        _output_data = np.expand_dims(_output_data, -1)
 
         self._input_data = _input_data
         self._output_data = _output_data

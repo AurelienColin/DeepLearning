@@ -6,6 +6,7 @@ from rignak.logging_utils import logger
 
 from src.generators.base_generators import BatchGenerator
 from src.samples.image_to_image.foreground_sample import ForegroundSample
+from src.output_spaces.output_space import OutputSpace
 
 
 class ForegroundGenerator(BatchGenerator):
@@ -22,6 +23,7 @@ class ForegroundGenerator(BatchGenerator):
         self.foreground_filenames: typing.Sequence[str] = np.array(foreground_filenames)
         self.batch_size: int = batch_size
         self.shape: typing.Tuple[int, int, int] = shape
+        self.output_space: typing.Optional[OutputSpace] = None
 
     def __iter__(self):
         return self

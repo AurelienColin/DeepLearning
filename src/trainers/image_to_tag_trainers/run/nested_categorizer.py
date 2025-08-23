@@ -6,9 +6,9 @@ class DanbooruNestedCategorizerTrainer(NestedCategorizerTrainer):
         super().__init__(
             name=kwargs.pop('name', "DanbooruNested"),
             pattern=kwargs.pop('pattern', '.tmp/dataset/hierarchical/data.json'),
-            input_shape=kwargs.pop('input_shape', (96, 96, 3)),
+            input_shape=kwargs.pop('input_shape', (192, 192, 3)),
             batch_size=kwargs.pop('batch_size', 12),
-            epochs=25,
+            epochs=100,
             *args, **kwargs
         )
 

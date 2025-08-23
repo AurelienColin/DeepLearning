@@ -12,7 +12,7 @@ class BackgroundSegmenter(HighlighterTrainer):
         super().__init__(
             name=kwargs.pop('name', "overlay"),
             pattern=kwargs.pop('pattern', DATASET_ROOT + '/overlay/*'),
-            input_shape=kwargs.pop('input_shape', (256, 384, 3)),
+            input_shape=kwargs.pop('input_shape', (128, 192, 3)),
             batch_size=kwargs.pop('batch_size', 4),
             *args, **kwargs)
         self.base_generator = ForegroundGenerator

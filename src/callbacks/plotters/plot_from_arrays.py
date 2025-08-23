@@ -10,3 +10,6 @@ class PlotterFromArrays(Plotter, ABC):
         super().__init__(*args, **kwargs)
         self.inputs: np.ndarray = inputs
         self.outputs: np.ndarray = outputs
+
+        if self.outputs.ndim == 3:
+            self.outputs = np.expand_dims(self.outputs, -1)
