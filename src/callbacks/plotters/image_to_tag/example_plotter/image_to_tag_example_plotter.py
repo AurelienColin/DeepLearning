@@ -1,9 +1,9 @@
-from rignak.custom_display import Display
-from rignak.lazy_property import LazyProperty
+from rignak.src.custom_display import Display
+from rignak.src.lazy_property import LazyProperty
 
 import numpy as np
 
-from callbacks.plotters.plot_from_arrays import PlotterFromArrays
+from src.callbacks.plotters.plot_from_arrays import PlotterFromArrays
 import typing
 
 

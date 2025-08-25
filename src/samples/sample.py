@@ -4,8 +4,8 @@ from dataclasses import dataclass
 import PIL.Image
 import cv2
 import numpy as np
-from rignak.lazy_property import LazyProperty
-
+from rignak.src.lazy_property import LazyProperty
+from rignak.src.logging_utils import logger
 
 @dataclass
 class Sample:
@@ -20,7 +20,16 @@ class Sample:
 
     @LazyProperty
     def input_data(self) -> np.ndarray:
-        return self.imread(self.input_filename)
+        try:
+            im = self.imread(self.input_filename)
+        except OSError as e:
+            logger(
+                f"Error reading `{self.input_filename}`: `{e}`. "
+                f"Continue with zero-filled array of shape {self.shape}",
+                level='error'
+            )
+            im = np.zeros(self.shape)
+        return im
 
     @LazyProperty
     def output_data(self) -> np.ndarray:
@@ -38,4 +47,3 @@ class Sample:
             array = cv2.resize(array, self.shape[:2][::-1], interpolation=self.interpolation)
 
         return array
-

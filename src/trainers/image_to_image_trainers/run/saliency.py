@@ -1,5 +1,5 @@
 from src.trainers.image_to_image_trainers.highlighter_trainer import HighlighterTrainer
-from config import DATASET_ROOT
+from src.config import DATASET_ROOT
 
 
 class SaliencyTrainer(HighlighterTrainer):

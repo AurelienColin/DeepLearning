@@ -8,10 +8,10 @@ os.environ['CUDA_VISIBLE_DEVICES'] = "-1"
 
 import numpy as np
 import tensorflow as tf
-from rignak.logging_utils import logger
+from rignak.src.logging_utils import logger
 
 from src.generators.base_generators import BatchGenerator
-from rignak.lazy_property import LazyProperty
+from rignak.src.lazy_property import LazyProperty
 from src.modules.layers.scale_layer import ScaleLayer
 from src.modules.custom_objects import CUSTOM_OBJECTS
 

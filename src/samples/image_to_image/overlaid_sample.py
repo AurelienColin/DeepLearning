@@ -2,8 +2,8 @@ import random
 
 import numpy as np
 from PIL import Image
-from rignak.lazy_property import LazyProperty
-from rignak.logging_utils import logger
+from rignak.src.lazy_property import LazyProperty
+from rignak.src.logging_utils import logger
 
 from src.samples.image_to_image.rotated_sample import RotatedSample
 
@@ -46,7 +46,7 @@ class OverlaidSample(RotatedSample):
         maximum_factor = min(background.size[0] / foreground.size[0], background.size[1] / foreground.size[1])
         if minimum_factor > maximum_factor:
             logger(f"Error from {foreground.size=}, {background.size} "
-                   f"({self.foreground_filename}/{self.background_filename})")
+                   f"({self.foreground_filename}/{self.background_filename})", level="error")
             self._input_data = np.zeros((*self.shape[:2], 3))
             self._output_data = np.zeros((*self.shape[:2], 1))
             return

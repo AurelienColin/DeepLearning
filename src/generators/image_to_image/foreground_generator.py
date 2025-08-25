@@ -2,7 +2,7 @@ import glob
 import typing
 
 import numpy as np
-from rignak.logging_utils import logger
+from rignak.src.logging_utils import logger
 
 from src.generators.base_generators import BatchGenerator
 from src.samples.image_to_image.foreground_sample import ForegroundSample

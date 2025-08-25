@@ -7,8 +7,8 @@ import typing
 import tensorflow as tf
 import numpy as np
 import math
-from rignak.lazy_property import LazyProperty
-from rignak.logging_utils import logger
+from rignak.src.lazy_property import LazyProperty
+from rignak.src.logging_utils import logger
 
 
 class SparseConv2D(tf.keras.layers.Layer):

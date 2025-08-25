@@ -1,7 +1,7 @@
 import typing
 import os
 
-from rignak.lazy_property import LazyProperty
+from rignak.src.lazy_property import LazyProperty
 
 from src.generators.base_generators import PostProcessGenerator
 from src.generators.image_to_image.grey_in_color_out_generator import GreyInColorOutGenerator

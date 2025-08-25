@@ -1,5 +1,5 @@
 from src.trainers.image_to_image_trainers.diffusion_trainer import DiffusionTrainer
-from config import DATASET_ROOT
+from src.config import DATASET_ROOT
 
 
 class GochiusaDiffusion(DiffusionTrainer):

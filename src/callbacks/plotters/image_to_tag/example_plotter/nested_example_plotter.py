@@ -2,13 +2,13 @@ import typing
 
 import numpy as np
 
-from callbacks.plotters.plotter import reset_display
-from losses.losses import one_minus_dice
-from models.model_wrapper import ModelWrapper
-from callbacks.plotters.image_to_tag.example_plotter.image_to_tag_example_plotter import ImageToTagExamplePlotter
-from rignak.custom_display import Display
-from rignak.lazy_property import LazyProperty
-from output_spaces.custom.nested.nested_space import NestedSpace
+from src.callbacks.plotters.plotter import reset_display
+from src.losses.losses import one_minus_dice
+from src.models.model_wrapper import ModelWrapper
+from src.callbacks.plotters.image_to_tag.example_plotter.image_to_tag_example_plotter import ImageToTagExamplePlotter
+from rignak.src.custom_display import Display
+from rignak.src.lazy_property import LazyProperty
+from src.output_spaces.custom.nested.nested_space import NestedSpace
 import sys
 
 class ImageToNestedTagExamplePlotter(ImageToTagExamplePlotter):
@@ -28,10 +28,10 @@ class ImageToNestedTagExamplePlotter(ImageToTagExamplePlotter):
         super().__init__(inputs, outputs, model_wrapper, ncols=ncols, nrows=nrows, thumbnail_size=thumbnail_size)
         self.output_space: NestedSpace = output_space
 
-    # def get_labels(self, indices: np.ndarray[int]) -> typing.Sequence[str]:
+    # def get_labels(self, indices: np.ndarray) -> typing.Sequence[str]:
     #     return [self.output_space.tag_names[j] for j in indices]
 
-    def get_labels(self, indices: np.ndarray[int]) -> typing.Sequence[str]:
+    def get_labels(self, indices: np.ndarray) -> typing.Sequence[str]:
         return [self.output_space.categories[i].name for i in indices]
 
     def call_for_predictions(self) -> None:

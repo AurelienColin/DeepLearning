@@ -5,8 +5,8 @@ from dataclasses import dataclass
 import matplotlib
 import numpy as np
 import tensorflow as tf
-from rignak.lazy_property import LazyProperty
-from rignak.logging_utils import logger
+from rignak.src.lazy_property import LazyProperty
+from rignak.src.logging_utils import logger
 
 from src.callbacks.history_callback import HistoryCallback
 from src.generators.base_generators import BatchGenerator, PostProcessGenerator, compose_generators

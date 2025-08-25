@@ -1,6 +1,6 @@
 from src.generators.image_to_tag.custom.rating_as_float_generator import RatingAsFloatGenerator
 from src.trainers.image_to_tag_trainers.run.rating_tagger import RatingTagger
-from rignak.lazy_property import LazyProperty
+from rignak.src.lazy_property import LazyProperty
 import typing
 import tensorflow as tf
 from src.callbacks.example_callback_with_logs import ExampleCallbackWithLogs

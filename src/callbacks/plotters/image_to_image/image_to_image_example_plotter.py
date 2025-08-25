@@ -1,5 +1,5 @@
 import numpy as np
-from rignak.custom_display import Display
+from rignak.src.custom_display import Display
 
 from src.callbacks.plotters.plotter import reset_display
 from src.models.model_wrapper import ModelWrapper

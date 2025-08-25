@@ -1,5 +1,5 @@
 from src.trainers.image_to_tag_trainers.categorizer_trainer import CategorizerTrainer
-from config import DATASET_ROOT
+from src.config import DATASET_ROOT
 
 
 class Tagger(CategorizerTrainer):

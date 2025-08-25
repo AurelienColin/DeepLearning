@@ -3,7 +3,7 @@ from src.scripts.utils.download_from_danbooru import JsonDownloader
 from src.output_spaces.custom.nested.nested_tags import categories
 import numpy as np
 from dataclasses import dataclass
-from rignak.lazy_property import LazyProperty
+from rignak.src.lazy_property import LazyProperty
 
 
 @dataclass

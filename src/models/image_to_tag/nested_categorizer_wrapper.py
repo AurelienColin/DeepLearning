@@ -2,11 +2,13 @@ import typing
 from dataclasses import dataclass
 
 import tensorflow as tf
-from rignak.lazy_property import LazyProperty
+from rignak.src.lazy_property import LazyProperty
 
 from src.losses import losses
 from src.models.model_wrapper import ModelWrapper
 from src.modules.module import build_encoder
+
+from src.config import DEFAULT_ACTIVATION
 
 
 @dataclass
@@ -39,11 +41,13 @@ class CategorizerWrapper(ModelWrapper):
             superseeded_conv_kwargs=self.superseeded_conv_kwargs,
         )
         current_layer = tf.keras.layers.GlobalAveragePooling2D()(current_layer)
-        current_layer = tf.keras.layers.Dense(self.layer_kernels[-1], activation="swish")(current_layer)
+        current_layer = tf.keras.layers.Dense(self.layer_kernels[-1], activation=DEFAULT_ACTIVATION)(current_layer)
 
         output_layers = []
+
+        n = max((32, *(len(category) for category in self.training_generator.output_space.categories)))
         for category in self.training_generator.output_space.categories:
-            intermediate_layer = tf.keras.layers.Dense(16, activation="swish")(current_layer)
+            intermediate_layer = tf.keras.layers.Dense(n, activation=DEFAULT_ACTIVATION)(current_layer)
             output_layer = tf.keras.layers.Dense(len(category), activation="softmax")(intermediate_layer)
             output_layers.append(output_layer)
 

@@ -3,15 +3,15 @@ import typing
 
 import numpy as np
 import tensorflow as tf
-from rignak.lazy_property import LazyProperty
-from rignak.logging_utils import logger
+from rignak.src.lazy_property import LazyProperty
+from rignak.src.logging_utils import logger
 
-from output_spaces.custom.nested.nested_space import NestedSpace
+from src.output_spaces.custom.nested.nested_space import NestedSpace
 from src.callbacks.example_callback import ExampleCallback
 from src.callbacks.example_callback_with_logs import ExampleCallbackWithLogs
-from callbacks.plotters.image_to_tag.confusion_matrix.nested_confuson_matrice_plotter import \
+from src.callbacks.plotters.image_to_tag.confusion_matrix.nested_confuson_matrice_plotter import \
     NestedConfusionMatricePlotter
-from callbacks.plotters.image_to_tag.example_plotter.nested_example_plotter import ImageToNestedTagExamplePlotter
+from src.callbacks.plotters.image_to_tag.example_plotter.nested_example_plotter import ImageToNestedTagExamplePlotter
 from src.models.image_to_tag.nested_categorizer_wrapper import CategorizerWrapper
 from src.trainers.image_to_tag_trainers.categorizer_trainer import CategorizerTrainer
 import glob
@@ -76,14 +76,23 @@ class NestedCategorizerTrainer(CategorizerTrainer):
     def set_filenames(self) -> None:
         logger(f"Setup filenames", indent=1)
 
+        logger(f"Read the .json.")
         with open(self.json_filename, 'r') as file:
             data = json.load(file)
+        logger(f".json OK.")
 
+        logger(f'Check file existence.')
         filenames = [entry['filename'] for entry in data]
         filenames = [filename for filename in filenames if os.path.exists(filename)]
+        logger(f"Found {len(filenames)} existing files.")
 
-        training_filenames = np.random.choice(filenames, size=int(0.75 * len(filenames)), replace=False)
-        validation_filenames = [filename for filename in filenames if filename not in training_filenames]
+        filenames = np.array(filenames)
+        indices = np.arange(len(filenames))
+        np.random.shuffle(indices)
+        split_index = int(0.75*len(filenames))
+
+        training_filenames = filenames[indices[:split_index]]
+        validation_filenames = filenames[indices[split_index:]]
 
         self._training_filenames = training_filenames
         self._validation_filenames = validation_filenames

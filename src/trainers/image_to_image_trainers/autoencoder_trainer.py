@@ -1,7 +1,7 @@
 import typing
 
 import tensorflow as tf
-from rignak.lazy_property import LazyProperty
+from rignak.src.lazy_property import LazyProperty
 
 from src.callbacks.example_callback import ExampleCallback
 from src.callbacks.plotters.image_to_image.image_to_image_example_plotter import ImageToImageExamplePlotter

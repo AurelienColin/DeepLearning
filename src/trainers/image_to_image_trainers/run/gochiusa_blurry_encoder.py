@@ -1,5 +1,5 @@
 from src.trainers.image_to_image_trainers.blurry_autoencoder_trainer import BlurryAutoEncoderTrainer
-from config import DATASET_ROOT
+from src.config import DATASET_ROOT
 
 
 class GochiusaBlurryEncoderTrainer(BlurryAutoEncoderTrainer):

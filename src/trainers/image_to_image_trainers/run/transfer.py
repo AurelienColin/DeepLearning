@@ -1,5 +1,5 @@
 from src.trainers.image_to_image_trainers.unet_trainer import UnetTrainer
-from config import DATASET_ROOT
+from src.config import DATASET_ROOT
 
 class TransferTrainer(UnetTrainer):
     def __init__(self, *args, **kwargs):

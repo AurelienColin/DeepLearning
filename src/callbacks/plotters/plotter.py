@@ -2,8 +2,8 @@ import typing
 from dataclasses import dataclass
 
 import numpy as np
-from rignak.custom_display import Display
-from rignak.lazy_property import LazyProperty
+from rignak.src.custom_display import Display
+from rignak.src.lazy_property import LazyProperty
 
 from src.models.model_wrapper import ModelWrapper
 

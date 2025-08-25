@@ -3,13 +3,13 @@ import typing
 
 import numpy as np
 import tensorflow as tf
-from rignak.lazy_property import LazyProperty
-from rignak.logging_utils import logger
+from rignak.src.lazy_property import LazyProperty
+from rignak.src.logging_utils import logger
 
 from src.callbacks.example_callback import ExampleCallback
 from src.callbacks.example_callback_with_logs import ExampleCallbackWithLogs
-from callbacks.plotters.image_to_tag.confusion_matrix.flat_confusion_matrix_plotter import FlatConfusionMatricePlotter
-from callbacks.plotters.image_to_tag.example_plotter.flat_example_plotter import ImageToFlatTagExamplePlotter
+from src.callbacks.plotters.image_to_tag.confusion_matrix.flat_confusion_matrix_plotter import FlatConfusionMatricePlotter
+from src.callbacks.plotters.image_to_tag.example_plotter.flat_example_plotter import ImageToFlatTagExamplePlotter
 from src.generators.base_generators import BatchGenerator
 from src.generators.image_to_tag.classification_generator import ClassificationGenerator
 from src.models.image_to_tag.categorizer_wrapper import CategorizerWrapper

@@ -14,8 +14,8 @@ class JsonDownloader:
     n_entries: int = 1
 
     api_endpoint: str = "https://danbooru.donmai.us/posts.json"
-    api_key: str = os.environ['DANBOORU_KEY']
-    login: str = os.environ['DANBOORU_LOGIN']
+    api_key: str = os.environ.get('DANBOORU_KEY')
+    login: str = os.environ.get('DANBOORU_LOGIN')
 
     entries_per_page: int = 100
 
@@ -32,10 +32,10 @@ class JsonDownloader:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logger(f"Error during request: {e}")
+            logger(f"Error during request: {e}", level="error")
             return []
         except json.JSONDecodeError as e:
-            logger(f"Error decoding JSON response: {e}")
+            logger(f"Error decoding JSON response: {e}", level="error")
             return []
 
     def run(self) -> typing.List[typing.Dict[str, typing.Any]]:

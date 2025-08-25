@@ -2,7 +2,7 @@ import typing
 from dataclasses import dataclass
 
 COLORS = ('blue', 'green', 'red', 'purple', 'pink', 'yellow', 'orange', 'aqua', 'brown', 'white', 'black', 'grey')
-BLACKLIST = ('from_behind', 'comic', 'animated')
+BLACKLIST = ('comic', 'animated')
 
 
 def accept(substring: str, tags: typing.List[str]) -> bool:
@@ -85,7 +85,7 @@ class Category:
 
 TOP_TYPES = Category(
     'regular_top_types',
-    ('bodysuit', 'jacket', 'sweater', 'shirt', 'tank_top', 'dress', 'bra'),
+    ('bodysuit', 'jacket', 'sweater', 'shirt', 'tank_top', 'dress',),
     blacklist=('bra',)
 )
 BOTTOM_TYPES = Category(
@@ -134,32 +134,31 @@ categories: typing.List[Category] = [
     Category('sleeves_color',
              tuple(Category(f'{color}_sleeves') for color in COLORS),
              ),
-    Category(
-        'sleeves_length',
-        (
-            Category('short_sleeves'),
-            Category('long_sleeves'),
-        )),
+    Category('sleeves_length', ("short_sleeves", "long_sleeves", "bare_arms")),
     Category(
         'navel',
         (
-            Category('navel'),
-            Category('covered_navel'),
+            Category('navel', priority=1),
+            Category('covered_navel', priority=1),
+            Category('no_navel', ('solo',))
         )),
     Category(
         'breast_peek',
         (
-            Category('nipples', priority=1),
-            Category('cleavage'),
-            Category('sideboob'),
-            Category('backboob'),
-            Category('underboob'),
+            Category('nipples', priority=2),
+            Category('cleavage', priority=1),
+            Category('sideboob', priority=1),
+            Category('backboob', priority=1),
+            Category('underboob', priority=1),
+            Category('no_breasts', ('solo',), blacklist=('breasts',))
         )),
     Category(
         'nipples',
         (
-            Category('nipples'),
-            Category('covered_nipples'),
+            Category('nipples', priority=2),
+            Category('covered_nipples', priority=2),
+            Category('no_nipples', ('breasts',), priority=1),
+            Category('no_breasts', ('solo', ))
         )),
     Category(
         'top_types',
@@ -168,7 +167,7 @@ categories: typing.List[Category] = [
             Category('open_top', ('open_shirt', 'open_bodysuit'), priority=1),
             Category('minimal_top', ('bra', 'bikini'), priority=3),
             Category('strapless', priority=2),
-            Category('topless', ('topless', 'nude'), )
+            Category('topless', ('topless_female', 'nude'), )
         )
     ),
     Category(
@@ -184,7 +183,7 @@ categories: typing.List[Category] = [
             Category('long_bottom', ('pants', 'long_dress', 'long_skirt', 'overalls')),
             Category('medium_bottom', ('shorts', 'medium_skirt', 'medium_dress', 'overall_shorts')),
             Category('short_bottom', ('short_shorts', 'short_dress', 'miniskirt'), priority=1),
-            Category('very_short_bottom', ('microshorts', 'microskirt', 'buruma', 'bikini', 'panties'), priority=2),
+            Category('very_short_bottom', ('micro_shorts', 'microskirt', 'buruma', 'bikini', 'panties'), priority=2),
             Category('bottomless', ('bottomless', 'nude')),
         ),
         blacklist=('shorts_under_skirt', 'pants_under_skirt', 'shorts_under_shorts')
@@ -197,13 +196,13 @@ categories: typing.List[Category] = [
         )
     ),
     Category(
-        'position',
+        'view_angle',
         (
-            'from_above',
-            'from_side',
-            'from_below',
-            'from_behind',
-            Category('other', ('-from_above -from_side -from_below -from_behind', )),
+            Category('from_above', priority=1),
+            Category('from_side', priority=1),
+            Category('from_below', priority=1),
+            Category('from_behind', priority=1),
+            Category('other', ('solo',)),
         )
     ),
     Category(
@@ -213,6 +212,15 @@ categories: typing.List[Category] = [
          'onsen', 'shrine')),
 
     Category('neckwear', ('necktie', 'neckerchief', 'bowtie')),
+    Category(
+        'legwear',
+        (
+            'pantyhose',
+            'thighhighs',
+            'bare_legs',
+            Category('kneehighs', priority=1),
+            'socks',)
+    ),
     Category('expressions', ('angry', 'annoyed', 'sad', 'scared', 'surprised', 'grin', 'expressionless')),
     Category(
         'composition',
@@ -222,17 +230,28 @@ categories: typing.List[Category] = [
     ),
     Category(
         'position',
-        ('standing', 'sitting', 'squatting', 'kneeling', 'on_back', 'on_side', 'on_stomach')
+        (
+            'walking',
+            'running',
+            'jumping',
+            'standing',
+            Category('standing_on_one_leg', priority=1),
+            'sitting',
+            'squatting',
+            Category('straddling', priority=1),
+            'kneeling',
+            Category('on_one_knee', priority=1),
+            'on_back',
+            'on_side',
+            'on_stomach',
+            'all_fours',
+        )
     ),
     Category(
         'humans',
         (
-            Category(
-                'no',
-                ('scenery no_humans',),
-                blacklist=('1boy', '1girl', '1other', 'multiple_boys', 'multiple_girls', 'multiple_others')
-            ),
-            Category('yes', ('solo',))
+            Category('no', ('scenery', 'no_humans')),
+            Category('yes', ('1girl', '1boy', '1other'), priority=1)
         )
     )
 ]

@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from PIL import Image, ImageOps
-from rignak.lazy_property import LazyProperty
-from rignak.logging_utils import logger
+from rignak.src.lazy_property import LazyProperty
+from rignak.src.logging_utils import logger
 
 
 def get_args() -> argparse.Namespace:

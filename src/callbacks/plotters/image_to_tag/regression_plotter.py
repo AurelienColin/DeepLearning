@@ -1,7 +1,7 @@
 import typing
 
 import numpy as np
-from rignak.custom_display import Display
+from rignak.src.custom_display import Display
 from scipy.stats import pearsonr
 
 from src.callbacks.plotters.plotter import reset_display

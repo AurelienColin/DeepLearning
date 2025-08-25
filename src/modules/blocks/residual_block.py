@@ -3,6 +3,7 @@ import typing
 import tensorflow as tf
 
 from src.modules.layers.padded_conv2d import PaddedConv2D
+from src.config import DEFAULT_ACTIVATION
 
 class ResidualBlock(tf.keras.layers.Layer):
     def __init__(
@@ -20,7 +21,7 @@ class ResidualBlock(tf.keras.layers.Layer):
         self.superseeded_conv_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = superseeded_conv_kwargs
 
         self.conv2ds: typing.Sequence[tf.keras.layers.Layer] = (
-            self.get_convolution_layer(n_kernels=self.n_kernels, activation='swish', dilation_rate=3),
+            self.get_convolution_layer(n_kernels=self.n_kernels, activation=DEFAULT_ACTIVATION, dilation_rate=3),
             self.get_convolution_layer(n_kernels=self.n_kernels, activation=None, dilation_rate=3)
         )
         self.add: tf.keras.layers.Layer = tf.keras.layers.Add()

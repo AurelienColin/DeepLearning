@@ -69,7 +69,7 @@ class Processor:
         logger("Sanity check: all outputs should have a shape of (None, 16):", indent=1)
         for i, output in enumerate(model.output):
             if output.shape[1] != 16:
-                logger(f"{i}: {output.shape}")
+                logger(f"{i}: {output.shape}", level="warning")
         logger("Sanity check end", indent=-1)
 
         model.summary()

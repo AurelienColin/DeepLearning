@@ -1,7 +1,7 @@
 import typing
 
 import numpy as np
-from rignak.custom_display import Display
+from rignak.src.custom_display import Display
 
 from src.callbacks.plotters.plotter import reset_display
 from src.callbacks.plotters.plotter_from_generator import PlotterFromGenerator
@@ -26,7 +26,7 @@ class FlatConfusionMatricePlotter(ConfusionMatricePlotter):
         )
         return self.display, logs
 
-    def get_categorization_report(self, results: np.ndarray[int]) -> typing.Dict[str, np.ndarray]:
+    def get_categorization_report(self, results: np.ndarray) -> typing.Dict[str, np.ndarray]:
         true_positives = results[:, 2]
         true_negatives = results[:, 3]
         false_negatives = results[:, 4]

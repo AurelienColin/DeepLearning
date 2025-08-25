@@ -5,11 +5,11 @@ from dataclasses import dataclass
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras.metrics
-from rignak.lazy_property import LazyProperty
-from rignak.logging_utils import logger
+from rignak.src.lazy_property import LazyProperty
+from rignak.src.logging_utils import logger
 
 from src.on_model_start import write_summary, backup
-
+from src.config import LEARNING_RATE
 
 @dataclass
 class ModelWrapper:
@@ -17,7 +17,7 @@ class ModelWrapper:
     input_shape: typing.Sequence[int]
     batch_size: int
     _output_shape: typing.Optional[typing.Sequence[int]] = None
-    learning_rate: float = 1e-5
+    learning_rate: float = LEARNING_RATE
     loss_weights: typing.Sequence[float] = (1.,)
 
     _output_folder: typing.Optional[str] = None

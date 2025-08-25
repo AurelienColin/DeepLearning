@@ -2,7 +2,7 @@ import typing
 
 import tensorflow as tf
 
-from rignak.lazy_property import LazyProperty
+from rignak.src.lazy_property import LazyProperty
 from src.losses.losses import fourth_channel_mae
 from src.models.image_to_image.auto_encoder_wrapper import AutoEncoderWrapper
 

@@ -5,8 +5,8 @@ from dataclasses import dataclass
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras.backend as K
-from rignak.lazy_property import LazyProperty
-from rignak.logging_utils import logger
+from rignak.src.lazy_property import LazyProperty
+from rignak.src.logging_utils import logger
 
 from src.generators.base_generators import BatchGenerator
 from src.losses.from_model.blurriness import Blurriness

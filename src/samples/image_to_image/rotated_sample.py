@@ -31,7 +31,7 @@ class RotatedSample(Sample):
         im = im.rotate(rotation_angle, expand=True, fillcolor=fillcolor, resample=PIL.Image.Resampling.BILINEAR)
         return im
 
-    def pad(self, array: np.ndarray[np.float32]) -> np.ndarray:
+    def pad(self, array: np.ndarray) -> np.ndarray:
         x0 = int((self.shape[0] - array.shape[0]) / 2)
         x1 = self.shape[0] - x0 - array.shape[0]
 

@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.ndimage
 import PIL.Image
-from rignak.lazy_property import LazyProperty
+from rignak.src.lazy_property import LazyProperty
 
 from src.samples.image_to_image.rotated_sample import RotatedSample
 

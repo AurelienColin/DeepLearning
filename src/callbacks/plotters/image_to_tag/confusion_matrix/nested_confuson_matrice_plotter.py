@@ -1,7 +1,7 @@
 import typing
 
 import numpy as np
-from rignak.custom_display import Display
+from rignak.src.custom_display import Display
 
 from src.callbacks.plotters.plotter import reset_display
 from src.callbacks.plotters.plotter_from_generator import PlotterFromGenerator
@@ -14,7 +14,7 @@ class NestedConfusionMatricePlotter(ConfusionMatricePlotter):
         super().__init__(*args, **kwargs)
         self.categories = self.generator.output_space.categories
         self.nrows = 4
-        self.ncols = int(len(self.categories) / self.nrows)
+        self.ncols = int(np.ceil(len(self.categories) / self.nrows))
 
     def get_confusion_matrix(self):
         confusion_matrices = [

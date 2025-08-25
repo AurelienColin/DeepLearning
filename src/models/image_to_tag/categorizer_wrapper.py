@@ -2,12 +2,12 @@ import typing
 from dataclasses import dataclass
 
 import tensorflow as tf
-from rignak.lazy_property import LazyProperty
+from rignak.src.lazy_property import LazyProperty
 
 from src.losses import losses
 from src.models.model_wrapper import ModelWrapper
 from src.modules.module import build_encoder
-
+from src.config import DEFAULT_ACTIVATION
 
 @dataclass
 class CategorizerWrapper(ModelWrapper):
@@ -39,6 +39,6 @@ class CategorizerWrapper(ModelWrapper):
         current_layer = tf.keras.layers.GlobalAveragePooling2D()(current_layer)
 
         n_intermediate = abs(int((self.layer_kernels[-1] - self.output_shape[-1]) / 2))
-        current_layer = tf.keras.layers.Dense(n_intermediate, activation="relu", )(current_layer)
+        current_layer = tf.keras.layers.Dense(n_intermediate, activation=DEFAULT_ACTIVATION, )(current_layer)
         output_layer = tf.keras.layers.Dense(self.output_shape[-1], activation="sigmoid", )(current_layer)
         return output_layer

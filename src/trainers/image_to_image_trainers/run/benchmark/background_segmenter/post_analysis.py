@@ -1,4 +1,4 @@
-from ML.src.benchmark_utils import main
+from src.benchmark_utils import main
 
 if __name__ == "__main__":
     # python src/trainers/image_to_image_trainers/run/benchmark/n_stride/post_analysis.py

@@ -2,7 +2,7 @@ import typing
 
 import tensorflow as tf
 
-from rignak.lazy_property import LazyProperty
+from rignak.src.lazy_property import LazyProperty
 from src.modules.custom_objects import CUSTOM_OBJECTS
 
 

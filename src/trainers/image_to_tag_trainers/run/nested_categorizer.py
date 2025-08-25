@@ -6,8 +6,11 @@ class DanbooruNestedCategorizerTrainer(NestedCategorizerTrainer):
         super().__init__(
             name=kwargs.pop('name', "DanbooruNested"),
             pattern=kwargs.pop('pattern', '.tmp/dataset/hierarchical/data.json'),
-            input_shape=kwargs.pop('input_shape', (192, 192, 3)),
-            batch_size=kwargs.pop('batch_size', 12),
+            input_shape=kwargs.pop('input_shape', (256, 256, 3)),
+            batch_size=kwargs.pop('batch_size', 24),
+            training_steps=kwargs.pop('training_steps', 2048),
+            validation_steps=kwargs.pop('validation_steps', 512),
+            layer_kernels=kwargs.pop('layer_kernels', (64, 128, 256, 512)),
             epochs=100,
             *args, **kwargs
         )

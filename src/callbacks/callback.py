@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import tensorflow as tf
 
 from src.models.model_wrapper import ModelWrapper
-from rignak.lazy_property import LazyProperty
+from rignak.src.lazy_property import LazyProperty
 
 @dataclass
 class Callback(tf.keras.callbacks.Callback):

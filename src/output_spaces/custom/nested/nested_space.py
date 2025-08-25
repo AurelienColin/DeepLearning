@@ -5,7 +5,7 @@ from src.output_spaces.custom.nested.nested_tags import categories, Category
 import typing
 from dataclasses import dataclass
 import numpy as np
-from rignak.lazy_property import LazyProperty
+from rignak.src.lazy_property import LazyProperty
 import json
 from rignak.src.logging_utils import logger
 
@@ -36,13 +36,16 @@ class NestedSpace:
     def class_weights(self) -> np.ndarray:
         logger("Compute class weight", indent=1)
         weights = np.zeros(len(self))
+
+        logger.set_iterator(len(self.samples), percentage_threshold=5)
         for sample in self.samples.values():
             weights += sample.output
+            logger.iterate()
 
         labels = [label for category in self.categories for label in category.labels]
         for label, weight in zip(labels, weights):
             if not weight:
-                logger(f"No sample for `{label}`")
+                logger(f"No sample for `{label}`", level="warning")
         logger("Compute class weight OK", indent=-1)
 
         weights = np.clip(len(self.samples)/weights, 1E-5, 1E4)

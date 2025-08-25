@@ -1,11 +1,11 @@
 import typing
 
-from rignak.lazy_property import LazyProperty
+from rignak.src.lazy_property import LazyProperty
 
 from src.generators.base_generators import PostProcessGenerator
 from src.generators.image_to_image.foreground_generator import ForegroundGenerator
 from src.trainers.image_to_image_trainers.highlighter_trainer import HighlighterTrainer
-from config import DATASET_ROOT
+from src.config import DATASET_ROOT
 
 class BackgroundSegmenter(HighlighterTrainer):
     def __init__(self, *args, **kwargs):

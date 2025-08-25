@@ -2,13 +2,13 @@ import typing
 
 import numpy as np
 
-from callbacks.plotters.plotter import reset_display
-from losses.losses import one_minus_dice, cross_entropy
-from models.model_wrapper import ModelWrapper
-from output_spaces.output_space import OutputSpace
-from callbacks.plotters.image_to_tag.example_plotter.image_to_tag_example_plotter import ImageToTagExamplePlotter
-from rignak.custom_display import Display
-from rignak.lazy_property import LazyProperty
+from src.callbacks.plotters.plotter import reset_display
+from src.losses.losses import one_minus_dice, cross_entropy
+from src.models.model_wrapper import ModelWrapper
+from src.output_spaces.output_space import OutputSpace
+from src.callbacks.plotters.image_to_tag.example_plotter.image_to_tag_example_plotter import ImageToTagExamplePlotter
+from rignak.src.custom_display import Display
+from rignak.src.lazy_property import LazyProperty
 
 class ImageToFlatTagExamplePlotter(ImageToTagExamplePlotter):
     def __init__(self, inputs: np.ndarray, outputs: np.ndarray, model_wrapper: ModelWrapper, output_space: OutputSpace):
@@ -20,11 +20,11 @@ class ImageToFlatTagExamplePlotter(ImageToTagExamplePlotter):
         super().__init__(inputs, outputs, model_wrapper, ncols=ncols, nrows=nrows, thumbnail_size=thumbnail_size)
         self.max_tags: int = min(10, outputs.shape[1])
         self.logs: typing.Optional[np.ndarray] = None
-        self._indices: typing.Optional[np.ndarray[int]] = None
+        self._indices: typing.Optional[np.ndarray] = None
         self.output_space: OutputSpace = output_space
 
 
-    def get_labels(self, indices: np.ndarray[int]) -> typing.Sequence[str]:
+    def get_labels(self, indices: np.ndarray) -> typing.Sequence[str]:
         return [self.output_space.tag_names[j] for j in indices]
 
 
