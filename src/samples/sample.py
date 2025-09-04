@@ -47,3 +47,5 @@ class Sample:
             array = cv2.resize(array, self.shape[:2][::-1], interpolation=self.interpolation)
 
         return array
+
+

@@ -1,5 +1,3 @@
-from typing import Any
-
 from src.output_spaces.custom.nested.sample import Sample
 from src.output_spaces.custom.nested.nested_tags import categories, Category
 import typing
@@ -58,14 +56,20 @@ class NestedSpace:
     @LazyProperty
     def samples(self) -> typing.Dict[str, Sample]:
         samples: typing.Dict[str, Sample] = {}
-
-        with open(self.json_filename) as file:
-            json_data = json.load(file)
+        json_data = self.get_json_data()
 
         for entry in json_data:
             sample = Sample(_filename=entry['filename'], _tags=entry['tags'])
             samples[sample._filename] = sample
         return samples
 
+    def get_json_data(self) -> typing.List[typing.Dict[str, str]]:
+        with open(self.json_filename) as file:
+            json_data = json.load(file)
+        return json_data
+
+
     def get_array(self, filename: str) -> np.ndarray:
-        return self.samples[filename].output
+        if filename in self.samples:
+            return self.samples[filename].output
+        return False
