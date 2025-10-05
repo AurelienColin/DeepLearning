@@ -18,10 +18,9 @@ class Sample:
     _input_data: typing.Optional[np.ndarray] = None
     _output_data: typing.Optional[np.ndarray] = None
 
-    @LazyProperty
-    def input_data(self) -> np.ndarray:
+    def get_input_data(self, filename: str) -> np.ndarray:
         try:
-            im = self.imread(self.input_filename)
+            im = self.imread(filename)
         except OSError as e:
             logger(
                 f"Error reading `{self.input_filename}`: `{e}`. "
@@ -30,6 +29,10 @@ class Sample:
             )
             im = np.zeros(self.shape)
         return im
+
+    @LazyProperty
+    def input_data(self) -> np.ndarray:
+        return self.get_input_data(self.input_filename)
 
     @LazyProperty
     def output_data(self) -> np.ndarray:

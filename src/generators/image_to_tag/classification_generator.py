@@ -11,11 +11,9 @@ class ClassificationGenerator(BatchGenerator):
     def __init__(
             self,
             *args,
-            enforced_tag_names: typing.Optional[typing.Sequence[str]] = None,
             output_space: typing.Optional[OutputSpace] = None,
             **kwargs
     ):
-        self.enforced_tag_names: typing.Optional[typing.Sequence[str]] = enforced_tag_names
         super().__init__(*args, **kwargs)
         self.output_space: typing.Optional[OutputSpace] = output_space
 

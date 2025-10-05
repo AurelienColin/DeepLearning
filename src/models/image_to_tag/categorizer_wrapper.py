@@ -16,9 +16,6 @@ class CategorizerWrapper(ModelWrapper):
     _encoded_layer: typing.Optional[tf.keras.layers.Layer] = None
     _encoded_inherited_layers: typing.Optional[typing.Sequence[tf.keras.layers.Layer]] = None
 
-    superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = None
-    superseeded_conv_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = None
-
 
     @LazyProperty
     def loss(self) -> typing.Callable[[tf.Tensor, tf.Tensor], tf.Tensor]:

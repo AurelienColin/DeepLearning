@@ -7,10 +7,11 @@ import tensorflow as tf
 import tensorflow.keras.metrics
 from rignak.src.lazy_property import LazyProperty
 from rignak.src.logging_utils import logger
+import tensorflow.keras.backend as K
 
 from src.on_model_start import write_summary, backup
 from src.config import LEARNING_RATE
-
+from src.modules.module import build_encoder
 @dataclass
 class ModelWrapper:
     name: str
@@ -29,10 +30,16 @@ class ModelWrapper:
     _input_layers: typing.Optional[typing.Sequence[tf.keras.layers.Layer]] = None
     _model: typing.Optional[tf.keras.models.Model] = None
 
+    _encoded_layer: typing.Optional[tf.keras.layers.Layer] = None
+    _encoded_inherited_layers: typing.Optional[typing.Sequence[tf.keras.layers.Layer]] = None
+
     _optimizer: typing.Optional[tf.keras.optimizers.Optimizer] = None
     _loss: typing.Optional[typing.Callable[[tf.Tensor, tf.Tensor], tf.Tensor]] = None
     _metrics: typing.Optional[typing.Sequence[typing.Callable[[tf.Tensor, tf.Tensor], tf.Tensor]]] = None
     _metrics_for_keras: typing.Optional[typing.Sequence[tf.keras.metrics.Metric]] = None
+
+    superseeded_conv_layer: typing.Optional[tf.keras.layers.Layer] = None
+    superseeded_conv_kwargs: typing.Optional[typing.Dict[str, typing.Any]] = None
 
     @LazyProperty
     def loss(self) -> typing.Callable[[tf.Tensor, tf.Tensor], tf.Tensor]:
@@ -98,3 +105,22 @@ class ModelWrapper:
 
     def fit(self, *args, **kwargs):
         return self.model.fit(*args, **kwargs)
+
+    def set_encoded_layers(self) -> None:
+        current_layer, self._encoded_inherited_layers = build_encoder(
+            self.input_layer,
+            self.layer_kernels,
+            superseeded_conv_layer=self.superseeded_conv_layer,
+            superseeded_conv_kwargs=self.superseeded_conv_kwargs,
+        )
+        self._encoded_layer = tf.keras.layers.Lambda(lambda x: K.tanh(x))(current_layer)
+
+    @LazyProperty
+    def encoded_layer(self) -> tf.keras.layers.Layer:
+        self.set_encoded_layers()
+        return self._encoded_layer
+
+    @LazyProperty
+    def encoded_inherited_layers(self) -> typing.Sequence[tf.keras.layers.Layer]:
+        self.set_encoded_layers()
+        return self._encoded_inherited_layers
