@@ -13,6 +13,7 @@ class Sample:
     _tags: typing.Optional[str] = None
     _url: typing.Optional[str] = None
     _output: typing.Optional[np.ndarray] = None
+    _nested_output: typing.Optional[np.ndarray] = None
     _filename: typing.Optional[str] = None
 
     @LazyProperty
@@ -32,7 +33,7 @@ class Sample:
         return url
 
     @LazyProperty
-    def output(self) -> np.ndarray:
+    def nested_output(self) -> np.ndarray:
         output = []
         for category in categories:
             category_output = np.zeros(len(category.subcategories))
@@ -40,7 +41,11 @@ class Sample:
             if res is not None:
                 category_output[res[0]] = 1
             output.append(category_output)
-        return np.concatenate(output)
+        return output
+
+    @LazyProperty
+    def output(self) -> np.ndarray:
+        return np.concatenate(self.nested_output)
 
 
 def get_samples(tags: str, n_entries: int) -> typing.List[Sample]:

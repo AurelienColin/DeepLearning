@@ -9,11 +9,18 @@ from src.samples.sample import Sample
 
 
 class BatchGenerator:
-    def __init__(self, filenames: typing.Sequence[str], batch_size: int, shape: typing.Tuple[int, int, int]):
+    def __init__(
+            self,
+            filenames: typing.Sequence[str],
+            batch_size: int,
+            shape: typing.Tuple[int, int, int],
+            enforced_tag_names: typing.Optional[typing.Sequence[str]] = None,
+    ):
         self.filenames: typing.Sequence[str] = np.array(filenames)
         self.batch_size: int = batch_size
         self.shape: typing.Tuple[int, int, int] = shape
         self.output_space: typing.Optional[OutputSpace] = None
+        self.enforced_tag_names: typing.Optional[typing.Sequence[str]] = enforced_tag_names
 
     def __iter__(self):
         return self

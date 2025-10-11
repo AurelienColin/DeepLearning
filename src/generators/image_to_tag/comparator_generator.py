@@ -9,11 +9,9 @@ class ComparatorGenerator(BatchGenerator):
     def __init__(
             self,
             *args,
-            enforced_tag_names: typing.Optional[typing.Sequence[str]] = None,
             output_space: typing.Optional[ComparatorSpace] = None,
             **kwargs
     ):
-        self.enforced_tag_names: typing.Optional[typing.Sequence[str]] = enforced_tag_names
         super().__init__(*args, **kwargs)
         self.output_space: typing.Optional[ComparatorSpace] = output_space
         self.filenames: typing.Sequence[str] = list(self.output_space.data.keys())

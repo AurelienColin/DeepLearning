@@ -4,8 +4,6 @@ import os
 import typing
 from dataclasses import dataclass
 
-os.environ['CUDA_VISIBLE_DEVICES'] = "-1"
-
 import numpy as np
 import tensorflow as tf
 from rignak.src.logging_utils import logger

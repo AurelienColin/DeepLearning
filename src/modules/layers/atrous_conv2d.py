@@ -11,6 +11,7 @@ class AtrousConv2D(tf.keras.layers.Layer):
             self,
             n_kernels: int,
             n_stride: int,
+            dilation_rate: int=1,
             activation: typing.Optional[str] = None,
             **kwargs
     ):
@@ -19,6 +20,7 @@ class AtrousConv2D(tf.keras.layers.Layer):
         self.n_kernels: int = n_kernels
         self.conv_layers: typing.Optional[typing.Sequence[tf.keras.layers.Layer]] = None
         self.activation: typing.Optional[str] = activation
+        self.dilation_rate: int = dilation_rate
 
     def build(self, input_shape: typing.Sequence[int]) -> None:
         if self.n_stride != 1:
@@ -31,7 +33,7 @@ class AtrousConv2D(tf.keras.layers.Layer):
             PaddedConv2D(
                 activation=self.activation,
                 n_kernels=i_kernel,
-                dilation_rate=dilation_rate,
+                dilation_rate=dilation_rate  * self.dilation_rate,
                 name=f"padded_conv_dilation_{dilation_rate}"
             )
             for dilation_rate, i_kernel in enumerate(kernel_counts, start=1)

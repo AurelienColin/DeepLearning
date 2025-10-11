@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    name="deep_learning",
+    name="ML",
     version="0.1.0",
     description="A project for various deep learning trainings",
     author="Rignak",
@@ -9,8 +9,7 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[
-        "tensorflow==2.19",
-        "keras==3.10.0",
+        "tensorflow==2.17",
         "pandas",
         "numpy==1.26.4",
         "matplotlib",
@@ -18,8 +17,9 @@ setup(
         "scikit-learn",
         'basemap',
         "Pillow",
+        "pytest"
         # The rignak dependency is external (from GitHub) and needs to be installed separately.
-        # e.g., pip install git+https://github.com/Rignak/rignak.git
+        # e.g., pip install git+https://github.com/AurelienColin/miscellaneous
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",

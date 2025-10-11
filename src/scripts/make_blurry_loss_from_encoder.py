@@ -2,8 +2,6 @@ import argparse
 import os
 from dataclasses import dataclass
 
-os.environ['CUDA_VISIBLE_DEVICES'] = "-1"
-
 import tensorflow as tf
 from rignak.src.logging_utils import logger
 

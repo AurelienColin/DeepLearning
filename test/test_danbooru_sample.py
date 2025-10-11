@@ -1,6 +1,6 @@
 import pytest
 
-from ML.src.output_spaces.custom.sample import Sample, get_samples
+from ML.src.output_spaces.custom.nested.sample import Sample, get_samples
 import numpy as np
 import os
 from rignak.src.custom_requests.request_utils import download_file
@@ -21,8 +21,8 @@ def test_sample_tag(sample: Sample) -> None:
 
 
 def test_sample_array(sample: Sample) -> None:
-    expected_outputs = (0, 0, 3, None, 4, 4, None, 1, 2, 5, 2, 0, 0, 3, 3, None, None, None, 2, 0)
-    outputs = tuple((np.argmax(e) if e.sum() else None) for e in sample.output)
+    expected_outputs = (0, 0, 3, None, 1, 1, None, 0, 2, 5, 3, 0, 9, 3, 0, 3, None, None, None, None, 2, 3, 1)
+    outputs = tuple((np.argmax(e) if e.sum() else None) for e in sample.nested_output)
     assert len(expected_outputs) == len(outputs)
     assert outputs == expected_outputs
 

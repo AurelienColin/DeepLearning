@@ -12,18 +12,21 @@ from rignak.src.logging_utils import logger
 
 
 class SparseConv2D(tf.keras.layers.Layer):
-    def __init__(self,
+    def __init__(
+            self,
                  n_kernels: int,
                  kernel_size: int,
                  n_non_zero: int,
                  strides: int = 1,
                  padding: str = 'same',
                  use_bias: bool = True,
+                dilation_rate: int=1,
                  kernel_initializer: str = 'glorot_uniform',
                  bias_initializer: str = 'zeros',
                  n_stride: int = 1,
                  activation: typing.Optional[str] = None,
-                 **kwargs):
+                 **kwargs
+    ):
         super().__init__(**kwargs)
 
         n_non_zero = np.clip(n_non_zero, 1, kernel_size ** 2)
@@ -43,6 +46,16 @@ class SparseConv2D(tf.keras.layers.Layer):
         self._indices: typing.Optional[tf.Tensor] = None
         self.sparse_kernel: typing.Optional[tf.Tensor] = None
         self.bias: typing.Optional[tf.Tensor] = None
+
+        if dilation_rate != 1:
+            logger.warning(f"dilation_rate != 1 is not supported for SparseConv2D "
+                           f"but provided value is {dilation_rate}")
+        self.dilation_rate: int = dilation_rate
+
+        if n_stride != 1:
+            logger.warning(f"n_stride != 1 is not supported for SparseConv2D "
+                           f"but provided value is {n_stride}")
+        self.n_stride: int = n_stride
 
     @LazyProperty
     def kernels(self) -> int:
