@@ -17,9 +17,8 @@ setup(
         "scikit-learn",
         'basemap',
         "Pillow",
-        "pytest"
-        # The rignak dependency is external (from GitHub) and needs to be installed separately.
-        # e.g., pip install git+https://github.com/AurelienColin/miscellaneous
+        "pytest",
+        "rignak @ git+https://github.com/AurelienColin/miscellaneous.git#egg=rignak"
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",
