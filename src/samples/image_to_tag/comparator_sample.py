@@ -5,7 +5,7 @@ from src.samples.sample import Sample
 import typing
 from rignak.src.lazy_property import LazyProperty
 from rignak.src.logging_utils import logger
-from output_spaces.comparator_from_filesystem import ComparatorSpace
+from src.output_spaces.comparator_from_filesystem import ComparatorSpace
 
 class ComparatorSample(Sample):
     def __init__(self, output_space: ComparatorSpace, *args, **kwargs):

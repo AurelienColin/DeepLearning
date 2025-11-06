@@ -9,15 +9,24 @@ class ComparatorGenerator(BatchGenerator):
     def __init__(
             self,
             *args,
+            enforced_tag_names: typing.Optional[typing.Sequence[str]] = None,
             output_space: typing.Optional[ComparatorSpace] = None,
             **kwargs
     ):
+        self.enforced_tag_names: typing.Optional[typing.Sequence[str]] = enforced_tag_names
         super().__init__(*args, **kwargs)
         self.output_space: typing.Optional[ComparatorSpace] = output_space
         self.filenames: typing.Sequence[str] = list(self.output_space.data.keys())
 
     def __next__(self) -> typing.Tuple[np.ndarray, np.ndarray]:
-        batch_filenames = np.random.choice(self.filenames, (self.batch_size, 2), replace=False)
+        first_filenames = np.random.choice(self.filenames, self.batch_size, replace=False)
+        levels = np.random.randint(0, self.output_space.level+1, self.batch_size)
+        second_filenames = [
+            np.random.choice(self.output_space.get_sisters(filename, level))
+            for filename, level in zip(first_filenames, levels)
+        ]
+
+        batch_filenames = zip(first_filenames, second_filenames)
         return self.batch_processing(batch_filenames)
 
     def batch_processing(

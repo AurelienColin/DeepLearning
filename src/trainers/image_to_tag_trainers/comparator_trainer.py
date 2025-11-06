@@ -91,6 +91,12 @@ class ComparatorTrainer(CategorizerTrainer):
 
     @staticmethod
     def generator_to_dataset(generator: BatchGenerator) -> tf.data.Dataset:
+        def wrapped_generator():
+            for x, y_list in generator:
+                x = tf.convert_to_tensor(x, dtype=tf.float32)
+                y_list = [tf.convert_to_tensor(y, dtype=tf.float32) for y in y_list]
+                yield x, tuple(y_list)
+                
         sample_x, sample_y_list = next(generator)
 
         output_shapes = (
@@ -98,12 +104,11 @@ class ComparatorTrainer(CategorizerTrainer):
             tuple(tf.TensorShape((None, *y.shape[1:])) for y in sample_y_list)
         )
         output_types = (tf.float32, tuple(tf.float32 for _ in sample_y_list))
+        
 
         dataset = tf.data.Dataset.from_generator(
-            lambda: generator,
-            output_signature=(
-                tf.TensorSpec(shape=output_shapes[0], dtype=output_types[0]),
-                tuple(tf.TensorSpec(shape=s, dtype=t) for s, t in zip(output_shapes[1], output_types[1]))
-            )
+            lambda: wrapped_generator(),
+            output_types=output_types,
+            output_shapes=output_shapes
         )
         return dataset

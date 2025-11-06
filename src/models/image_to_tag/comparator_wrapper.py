@@ -24,6 +24,8 @@ class Comparator(ModelWrapper):
     _input_layers: typing.Optional[typing.Sequence[tf.keras.layers.Layer]] = None
     _post_encoded_layer: typing.Optional[tf.keras.layers.Layer] = None
     _decoded_layer: typing.Optional[tf.keras.layers.Layer] = None
+    
+    _encoded_input_layer: typing.Optional[tf.keras.layers.Layer] = None
 
     @LazyProperty
     def input_layers(self) -> typing.Sequence[tf.keras.layers.Layer]:
@@ -31,7 +33,7 @@ class Comparator(ModelWrapper):
 
     @LazyProperty
     def loss(self) -> typing.Sequence[typing.Callable[[tf.Tensor, tf.Tensor], tf.Tensor]]:
-        comparative_loss = losses.Loss((losses.cross_entropy_positive,))
+        comparative_loss = losses.Loss((losses.cross_entropy,))
         decoder_loss = losses.Loss((losses.mae,))
         return comparative_loss, decoder_loss, decoder_loss
 
@@ -42,21 +44,33 @@ class Comparator(ModelWrapper):
     @LazyProperty
     def encoder(self) -> tf.keras.models.Model:
         return tf.keras.Model(inputs=self.input_layer, outputs=self.encoded_layer, name="shared_encoder")
+        
+    
+    @LazyProperty
+    def encoded_input_layer(self) -> tf.keras.layers.Layer:
+        return tf.keras.layers.Input(shape=self.encoded_layer.shape[1:])
 
     @LazyProperty
     def post_encoded_layer(self) -> tf.keras.layers.Layer:
-        current_layer = tf.keras.layers.GlobalAveragePooling2D()(self.encoded_layer)
+        # current_layer = tf.keras.layers.GlobalAveragePooling2D()(self.encoded_layer)
+        current_layer = tf.keras.layers.GlobalAveragePooling2D()(self.encoded_input_layer)
         post_encoded_layer = tf.keras.layers.Dense(self.layer_kernels[-1], activation=DEFAULT_ACTIVATION)(current_layer)
         return post_encoded_layer
 
     @LazyProperty
     def post_encoder(self) -> tf.keras.models.Model:
-        return tf.keras.Model(inputs=self.encoded_layer, outputs=self.post_encoded_layer, name="shared_post_encoder")
+        return tf.keras.Model(
+            # inputs=self.encoded_layer, 
+            inputs=self.encoded_input_layer, 
+            outputs=self.post_encoded_layer, 
+            name="shared_post_encoder"
+        )
 
     @LazyProperty
     def decoded_layer(self) -> tf.keras.layers.Layer:
         current_layer = build_decoder(
-            self.encoded_layer,
+            self.encoded_input_layer,
+            # self.encoded_layer,
             (),
             self.layer_kernels,
             superseeded_conv_layer=self.superseeded_conv_layer,
@@ -71,7 +85,12 @@ class Comparator(ModelWrapper):
 
     @LazyProperty
     def decoder(self) -> tf.keras.models.Model:
-        return tf.keras.Model(inputs=self.encoded_layer, outputs=self.decoded_layer, name="shared_decoder")
+        return tf.keras.Model(
+            # inputs=self.encoded_layer, 
+            inputs=self.encoded_input_layer, 
+            outputs=self.decoded_layer,
+             name="shared_decoder"
+             )
 
     @LazyProperty
     def output_layer(self) -> typing.Sequence[tf.keras.layers.Layer]:
