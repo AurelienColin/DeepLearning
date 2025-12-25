@@ -19,8 +19,8 @@ This phase contains tasks that are not tied to a specific development milestone 
 
 | ID | Task | Status | Priority |
 |----|------|--------|----------|
-| X.1 | [Populate index-codebase](./task-X.1-populate-index-codebase.md) | `[ ]` | High |
-| X.2 | [Populate index-documentation](./task-X.2-populate-index-documentation.md) | `[ ]` | High |
+| X.1 | [Populate index-codebase](./task-X.1-populate-index-codebase.md) | `[x]` | High |
+| X.2 | [Populate index-documentation](./task-X.2-populate-index-documentation.md) | `[x]` | High |
 | X.3 | [Populate index-lessons-learned](./task-X.3-populate-index-lessons-learned.md) | `[ ]` | Medium |
 | X.4 | [Create project overview](./task-X.4-project-overview.md) | `[ ]` | High |
 | X.5 | [Document potential improvements](./task-X.5-potential-improvements.md) | `[ ]` | Low |
