@@ -2,7 +2,7 @@
 
 > Lookup table: keyword -> document location
 
-**Status**: Populated (Task X.2) - 17 entries
+**Status**: Populated (Task X.2, X.4) - 21 entries
 
 | Keyword | Location | Description |
 |---------|----------|-------------|
@@ -18,6 +18,10 @@
 | Phase X | .ENHANCEMENT_PROPOSAL_PLAN/phases/phase-X-off-chronology/README.md | Off-chronology maintenance tasks |
 | phases status | .ENHANCEMENT_PROPOSAL_PLAN/indices/index-phases.md | Phase/Task -> status lookup |
 | project overview | README.md | Framework purpose, structure, basic usage |
+| architecture overview | .ENHANCEMENT_PROPOSAL_PLAN/specs/project-overview.md | Detailed architecture, data flow, extension points |
+| data flow patterns | .ENHANCEMENT_PROPOSAL_PLAN/specs/project-overview.md#2-data-flow-patterns | Image-to-Tag and Image-to-Image pipelines |
+| extension points | .ENHANCEMENT_PROPOSAL_PLAN/specs/project-overview.md#3-extension-points | How to add models, generators, losses, callbacks |
+| design patterns | .ENHANCEMENT_PROPOSAL_PLAN/specs/project-overview.md#4-design-patterns | Factory, Strategy, Template Method patterns |
 | repositories | .ENHANCEMENT_PROPOSAL_PLAN/indices/index-repositories.md | Repo -> path lookup |
 | Task X.1 | .ENHANCEMENT_PROPOSAL_PLAN/phases/phase-X-off-chronology/task-X.1-populate-index-codebase.md | Codebase index population task |
 | Task X.2 | .ENHANCEMENT_PROPOSAL_PLAN/phases/phase-X-off-chronology/task-X.2-populate-index-documentation.md | Documentation index population task |
