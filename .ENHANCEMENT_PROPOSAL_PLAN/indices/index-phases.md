@@ -2,36 +2,77 @@
 
 > Lookup table: Phase/Task -> status
 
-| Phase | Task | Status |
-|-------|------|--------|
-| X | Off-Chronology | Active |
-| X.1 | Populate index-codebase | `[x]` |
-| X.2 | Populate index-documentation | `[x]` |
-| X.3 | Populate index-lessons-learned | `[x]` |
-| X.4 | Create project overview | `[x]` |
-| X.5 | Document potential improvements | `[x]` |
-| X.5.1 | Code Quality Audit | `[x]` |
-| X.5.2 | Performance Analysis | `[x]` |
-| X.5.3 | Feature Gap Analysis | `[x]` |
-| X.5.4 | Technical Debt Inventory | `[x]` |
-| X.5.5 | Documentation Gap Analysis | `[x]` |
-| X.5.6 | Prioritize and Categorize | `[x]` |
+---
+
+## Active Phases
+
+### Phase 1: Foundation & Infrastructure
+
+| Task | Title | Status | Agent |
+|------|-------|--------|-------|
+| 1 | Foundation & Infrastructure | `[~]` In Progress | `agent-organizer` |
+| 1.0 | Project Assessment | `[x]` | `agent-organizer` |
+| 1.1 | Critical Code Fixes | `[ ]` | `python-pro` |
+| 1.2 | Performance Quick Wins | `[ ]` | `machine-learning-researcher` |
+| 1.3 | Essential Callbacks | `[ ]` | `python-pro` |
+| 1.4 | CI/CD Foundation | `[ ]` | `devops-engineer` |
+
+**Location:** [phases/phase-1-foundation/](../phases/phase-1-foundation/)
 
 ---
 
-## Improvement Backlog Phases (Future)
+### Phase X: Off-Chronology
 
-The following phases are proposed based on the improvement backlog analysis (Task X.5.6):
+| Task | Title | Status | Notes |
+|------|-------|--------|-------|
+| X | Off-Chronology | Active | Maintenance & ad-hoc tasks |
+| X.1 | Populate index-codebase | `[x]` | |
+| X.2 | Populate index-documentation | `[x]` | |
+| X.3 | Populate index-lessons-learned | `[x]` | |
+| X.4 | Create project overview | `[x]` | |
+| X.5 | Document potential improvements | `[x]` | *Retroactively moved to Task 1.0* |
 
-| Phase ID | Name | Effort | Priority | Status |
-|----------|------|--------|----------|--------|
-| U1 | Foundation Fixes | S | Critical | `[ ]` |
-| U2 | Type Safety & Modernization | M | High | `[ ]` |
-| U3 | Performance Optimization | M | High | `[ ]` |
-| U4 | Core Features - Losses & Metrics | M | High | `[ ]` |
-| U5 | Modern Backbones | M-L | Medium | `[ ]` |
-| U6 | Documentation | M | Medium | `[ ]` |
-| U7 | Advanced Architectures | L | Low | `[ ]` |
-| U8 | Training Ecosystem | M | Low | `[ ]` |
+**Location:** [phases/phase-X-off-chronology/](../phases/phase-X-off-chronology/)
 
-**Reference:** [improvement-backlog.md](../specs/improvement-backlog.md#11-consolidated-prioritization-matrix-task-x56)
+---
+
+## Future Phases (Proposed Roadmap)
+
+Based on the improvement backlog analysis (Task 1.0 / X.5.6):
+
+| Phase ID | Name | Effort | Priority | Depends On |
+|----------|------|--------|----------|------------|
+| **1** | Foundation & Infrastructure | S | Critical | - |
+| 2 | Type Safety & Modernization | M | High | Phase 1 |
+| 3 | Performance Optimization | M | High | Phase 1 |
+| 4 | Core Features - Losses & Metrics | M | High | Phase 1 |
+| 5 | Modern Backbones | M-L | Medium | Phase 4 |
+| 6 | Documentation | M | Medium | Phase 2 |
+| 7 | Advanced Architectures | L | Low | Phase 5 |
+| 8 | Training Ecosystem | M | Low | Phase 3 |
+
+**Dependency Graph:**
+```
+Phase 1 (Foundation) ─┬─> Phase 2 (Type Safety) ──> Phase 6 (Docs)
+                      │
+                      ├─> Phase 3 (Performance) ──> Phase 8 (Ecosystem)
+                      │
+                      └─> Phase 4 (Losses/Metrics) ──> Phase 5 (Backbones) ──> Phase 7 (Architectures)
+```
+
+**Reference:** [improvement-backlog.md §11.2](../specs/improvement-backlog.md#112-unified-phase-roadmap)
+
+---
+
+## Status Legend
+
+| Status | Meaning |
+|--------|---------|
+| `[ ]` | Not started |
+| `[~]` | In progress |
+| `[x]` | Completed |
+| `[!]` | Blocked / Needs attention |
+
+---
+
+*Last Updated: 2025-12-25 (Phase 1 created via RTD)*
