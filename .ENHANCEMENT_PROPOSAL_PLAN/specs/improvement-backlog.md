@@ -18,6 +18,7 @@
 | Performance Issues | 8 items (IMP-013 to IMP-020) | Medium-High |
 | Feature Gaps | 47 items (FG-001 to FG-047) | Mixed |
 | Technical Debt | 34 items (TD-001 to TD-031) | Low-High |
+| Documentation Gaps | 24 items (DG-001 to DG-024) | Medium-High |
 
 ---
 
@@ -721,13 +722,117 @@ return self.add_weight(name='chosen_patterns',
 
 ---
 
+## 10. Documentation Gap Analysis (Task X.5.5)
+
+**Completed:** 2025-12-25
+**Agent:** `technical-writer`, `archivist`
+
+### 10.1 Docstring Coverage Analysis
+
+**Critical Finding:** Documentation coverage is severely lacking across the codebase.
+
+| Category | With Docstring | Without Docstring | Coverage |
+|----------|----------------|-------------------|----------|
+| Modules | 1 | 142 | **0.7%** |
+| Classes | 2 | 102 | **1.9%** |
+| Functions (top-level) | 0 | 33 | **0.0%** |
+
+#### 10.1.1 Modules WITH Docstrings (Complete List)
+
+| ID | Module | Notes |
+|----|--------|-------|
+| - | `src/modules/layers/sparse_conv2d.py` | Auto-generated (Gemini) |
+
+#### 10.1.2 Classes WITH Docstrings (Complete List)
+
+| ID | Class | Location |
+|----|-------|----------|
+| - | `VideoProcessor` | `src/scripts/utils/processors/video_processor.py` |
+| - | `FileProcessor` | `src/scripts/utils/processors/file_processor.py` |
+
+#### 10.1.3 Priority Modules for Docstring Addition
+
+| ID | Module | Reason | Effort | Impact |
+|----|--------|--------|--------|--------|
+| DG-001 | `src/trainers/trainer.py` | Core base class | M | High |
+| DG-002 | `src/models/model_wrapper.py` | Core base class | M | High |
+| DG-003 | `src/generators/base_generators.py` | Core base class | M | High |
+| DG-004 | `src/callbacks/callback.py` | Core base class | S | High |
+| DG-005 | `src/config.py` | Entry point for configuration | S | High |
+| DG-006 | `src/modules/module.py` | Architecture building blocks | M | High |
+| DG-007 | `src/losses/losses.py` | Loss function reference | M | Medium |
+| DG-008 | `src/output_spaces/output_space.py` | Output space abstraction | M | Medium |
+
+### 10.2 README Gaps
+
+**Current State:** The README provides minimal guidance with generic instructions.
+
+| ID | Gap | Description | Effort | Impact |
+|----|-----|-------------|--------|--------|
+| DG-009 | No working code examples | README lacks copy-paste runnable examples | M | High |
+| DG-010 | Missing configuration reference | `RIGNAK_ML_DATASET_ROOT` env var undocumented | S | High |
+| DG-011 | Missing Rignak dependency docs | Custom `rignak` library not explained | M | High |
+| DG-012 | No API documentation | No class/function reference | L | High |
+| DG-013 | No troubleshooting section | Common errors not documented | M | Medium |
+| DG-014 | Missing output examples | No sample outputs shown | S | Medium |
+
+### 10.3 Tutorial Needs (New User Onboarding)
+
+| ID | Tutorial Topic | Description | Effort | Impact |
+|----|----------------|-------------|--------|--------|
+| DG-015 | Quick Start Guide | First model training in 5 minutes | M | High |
+| DG-016 | Dataset Preparation | How to structure training data | M | High |
+| DG-017 | Custom Trainer Creation | Extending base trainer class | M | High |
+| DG-018 | Custom Generator Creation | Data pipeline customization | M | Medium |
+| DG-019 | Custom Callback Creation | Training monitoring/visualization | S | Medium |
+| DG-020 | Custom Loss Function | Adding new loss functions | S | Medium |
+| DG-021 | Model Architecture Guide | Using/extending encoder-decoder | L | Medium |
+| DG-022 | Inference Guide | Using trained models for prediction | M | High |
+
+### 10.4 EPP Index Completeness
+
+| ID | Index | Issue | Effort | Impact |
+|----|-------|-------|--------|--------|
+| DG-023 | `index-phases.md` | Missing X.5 subtask status (X.5.1-X.5.6) | S | Low |
+| DG-024 | `index-agents.md` | Missing some CLAUDE.md agents (scientific-publication-editor, remote-sensing-oceanographer, geospatial-visualizer) | S | Low |
+
+### 10.5 Recommendations
+
+#### Immediate Actions (High Impact, Low Effort)
+
+1. **Add module docstrings to core files:** Start with `config.py`, `callback.py`
+2. **Document environment variables:** Add `RIGNAK_ML_DATASET_ROOT` to README
+3. **Add one working example:** Create a minimal training example in README
+
+#### Medium-Term Actions
+
+1. **Create Quick Start tutorial:** Step-by-step first model training
+2. **Add docstrings to base classes:** `Trainer`, `ModelWrapper`, `BatchGenerator`
+3. **Document Rignak dependency:** Explain installation and purpose
+
+#### Long-Term Actions
+
+1. **Generate API documentation:** Consider Sphinx/MkDocs for full API docs
+2. **Create tutorial series:** Cover all extension points
+3. **Add docstrings systematically:** Use pydocstyle enforcement in CI
+
+### 10.6 Effort Legend
+
+- **S (Small):** < 1 hour
+- **M (Medium):** 1-4 hours
+- **L (Large):** > 4 hours
+
+---
+
 ## Cross-References
 
 - **Task:** [X.5.1 Code Quality Audit](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
 - **Task:** [X.5.2 Performance Analysis](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
 - **Task:** [X.5.3 Feature Gap Analysis](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
 - **Task:** [X.5.4 Technical Debt Inventory](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
+- **Task:** [X.5.5 Documentation Gap Analysis](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
 - **Index:** [index-codebase.md](../indices/index-codebase.md)
+- **Index:** [index-documentation.md](../indices/index-documentation.md)
 - **Lessons:** [lessons-learned/](../lessons-learned/)
 
 ---
