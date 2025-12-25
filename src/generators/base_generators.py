@@ -55,20 +55,28 @@ class PostProcessGenerator:
         raise NotImplementedError
 
     def __next__(self) -> typing.Tuple[np.ndarray, np.ndarray]:
+        if self.generator is None:
+            raise StopIteration("PostProcessGenerator has no underlying generator")
         return self(*next(self.generator))
 
     def batch_processing(
             self,
             filenames: typing.Iterable[typing.Tuple[str, str]]
     ) -> typing.Tuple[np.ndarray, np.ndarray]:
+        if self.generator is None:
+            raise ValueError("PostProcessGenerator has no underlying generator")
         return self(*self.generator.batch_processing(filenames))
 
     @property
     def output_space(self) -> OutputSpace:
+        if self.generator is None:
+            raise ValueError("PostProcessGenerator has no underlying generator")
         return self.generator.output_space
 
     @property
     def batch_size(self) -> int:
+        if self.generator is None:
+            raise ValueError("PostProcessGenerator has no underlying generator")
         return self.generator.batch_size
 
 

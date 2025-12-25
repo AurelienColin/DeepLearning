@@ -5,6 +5,7 @@ import numpy as np
 from rignak.src.logging_utils import logger
 
 from src.generators.base_generators import BatchGenerator
+from src.output_spaces.output_space import OutputSpace
 from src.samples.image_to_image.overlaid_sample import OverlaidSample
 
 

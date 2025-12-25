@@ -1,3 +1,5 @@
+import typing
+
 import numpy as np
 
 from src.generators.base_generators import PostProcessGenerator
