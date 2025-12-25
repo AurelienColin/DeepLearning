@@ -15,6 +15,9 @@
 | Cyclomatic Complexity | 2 functions > 10 | Low |
 | Code Duplication | 2 instances | Low |
 | Overall Code Quality | 9.99/10 (pylint) | N/A |
+| Performance Issues | 8 items (IMP-013 to IMP-020) | Medium-High |
+| Feature Gaps | 47 items (FG-001 to FG-047) | Mixed |
+| Technical Debt | 34 items (TD-001 to TD-031) | Low-High |
 
 ---
 
@@ -545,11 +548,185 @@ Current loss implementations use `epsilon = 1e-7` consistently (good practice). 
 
 ---
 
+## 9. Technical Debt Inventory (Task X.5.4)
+
+**Generated:** 2025-12-25
+**Agents:** `refactoring-specialist`, `devops-engineer`, `machine-learning-researcher`
+
+### 9.1 TODO/FIXME/HACK Markers
+
+**Tool:** `grep -rn "TODO\|FIXME\|HACK\|XXX" src/ test/`
+**Result:** ✅ **No markers found**
+
+The codebase is clean of TODO/FIXME markers. This is a positive indicator of code hygiene.
+
+### 9.2 Deprecated TensorFlow Patterns
+
+#### 9.2.1 Model Saving Format (`.h5` → `.keras`)
+
+**Severity:** Medium | **Effort:** S | **Impact:** Medium
+
+| ID | Location | Current Pattern | Recommended |
+|----|----------|-----------------|-------------|
+| TD-001 | `src/callbacks/history_callback.py:43-45` | `model.save(..."/model.h5")` | Use `.keras` format or SavedModel |
+| TD-002 | `src/scripts/nested_on_video.py:36` | `load_weights(.../model.h5)` | Migrate to `.keras` format |
+| TD-003 | `src/scripts/make_blurry_loss_from_encoder.py:17` | `.blurry.h5` hardcoded | Use `.keras` extension |
+| TD-004 | `src/scripts/nested_pca.py:52` | `load_weights(.../model.h5)` | Migrate to `.keras` format |
+| TD-005 | `src/scripts/make_loss_from_encoder.py:21,45` | `.h5` default paths | Use `.keras` extension |
+| TD-006 | `src/losses/from_model/blurriness.py:10` | `.blurry.h5` hardcoded | Use `.keras` extension |
+| TD-007 | `src/losses/from_model/encoding_similarity.py:13` | `.kid.h5` hardcoded | Use `.keras` extension |
+| TD-008 | `src/scripts/utils/processors/processor.py:33` | `load_weights(.../model.h5)` | Migrate to `.keras` format |
+
+**Migration Notes:**
+- TensorFlow 2.13+ recommends `.keras` format (native Keras v3 format)
+- `.h5` format has known limitations with custom objects and Lambda layers
+- SavedModel format is preferred for production deployment
+
+#### 9.2.2 Legacy Keras Backend Usage (`K.*` → `tf.*`)
+
+**Severity:** Low | **Effort:** M | **Impact:** Low
+
+The `tensorflow.keras.backend as K` pattern is legacy and should migrate to direct `tf.*` operations.
+
+| ID | File | `K.*` Usages | Migration Target |
+|----|------|--------------|------------------|
+| TD-009 | `src/losses/from_model/blurriness.py` | `K.mean` | `tf.reduce_mean` |
+| TD-010 | `src/losses/from_model/encoding_similarity.py` | `K.mean`, `K.abs` | `tf.reduce_mean`, `tf.abs` |
+| TD-011 | `src/losses/kid.py` | `K.cast`, `K.shape`, `K.transpose`, `K.eye`, `K.sum`, `K.mean` | `tf.cast`, `tf.shape`, `tf.transpose`, `tf.eye`, `tf.reduce_sum`, `tf.reduce_mean` |
+| TD-012 | `src/models/model_wrapper.py` | `K.tanh` in Lambda | `tf.keras.layers.Activation('tanh')` or `tf.nn.tanh` |
+| TD-013 | `src/models/image_to_tag/comparator_wrapper.py` | Import only (unused) | Remove import |
+| TD-014 | `src/models/image_to_image/diffusion_model_wrapper.py` | `K.cast`, `K.cos`, `K.sin`, `K.ones`, `K.random_normal`, `K.random_uniform` | `tf.cast`, `tf.cos`, `tf.sin`, `tf.ones`, `tf.random.normal`, `tf.random.uniform` |
+| TD-015 | `src/models/image_to_image/auto_encoder_wrapper.py` | Import only | Verify usage or remove |
+
+**Migration Rationale:**
+- `tf.keras.backend` functions wrap TF operations with extra overhead
+- Direct `tf.*` operations are clearer and enable better graph optimization
+- Some `K.*` functions may be removed in future TensorFlow versions
+
+#### 9.2.3 Non-Standard Variable Creation
+
+**Severity:** Low | **Effort:** S | **Impact:** Low
+
+| ID | Location | Issue | Fix |
+|----|----------|-------|-----|
+| TD-016 | `src/modules/layers/sparse_conv2d.py:89` | `tf.Variable()` inside Keras layer | Use `self.add_weight()` for proper tracking |
+
+**Current:**
+```python
+return tf.Variable(initial_value=chosen_patterns, dtype=tf.int32, trainable=False)
+```
+
+**Recommended:**
+```python
+return self.add_weight(name='chosen_patterns',
+                       initializer=tf.constant_initializer(chosen_patterns),
+                       dtype=tf.int32, trainable=False)
+```
+
+### 9.3 Dependency Issues
+
+**Source:** `setup.py`
+
+#### 9.3.1 Outdated Packages
+
+| ID | Package | Current Version | Latest Stable | Severity | Notes |
+|----|---------|-----------------|---------------|----------|-------|
+| TD-017 | TensorFlow | 2.17 | 2.20 (Aug 2025) | Low | Minor update, 2.17 still functional |
+| TD-018 | Basemap | (any) | **DEPRECATED** | **High** | No longer maintained since 2020; migrate to Cartopy |
+
+**Basemap → Cartopy Migration:**
+- [Basemap Deprecation Notice](https://github.com/matplotlib/basemap/issues/568)
+- [Cartopy Documentation](https://scitools.org.uk/cartopy/)
+- Cartopy provides similar functionality with active maintenance
+
+#### 9.3.2 Unpinned Dependencies (Reproducibility Risk)
+
+| ID | Package | Risk Level | Recommendation |
+|----|---------|------------|----------------|
+| TD-019 | pandas | Medium | Pin to major.minor (e.g., `pandas>=2.0,<3.0`) |
+| TD-020 | matplotlib | Low | Pin to major.minor |
+| TD-021 | opencv-python | Medium | Pin version for API stability |
+| TD-022 | scikit-learn | Low | Pin to major.minor |
+| TD-023 | Pillow | Medium | Pin version; API changes between majors |
+| TD-024 | pytest | Low | Pin for CI consistency |
+
+#### 9.3.3 Build System Modernization
+
+| ID | Issue | Severity | Effort | Recommendation |
+|----|-------|----------|--------|----------------|
+| TD-025 | Using `setup.py` only | Low | M | Migrate to `pyproject.toml` (PEP 517/518) |
+| TD-026 | No lock file | Medium | S | Add `uv.lock` or `requirements.lock` |
+| TD-027 | Git dependency (`rignak`) | Low | N/A | Acceptable for private packages |
+
+### 9.4 Code Inflexibility Patterns
+
+**Reference:** [hardcoded-file-extension.md](../lessons-learned/hardcoded-file-extension.md)
+
+| ID | Location | Pattern | Issue |
+|----|----------|---------|-------|
+| TD-028 | Multiple scripts | Hardcoded `.tmp/` paths | Paths like `.tmp/20250115_095140/model.h5` |
+| TD-006, TD-007 | Loss files | Hardcoded model paths | Should be configurable |
+
+### 9.5 CI/CD Debt
+
+**Reference:** [ci-branch-naming.md](../lessons-learned/ci-branch-naming.md)
+
+| ID | Area | Current State | Improvement |
+|----|------|---------------|-------------|
+| TD-029 | Pre-commit hooks | Not configured | Add `.pre-commit-config.yaml` |
+| TD-030 | Large file prevention | Not enforced | Add `check-added-large-files` hook |
+| TD-031 | Binary file gitignore | Partial | Verify `.nc`, `.hdf*`, `*.SAFE/` patterns |
+
+### 9.6 Prioritized Technical Debt Remediation
+
+#### Phase TD1: Critical Fixes (Effort: S, Impact: High)
+
+| ID | Task | Files Affected |
+|----|------|----------------|
+| TD-018 | Migrate from Basemap to Cartopy | TBD (search for basemap usage) |
+| TD-001 to TD-008 | Migrate `.h5` to `.keras` format | 8 files |
+
+#### Phase TD2: Modernization (Effort: M, Impact: Medium)
+
+| ID | Task | Files Affected |
+|----|------|----------------|
+| TD-025 | Create `pyproject.toml` | Root |
+| TD-019 to TD-024 | Pin dependency versions | `pyproject.toml` |
+| TD-009 to TD-015 | Migrate `K.*` to `tf.*` | 7 files |
+
+#### Phase TD3: Best Practices (Effort: S-M, Impact: Low)
+
+| ID | Task | Files Affected |
+|----|------|----------------|
+| TD-016 | Fix `tf.Variable` in SparseConv2D | `sparse_conv2d.py` |
+| TD-029 | Add pre-commit hooks | Root |
+| TD-017 | Upgrade TensorFlow 2.17 → 2.20 | `setup.py`/`pyproject.toml` |
+
+### 9.7 Summary Statistics
+
+| Category | Items | Critical | High | Medium | Low |
+|----------|-------|----------|------|--------|-----|
+| TODO/FIXME Markers | 0 | - | - | - | - |
+| Deprecated TF Patterns | 16 | 0 | 0 | 1 | 15 |
+| Dependency Issues | 12 | 0 | 1 | 4 | 7 |
+| Code Inflexibility | 3 | 0 | 0 | 2 | 1 |
+| CI/CD Debt | 3 | 0 | 0 | 1 | 2 |
+| **Total** | **34** | **0** | **1** | **8** | **25** |
+
+### 9.8 Effort Legend
+
+- **S (Small):** < 1 hour, mechanical changes
+- **M (Medium):** 1-4 hours, requires testing
+- **L (Large):** > 4 hours, architectural impact
+
+---
+
 ## Cross-References
 
 - **Task:** [X.5.1 Code Quality Audit](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
 - **Task:** [X.5.2 Performance Analysis](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
 - **Task:** [X.5.3 Feature Gap Analysis](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
+- **Task:** [X.5.4 Technical Debt Inventory](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
 - **Index:** [index-codebase.md](../indices/index-codebase.md)
 - **Lessons:** [lessons-learned/](../lessons-learned/)
 
