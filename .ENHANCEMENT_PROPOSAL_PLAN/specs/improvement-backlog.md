@@ -345,10 +345,211 @@ Current loss implementations use `epsilon = 1e-7` consistently (good practice). 
 
 ---
 
+## 8. Feature Gap Analysis (Task X.5.3)
+
+**Generated:** 2025-12-25
+**Agent:** `machine-learning-researcher`
+
+### 8.1 Framework Comparison: Current vs Modern Standards
+
+| Feature Area | This Framework | PyTorch Lightning | Keras 3 | Gap Level |
+|--------------|----------------|-------------------|---------|-----------|
+| **Training Loop** | Custom `Trainer.run()` via `model.fit()` | `Trainer` with hooks | `model.fit()` + callbacks | Low |
+| **Model Abstraction** | `ModelWrapper` dataclass | `LightningModule` | Subclassed `Model` | Low |
+| **Data Loading** | Custom `BatchGenerator` + ThreadPool | `DataLoader` + workers | `tf.data.Dataset` | Medium |
+| **Callbacks** | Custom `Callback` base class | Built-in + custom hooks | Built-in `Callback` | Low |
+| **Mixed Precision** | Not implemented | `precision="16-mixed"` | `mixed_float16` policy | **High** |
+| **Gradient Accumulation** | Not implemented | Built-in | Manual | **High** |
+| **Multi-GPU/Distributed** | Not implemented | Built-in DDP/FSDP | `tf.distribute` | **High** |
+| **Checkpointing** | Not implemented | `ModelCheckpoint` | `ModelCheckpoint` callback | **Medium** |
+| **LR Scheduling** | Not implemented | Scheduler integration | `LearningRateScheduler` | **Medium** |
+| **Logging/Tracking** | CSV history only | W&B, MLflow, TensorBoard | TensorBoard callback | **Medium** |
+| **Pre-trained Backbones** | None | torchvision/timm | `keras.applications` | **Critical** |
+| **Attention Mechanisms** | None | Native + timm | `keras.layers.Attention` | **High** |
+
+### 8.2 Architecture Gaps
+
+#### 8.2.1 Missing Backbone Architectures
+
+| ID | Architecture | Use Case | Implementation Effort | Impact |
+|----|--------------|----------|----------------------|--------|
+| FG-001 | **ResNet (18/34/50/101)** | General-purpose encoder | M | **Critical** |
+| FG-002 | **EfficientNetV2** | Efficient classification/segmentation | M | High |
+| FG-003 | **ConvNeXt** | Modern CNN baseline | M | High |
+| FG-004 | **Vision Transformer (ViT)** | Attention-based encoder | L | Medium |
+| FG-005 | **Swin Transformer** | Hierarchical vision transformer | L | High |
+| FG-006 | **MobileNetV3** | Edge deployment | S | Medium |
+
+**Current State:** Only custom convolutional encoder via `build_encoder()` with configurable kernel counts.
+
+#### 8.2.2 Missing Decoder/Segmentation Architectures
+
+| ID | Architecture | Use Case | Implementation Effort | Impact |
+|----|--------------|----------|----------------------|--------|
+| FG-007 | **UNet++** | Nested skip connections | M | High |
+| FG-008 | **DeepLabV3+** | Atrous spatial pyramid pooling | M | High |
+| FG-009 | **FPN (Feature Pyramid Network)** | Multi-scale features | M | High |
+| FG-010 | **PANet** | Bottom-up path augmentation | M | Medium |
+| FG-011 | **SegFormer** | Transformer-based segmentation | L | Medium |
+
+**Current State:** Basic U-Net with `build_encoder()` + `build_decoder()` and skip connections.
+
+#### 8.2.3 Missing Attention Modules
+
+| ID | Module | Description | Implementation Effort | Impact |
+|----|--------|-------------|----------------------|--------|
+| FG-012 | **CBAM** | Channel + Spatial attention | S | High |
+| FG-013 | **SE (Squeeze-and-Excitation)** | Channel attention | S | High |
+| FG-014 | **ECA (Efficient Channel Attention)** | Lightweight channel attention | S | Medium |
+| FG-015 | **Self-Attention / Multi-Head** | Global context | M | Medium |
+| FG-016 | **Axial Attention** | Efficient self-attention | M | Low |
+
+**Current State:** No attention mechanisms implemented.
+
+### 8.3 Loss Function Gaps
+
+| ID | Loss Function | Use Case | Implementation Effort | Impact |
+|----|---------------|----------|----------------------|--------|
+| FG-017 | **Focal Loss** | Class imbalance (detection/segmentation) | S | **Critical** |
+| FG-018 | **Lovász-Softmax** | Direct IoU optimization | S | High |
+| FG-019 | **Perceptual/VGG Loss** | Style transfer, super-resolution | M | High |
+| FG-020 | **SSIM Loss** | Structural similarity preservation | S | High |
+| FG-021 | **Tversky Loss** | Tunable precision/recall balance | S | Medium |
+| FG-022 | **InfoNCE / NT-Xent** | Contrastive learning | M | Medium |
+| FG-023 | **Deep Supervision Loss** | Auxiliary outputs at encoder stages | M | Medium |
+| FG-024 | **Boundary/Surface Loss** | Edge-aware segmentation | S | Medium |
+
+**Current State:**
+- ✅ MAE, Cross-Entropy, Dice, Edge (Sobel), Std Difference
+- ✅ Blurriness loss (from model), Encoding Similarity
+- ✅ KID (Kernel Inception Distance)
+
+### 8.4 Metrics Gaps
+
+| ID | Metric | Use Case | Implementation Effort | Impact |
+|----|--------|----------|----------------------|--------|
+| FG-025 | **IoU / mIoU** | Segmentation evaluation | S | **Critical** |
+| FG-026 | **Pixel Accuracy / Class Accuracy** | Segmentation | S | High |
+| FG-027 | **PSNR** | Image quality (reconstruction) | S | High |
+| FG-028 | **SSIM** | Structural similarity | S | High |
+| FG-029 | **FID (Fréchet Inception Distance)** | Generative model quality | M | Medium |
+| FG-030 | **Precision / Recall / F1 per class** | Classification analysis | S | High |
+| FG-031 | **AUC-ROC / PR-AUC** | Binary classification | S | Medium |
+| FG-032 | **Mean Average Precision (mAP)** | Detection | M | Low |
+
+**Current State:** Only standard Keras metrics (accuracy, loss). No domain-specific metrics.
+
+### 8.5 Training Infrastructure Gaps
+
+| ID | Feature | Description | Implementation Effort | Impact |
+|----|---------|-------------|----------------------|--------|
+| FG-033 | **Gradient Accumulation** | Train with larger effective batch sizes | S | **High** |
+| FG-034 | **Mixed Precision Training** | `tf.keras.mixed_precision` policy | S | **High** |
+| FG-035 | **Model Checkpointing** | Save best/periodic model weights | S | **High** |
+| FG-036 | **Early Stopping** | Stop training on plateau | S | High |
+| FG-037 | **LR Schedulers** | Warmup, cosine annealing, reduce on plateau | M | High |
+| FG-038 | **Experiment Tracking** | W&B, MLflow, TensorBoard integration | M | Medium |
+| FG-039 | **Multi-GPU Training** | `tf.distribute.MirroredStrategy` | M | Medium |
+| FG-040 | **Gradient Clipping** | Prevent exploding gradients | S | Medium |
+| FG-041 | **EMA (Exponential Moving Average)** | Model weight averaging | S | Medium |
+
+### 8.6 Data Pipeline Gaps
+
+| ID | Feature | Description | Implementation Effort | Impact |
+|----|---------|-------------|----------------------|--------|
+| FG-042 | **Albumentations Integration** | Rich augmentation library | M | High |
+| FG-043 | **Multi-scale Training** | Random image size per batch | M | Medium |
+| FG-044 | **Mosaic Augmentation** | Combine 4 images (YOLO-style) | M | Low |
+| FG-045 | **CutMix / MixUp** | Regularization via mixing | S | Medium |
+| FG-046 | **Online Hard Example Mining (OHEM)** | Focus on difficult samples | M | Medium |
+| FG-047 | **Sample Weighting** | Instance-level importance | S | Medium |
+
+**Current State:**
+- ✅ VerticalSymmetry (horizontal flip)
+- ✅ Blurry augmentation
+- ✅ Class weighting via `Loss.apply_class_weights()`
+- ❌ No Albumentations, no advanced augmentations
+
+### 8.7 Prioritized Feature Roadmap
+
+#### Phase F1: Critical Infrastructure (Effort: S-M, Impact: Critical/High)
+
+| ID | Task | Files Affected | Depends On |
+|----|------|----------------|------------|
+| FG-033 | Add gradient accumulation wrapper | `trainer.py`, `model_wrapper.py` | - |
+| FG-034 | Enable mixed precision training | `trainer.py` | - |
+| FG-035 | Add ModelCheckpoint callback | `callbacks/` | - |
+| FG-017 | Implement Focal Loss | `losses/losses.py` | - |
+| FG-025 | Implement IoU / mIoU metric | `metrics/` (new) | - |
+
+#### Phase F2: Modern Backbones (Effort: M, Impact: Critical/High)
+
+| ID | Task | Files Affected | Depends On |
+|----|------|----------------|------------|
+| FG-001 | Add ResNet backbone support | `modules/backbones/` (new) | - |
+| FG-002 | Add EfficientNetV2 backbone | `modules/backbones/` | FG-001 |
+| FG-012 | Implement CBAM attention | `modules/layers/` | - |
+| FG-013 | Implement SE attention | `modules/layers/` | - |
+
+#### Phase F3: Advanced Losses & Metrics (Effort: S-M, Impact: High)
+
+| ID | Task | Files Affected | Depends On |
+|----|------|----------------|------------|
+| FG-018 | Implement Lovász-Softmax loss | `losses/losses.py` | FG-025 |
+| FG-019 | Implement Perceptual/VGG loss | `losses/from_model/` | FG-001 |
+| FG-020 | Implement SSIM loss/metric | `losses/`, `metrics/` | - |
+| FG-027 | Implement PSNR metric | `metrics/` | - |
+| FG-030 | Implement per-class F1/precision/recall | `metrics/` | - |
+
+#### Phase F4: Training Enhancements (Effort: M, Impact: Medium)
+
+| ID | Task | Files Affected | Depends On |
+|----|------|----------------|------------|
+| FG-036 | Add EarlyStopping callback | `callbacks/` | FG-035 |
+| FG-037 | Add LR scheduler support | `trainer.py` | - |
+| FG-038 | Add TensorBoard/W&B logging | `callbacks/` | - |
+| FG-040 | Add gradient clipping | `trainer.py`, `model_wrapper.py` | - |
+| FG-041 | Add EMA model averaging | `model_wrapper.py` | - |
+
+#### Phase F5: Advanced Architectures (Effort: M-L, Impact: Medium)
+
+| ID | Task | Files Affected | Depends On |
+|----|------|----------------|------------|
+| FG-007 | Implement UNet++ | `models/image_to_image/` | - |
+| FG-008 | Implement DeepLabV3+ | `models/image_to_image/` | - |
+| FG-009 | Implement FPN | `modules/` | FG-001 |
+| FG-004 | Add ViT backbone | `modules/backbones/` | FG-015 |
+| FG-005 | Add Swin Transformer | `modules/backbones/` | FG-004 |
+
+### 8.8 Quick Wins Summary
+
+**Immediate value, minimal effort (< 1 hour each):**
+
+1. **FG-017 Focal Loss** - 20 lines, critical for class imbalance
+2. **FG-020 SSIM Loss** - Use `tf.image.ssim`, 10 lines
+3. **FG-025 IoU Metric** - 15 lines, essential for segmentation
+4. **FG-035 ModelCheckpoint** - Wire existing Keras callback
+5. **FG-036 EarlyStopping** - Wire existing Keras callback
+
+**Moderate effort, high value (1-4 hours each):**
+
+1. **FG-034 Mixed Precision** - Add policy configuration
+2. **FG-012 CBAM Attention** - ~100 lines, widely applicable
+3. **FG-019 Perceptual Loss** - ~50 lines + VGG loading
+
+### 8.9 Effort Legend
+
+- **S (Small):** < 1 hour, self-contained addition
+- **M (Medium):** 1-4 hours, multiple files or moderate complexity
+- **L (Large):** > 4 hours, significant architecture changes or new module
+
+---
+
 ## Cross-References
 
 - **Task:** [X.5.1 Code Quality Audit](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
 - **Task:** [X.5.2 Performance Analysis](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
+- **Task:** [X.5.3 Feature Gap Analysis](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
 - **Index:** [index-codebase.md](../indices/index-codebase.md)
 - **Lessons:** [lessons-learned/](../lessons-learned/)
 
