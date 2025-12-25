@@ -212,4 +212,146 @@ repos:
 
 ---
 
+## 7. Performance Analysis (Task X.5.2)
+
+**Generated:** 2025-12-25
+**Agents:** `machine-learning-researcher`, `python-pro`
+
+### 7.1 Training Loop Bottlenecks
+
+| Location | Issue | Severity | Effort | Impact |
+|----------|-------|----------|--------|--------|
+| `src/trainers/trainer.py:19` | **Eager execution enabled** (`tf.config.run_functions_eagerly(True)`) disables graph optimization and JIT compilation | **Critical** | S | High |
+| `src/models/model_wrapper.py:116` | Lambda layer for tanh (`Lambda(lambda x: K.tanh(x))`) may not optimize as well as built-in `Activation('tanh')` | Low | S | Low |
+| `src/losses/losses.py:106-123` | `edge_loss` computes Sobel gradients on every forward pass - computationally expensive | Medium | M | Medium |
+| `src/modules/blocks/residual_block.py:24-25` | Dilated convolutions (`dilation_rate=3`) are slower than standard convs; justified for receptive field but has cost | Info | N/A | N/A |
+
+#### Recommended Fix: Eager Execution (IMP-013)
+```python
+# Current (trainer.py:19) - SLOW
+tf.config.run_functions_eagerly(True)
+
+# Recommended - Remove or make conditional for debugging
+# tf.config.run_functions_eagerly(False)  # Default
+```
+**Impact:** Removing eager execution can provide 2-10x speedup depending on model size and batch size.
+
+### 7.2 GPU Memory Usage Patterns
+
+| Location | Pattern | Memory Impact | Notes |
+|----------|---------|---------------|-------|
+| `src/trainers/trainer.py:24-25` | `set_memory_growth(gpu, True)` | ✅ Good | Prevents GPU memory hogging |
+| `src/models/image_to_image/auto_encoder_wrapper.py:39-52` | U-Net skip connections store intermediate tensors | High | Inherent to architecture - expected |
+| `src/modules/blocks/convolution_block.py:23` | AveragePooling2D downsampling | ✅ Good | Memory efficient vs strided convs |
+| `src/modules/blocks/residual_block.py:18` | BatchNormalization per block | Medium | Stores running statistics; consider GroupNorm for small batches |
+| `src/models/model_wrapper.py:15-17` | Default `layer_kernels=(32, 64, 128)` | Moderate | Reasonable baseline; memory scales with batch_size × channels × spatial |
+
+#### Memory Estimation Formula
+```
+Memory ≈ batch_size × sum(spatial[i] × channels[i]) × 4 bytes × 2 (forward + backward)
+```
+
+For typical 256×256×3 input with batch_size=8 and kernels=(32, 64, 128):
+- Encoder tensors: ~200 MB
+- Decoder tensors: ~200 MB
+- Skip connections: ~150 MB
+- Gradients: ~550 MB
+- **Total: ~1.1 GB** (fits comfortably on 4GB+ GPUs)
+
+### 7.3 Generator/Dataloader Inefficiencies
+
+| Location | Issue | Severity | Effort | Impact |
+|----------|-------|----------|--------|--------|
+| `src/generators/base_generators.py:35` | **ThreadPool created per batch** - significant overhead from pool creation/teardown | **High** | M | High |
+| `src/generators/base_generators.py:43` | `np.random.choice()` per iteration instead of pre-shuffled indices | Low | S | Low |
+| `src/samples/sample.py:42` | PIL + OpenCV mixing causes format conversion overhead | Medium | M | Medium |
+| `src/trainers/trainer.py:203-208` | `tf.data.Dataset.from_generator()` without prefetching | **High** | S | High |
+| N/A | No sample caching - re-reads from disk every epoch | Medium | L | Medium |
+
+#### Recommended Fix: Persistent ThreadPool (IMP-014)
+```python
+# Current (base_generators.py) - Creates new pool per batch
+def batch_processing(self, filenames):
+    with ThreadPool(processes=self.batch_size) as pool:  # <-- Overhead
+        data = pool.map(self.reader, filenames)
+
+# Recommended - Reuse pool
+def __init__(self, ...):
+    ...
+    self._thread_pool = ThreadPool(processes=self.batch_size)
+
+def batch_processing(self, filenames):
+    data = self._thread_pool.map(self.reader, filenames)
+
+def __del__(self):
+    if hasattr(self, '_thread_pool'):
+        self._thread_pool.close()
+```
+
+#### Recommended Fix: Dataset Prefetching (IMP-015)
+```python
+# Current (trainer.py:203-208)
+dataset = tf.data.Dataset.from_generator(lambda: generator, ...)
+
+# Recommended - Add prefetch and parallel processing
+dataset = tf.data.Dataset.from_generator(lambda: generator, ...)
+dataset = dataset.prefetch(tf.data.AUTOTUNE)
+```
+
+### 7.4 Additional Optimization Opportunities
+
+| ID | Optimization | Effort | Impact | Description |
+|----|--------------|--------|--------|-------------|
+| IMP-016 | Replace PIL+CV2 with unified backend | M | Medium | Use either `cv2.imread()` or `PIL` exclusively to avoid conversion overhead |
+| IMP-017 | Add LRU cache for frequently accessed samples | L | Medium | `functools.lru_cache` on sample reading for datasets that fit in memory |
+| IMP-018 | Mixed precision training | M | High | Enable `tf.keras.mixed_precision.set_global_policy('mixed_float16')` for ~2x speedup on modern GPUs |
+| IMP-019 | Precompute and cache Sobel edges | M | Medium | For `edge_loss`, precompute ground truth edges in generator instead of loss |
+| IMP-020 | Profile with `tf.profiler` | S | High | Add profiling callback to identify actual bottlenecks in production training |
+
+### 7.5 Prioritized Performance Improvements
+
+#### Phase P1: Quick Wins (Effort: S, Impact: High)
+
+| ID | Task | Files Affected |
+|----|------|----------------|
+| IMP-013 | Disable eager execution (or make conditional) | `trainer.py` |
+| IMP-015 | Add `dataset.prefetch(tf.data.AUTOTUNE)` | `trainer.py` |
+| IMP-020 | Add TensorFlow Profiler callback for validation | `trainer.py` |
+
+#### Phase P2: Generator Optimization (Effort: M, Impact: High)
+
+| ID | Task | Files Affected |
+|----|------|----------------|
+| IMP-014 | Implement persistent ThreadPool | `base_generators.py` |
+| IMP-016 | Unify image loading backend | `sample.py`, subclasses |
+| IMP-019 | Precompute edge targets in generator | `losses.py`, generators |
+
+#### Phase P3: Advanced Optimizations (Effort: M-L, Impact: Medium-High)
+
+| ID | Task | Files Affected |
+|----|------|----------------|
+| IMP-018 | Enable mixed precision training | `model_wrapper.py`, `trainer.py` |
+| IMP-017 | Implement sample caching with LRU | `base_generators.py` |
+
+### 7.6 Numerical Stability Considerations
+
+**Reference:** [wbce-log-negative-values.md](../lessons-learned/wbce-log-negative-values.md)
+
+Current loss implementations use `epsilon = 1e-7` consistently (good practice). Key observations:
+
+- `cross_entropy_positive()` properly handles log domain with epsilon
+- No overflow protection for very large activations (acceptable for sigmoid outputs)
+- `edge_loss` sqrt includes epsilon to prevent gradient explosion at zero
+
+---
+
+## Cross-References
+
+- **Task:** [X.5.1 Code Quality Audit](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
+- **Task:** [X.5.2 Performance Analysis](../phases/phase-X-off-chronology/task-X.5-potential-improvements.md)
+- **Index:** [index-codebase.md](../indices/index-codebase.md)
+- **Lessons:** [lessons-learned/](../lessons-learned/)
+
+---
+
 *Last Updated: 2025-12-25*

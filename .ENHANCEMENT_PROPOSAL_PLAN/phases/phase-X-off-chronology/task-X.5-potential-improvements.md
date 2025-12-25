@@ -63,18 +63,25 @@ Capture:
 
 ### Step X.5.2: Performance Analysis
 
-**Status:** PENDING
+**Status:** COMPLETED (2025-12-25)
 **Agent:** `machine-learning-researcher`, `python-pro`
 **Priority:** MEDIUM
+
+**Results Summary:**
+- **Critical:** Eager execution enabled (2-10x performance penalty)
+- **High Impact:** ThreadPool per batch, missing dataset prefetch
+- **Medium Impact:** PIL/CV2 mixing, no sample caching
+- **Memory:** ~1.1 GB for typical 256×256 U-Net (acceptable)
+- **New IDs:** IMP-013 through IMP-020 added to backlog
 
 **Subtasks:**
 
 | Index | Subtask | Status | Agent |
 |-------|---------|--------|-------|
-| X.5.2.1 | Profile training loop for computational bottlenecks | PENDING | `machine-learning-researcher` |
-| X.5.2.2 | Analyze GPU memory usage patterns during training | PENDING | `machine-learning-researcher` |
-| X.5.2.3 | Identify generator/dataloader inefficiencies | PENDING | `python-pro` |
-| X.5.2.4 | Document optimization opportunities with effort estimates | PENDING | `machine-learning-researcher` |
+| X.5.2.1 | Profile training loop for computational bottlenecks | COMPLETED | `machine-learning-researcher` |
+| X.5.2.2 | Analyze GPU memory usage patterns during training | COMPLETED | `machine-learning-researcher` |
+| X.5.2.3 | Identify generator/dataloader inefficiencies | COMPLETED | `python-pro` |
+| X.5.2.4 | Document optimization opportunities with effort estimates | COMPLETED | `machine-learning-researcher` |
 
 **Codebase References:**
 - Generators: `src/generators/base_generators.py:11` (BatchGenerator)
