@@ -1,7 +1,7 @@
 # Task X.5: Document Potential Improvements
 
 **Phase**: X - Off-Chronology
-**Status**: `[ ]` Not Started
+**Status**: `[~]` In Progress
 **Priority**: Low
 **Assigned Agent**: `agent-organizer` (with input from all agents)
 
@@ -20,70 +20,221 @@ Capture:
 - Technical debt
 - Documentation gaps
 
-## Steps
+---
 
-### Step 1: Code Quality Audit
-**Agent**: `code-reviewer`
-**Status**: `[ ]`
-- [ ] Identify missing type hints
-- [ ] Find code duplication
-- [ ] Note complex functions needing refactoring
-- [ ] Check for PEP 8 compliance
+## Implementation Steps
 
-### Step 2: Performance Analysis
-**Agent**: `machine-learning-researcher`
-**Status**: `[ ]`
-- [ ] Identify potential bottlenecks
-- [ ] Note optimization opportunities
-- [ ] Document GPU utilization patterns
+### Step X.5.1: Code Quality Audit
 
-### Step 3: Feature Gap Analysis
-**Agent**: `machine-learning-researcher`
-**Status**: `[ ]`
-- [ ] Compare with similar frameworks
-- [ ] Note missing common features
-- [ ] Identify extension opportunities
+**Status:** COMPLETED (2025-12-25)
+**Agent:** `code-reviewer`, `python-pro`
+**Priority:** MEDIUM
 
-### Step 4: Technical Debt Inventory
-**Agent**: `refactoring-specialist`
-**Status**: `[ ]`
-- [ ] List TODO/FIXME comments in code
-- [ ] Note deprecated patterns still in use
-- [ ] Identify outdated dependencies
+**Results Summary:**
+- **Type Hints:** 139 errors in 45/142 files
+- **PEP 8:** ~500+ violations (mostly line length)
+- **Complexity:** 2 functions exceed threshold (avg: A/1.96)
+- **Duplication:** 2 minor instances (9.99/10 rating)
+- **Backlog:** [improvement-backlog.md](../../specs/improvement-backlog.md)
 
-### Step 5: Documentation Gap Analysis
-**Agent**: `technical-writer`
-**Status**: `[ ]`
-- [ ] List undocumented modules
-- [ ] Note missing examples
-- [ ] Identify areas needing tutorials
+**Subtasks:**
 
-### Step 6: Prioritize and Categorize
-**Agent**: `agent-organizer`
-**Status**: `[ ]`
-- [ ] Create improvement backlog
-- [ ] Categorize by effort/impact
-- [ ] Suggest groupings for future phases
+| Index | Subtask | Status | Agent |
+|-------|---------|--------|-------|
+| X.5.1.1 | Run type hint coverage analysis using `mypy --ignore-missing-imports src/` | COMPLETED | `python-pro` |
+| X.5.1.2 | Identify code duplication with similarity detection tools | COMPLETED | `code-reviewer` |
+| X.5.1.3 | Flag complex functions (cyclomatic complexity > 10) for refactoring | COMPLETED | `refactoring-specialist` |
+| X.5.1.4 | Run PEP 8 compliance check with `flake8 src/ tests/` | COMPLETED | `python-pro` |
+| X.5.1.5 | Document findings in improvement backlog | COMPLETED | `code-reviewer` |
+
+**Codebase References:**
+- Entry point: `src/` (all modules)
+- Configuration: `src/config.py:1`
+- Complex module candidates: `src/modules/` (layer implementations)
+
+**Documentation References:**
+- [Project Overview](../../specs/project-overview.md) - Architecture context for quality assessment
+- [Extension Points](../../specs/project-overview.md#3-extension-points) - Patterns to preserve during refactoring
+
+**Lessons Learned:**
+- [copy-paste-variable-error.md](../../lessons-learned/copy-paste-variable-error.md) - Common code quality issue to look for
+
+---
+
+### Step X.5.2: Performance Analysis
+
+**Status:** PENDING
+**Agent:** `machine-learning-researcher`, `python-pro`
+**Priority:** MEDIUM
+
+**Subtasks:**
+
+| Index | Subtask | Status | Agent |
+|-------|---------|--------|-------|
+| X.5.2.1 | Profile training loop for computational bottlenecks | PENDING | `machine-learning-researcher` |
+| X.5.2.2 | Analyze GPU memory usage patterns during training | PENDING | `machine-learning-researcher` |
+| X.5.2.3 | Identify generator/dataloader inefficiencies | PENDING | `python-pro` |
+| X.5.2.4 | Document optimization opportunities with effort estimates | PENDING | `machine-learning-researcher` |
+
+**Codebase References:**
+- Generators: `src/generators/base_generators.py:11` (BatchGenerator)
+- Training loops: `src/trainers/` (trainer implementations)
+- Model wrappers: `src/models/` (loss computation)
+
+**Documentation References:**
+- [Data Flow Patterns](../../specs/project-overview.md#2-data-flow-patterns) - Pipeline architecture for optimization targets
+
+**Lessons Learned:**
+- [wbce-log-negative-values.md](../../lessons-learned/wbce-log-negative-values.md) - Numerical stability considerations
+
+---
+
+### Step X.5.3: Feature Gap Analysis
+
+**Status:** PENDING
+**Agent:** `machine-learning-researcher`
+**Priority:** LOW
+
+**Subtasks:**
+
+| Index | Subtask | Status | Agent |
+|-------|---------|--------|-------|
+| X.5.3.1 | Compare architecture options with modern frameworks (PyTorch Lightning, Keras 3) | PENDING | `machine-learning-researcher` |
+| X.5.3.2 | List common ML features not yet implemented | PENDING | `machine-learning-researcher` |
+| X.5.3.3 | Identify extension opportunities (new backbones, losses, metrics) | PENDING | `machine-learning-researcher` |
+| X.5.3.4 | Prioritize features by user demand and implementation effort | PENDING | `agent-organizer` |
+
+**Codebase References:**
+- Model architectures: `src/modules/module.py:11` (build_encoder), `src/modules/module.py:28` (build_decoder)
+- Loss functions: `src/losses/` (custom losses)
+- Existing layers: `src/modules/layers/` (AtrousConv2D, sparse layers)
+
+**Documentation References:**
+- [Extension Points](../../specs/project-overview.md#3-extension-points) - How new features should integrate
+
+---
+
+### Step X.5.4: Technical Debt Inventory
+
+**Status:** PENDING
+**Agent:** `refactoring-specialist`, `devops-engineer`
+**Priority:** MEDIUM
+
+**Subtasks:**
+
+| Index | Subtask | Status | Agent |
+|-------|---------|--------|-------|
+| X.5.4.1 | Extract TODO/FIXME comments with `grep -rn "TODO\|FIXME" src/` | PENDING | `refactoring-specialist` |
+| X.5.4.2 | Identify deprecated patterns (old TensorFlow APIs) | PENDING | `machine-learning-researcher` |
+| X.5.4.3 | Audit dependencies for outdated packages | PENDING | `devops-engineer` |
+| X.5.4.4 | Categorize debt by severity and remediation effort | PENDING | `refactoring-specialist` |
+
+**Codebase References:**
+- All source: `src/**/*.py`
+- Tests: `tests/**/*.py`
+- Dependencies: `requirements.txt` or `pyproject.toml`
+
+**Documentation References:**
+- [Design Patterns](../../specs/project-overview.md#4-design-patterns) - Patterns to maintain during debt remediation
+
+**Lessons Learned:**
+- [ci-branch-naming.md](../../lessons-learned/ci-branch-naming.md) - CI/CD debt considerations
+- [hardcoded-file-extension.md](../../lessons-learned/hardcoded-file-extension.md) - Code inflexibility patterns
+
+---
+
+### Step X.5.5: Documentation Gap Analysis
+
+**Status:** PENDING
+**Agent:** `technical-writer`, `archivist`
+**Priority:** LOW
+
+**Subtasks:**
+
+| Index | Subtask | Status | Agent |
+|-------|---------|--------|-------|
+| X.5.5.1 | List modules lacking docstrings | PENDING | `technical-writer` |
+| X.5.5.2 | Identify missing usage examples in README | PENDING | `technical-writer` |
+| X.5.5.3 | Note areas needing tutorials (new user onboarding) | PENDING | `technical-writer` |
+| X.5.5.4 | Verify EPP index completeness | PENDING | `archivist` |
+
+**Codebase References:**
+- Main entry: `README.md`
+- Configuration docs: `src/config.py`
+- Callback examples: `src/callbacks/example_callback.py`, `src/callbacks/example_callback_with_logs.py`
+
+**Documentation References:**
+- [Documentation Index](../../indices/index-documentation.md) - Current documentation coverage
+- [Project Overview](../../specs/project-overview.md) - Existing architecture documentation
+
+---
+
+### Step X.5.6: Prioritize and Categorize
+
+**Status:** PENDING
+**Agent:** `agent-organizer`, `archivist`
+**Priority:** HIGH
+
+**Subtasks:**
+
+| Index | Subtask | Status | Agent |
+|-------|---------|--------|-------|
+| X.5.6.1 | Create improvement backlog document | PENDING | `archivist` |
+| X.5.6.2 | Categorize items by effort (S/M/L) and impact (Low/Med/High) | PENDING | `agent-organizer` |
+| X.5.6.3 | Suggest groupings for future phases | PENDING | `agent-organizer` |
+| X.5.6.4 | Update EPP indices with backlog entries | PENDING | `archivist` |
+
+**Codebase References:**
+- EPP structure: `.ENHANCEMENT_PROPOSAL_PLAN/phases/`
+- Index files: `.ENHANCEMENT_PROPOSAL_PLAN/indices/`
+
+**Documentation References:**
+- [EPP Workflow](../../README.md) - Governance for new phase creation
+- [Phases Status](../../indices/index-phases.md) - Current phase completion status
+
+---
 
 ## Acceptance Criteria
 
-- Improvements are clearly described
-- Priorities are assigned
-- Effort estimates are provided
-- Items are actionable
+- [ ] Improvements are clearly described
+- [ ] Priorities are assigned (using S/M/L effort, Low/Med/High impact matrix)
+- [ ] Effort estimates are provided (not time-based)
+- [ ] Items are actionable (specific enough to create tasks from)
+- [ ] All findings documented in improvement backlog file
+
+---
 
 ## Notes
 
-This is a placeholder document that will grow as the codebase is explored.
+This is a living document that will grow as the codebase is explored.
 
-Initial observations from git history:
+**Initial observations from git history:**
 - Sparse convolution feature added recently
 - Nested model architecture
 - Comparator model
 - Multiple test refactoring iterations suggest testing strategy evolution
 
-Potential areas to investigate:
+**Potential areas to investigate:**
 - Test coverage analysis
 - Type hint coverage
 - Documentation coverage
 - Benchmark suite completeness
+
+---
+
+## Cross-References
+
+**Related Tasks:**
+- [Task X.1: Populate Codebase Index](task-X.1-populate-index-codebase.md) - Codebase exploration
+- [Task X.2: Populate Documentation Index](task-X.2-populate-index-documentation.md) - Documentation mapping
+- [Task X.4: Project Overview](task-X.4-project-overview.md) - Architecture understanding
+
+**Indices:**
+- [index-codebase.md](../../indices/index-codebase.md) - Code navigation (411 entries)
+- [index-documentation.md](../../indices/index-documentation.md) - Documentation lookup
+- [index-lessons-learned.md](../../indices/index-lessons-learned.md) - Past issues reference
+- [index-agents.md](../../indices/index-agents.md) - Agent responsibilities
+
+---
+
+*Last Updated: 2025-12-25 (Implementation steps enhanced with full documentation)*
