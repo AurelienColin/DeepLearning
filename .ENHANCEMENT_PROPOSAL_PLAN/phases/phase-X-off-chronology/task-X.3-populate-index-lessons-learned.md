@@ -1,7 +1,7 @@
 # Task X.3: Populate Index-Lessons-Learned
 
 **Phase**: X - Off-Chronology
-**Status**: `[ ]` Not Started
+**Status**: `[x]` Complete
 **Priority**: Medium
 **Assigned Agent**: `archivist` (with input from all agents)
 
@@ -62,17 +62,24 @@ Each lesson is a standalone markdown file:
 
 ### Step 2: Extract Lessons from Git History
 **Agent**: `devops-engineer`
-**Status**: `[ ]`
-- [ ] Filter commits with "fix", "bug", "issue" keywords
-- [ ] For each significant fix, create a lesson file
-- [ ] Use commit message + diff to populate Problem/Resolution
+**Status**: `[x]`
+- [x] Filter commits with "fix", "bug", "issue" keywords
+- [x] For each significant fix, create a lesson file
+- [x] Use commit message + diff to populate Problem/Resolution
+
+**Created 5 lesson files:**
+- `wbce-log-negative-values.md` (commit 97b4210)
+- `division-by-zero-normalization.md` (commit c9f1b38)
+- `ci-branch-naming.md` (commit 9ff2a9a)
+- `hardcoded-file-extension.md` (commit 8bb9a64)
+- `copy-paste-variable-error.md` (commit 2e34b02)
 
 ### Step 3: Populate Index
 **Agent**: `archivist`
-**Status**: `[ ]`
-- [ ] Add entry for each lesson file
-- [ ] Keywords should be searchable terms
-- [ ] Summary is one-line
+**Status**: `[x]`
+- [x] Add entry for each lesson file
+- [x] Keywords should be searchable terms
+- [x] Summary is one-line
 
 ## Acceptance Criteria
 
