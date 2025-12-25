@@ -81,5 +81,3 @@ def test_predict_step(colorizer: Trainer):
     predictions = colorizer.model_wrapper.model.predict_on_batch((inputs,), )
     assert predictions.shape == (len(inputs), *colorizer.output_shape)
     assert all(np.isfinite(np.stack(predictions).flatten()))
-
-

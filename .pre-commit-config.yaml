@@ -1,0 +1,41 @@
+# .pre-commit-config.yaml
+# See https://pre-commit.com for more information
+
+repos:
+  # Standard pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+      - id: check-merge-conflict
+      - id: debug-statements
+
+  # Python code formatting check (not auto-format)
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        args:
+          - '--max-line-length=100'
+          - '--extend-ignore=E203,E501,W503'
+          - '--select=F,E9,W'  # Errors only, not style
+        exclude: ^(\.tmp/|data/)
+
+  # Import sorting
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ['--check-only', '--diff']
+
+# Optional: Enable for stricter checks
+#  - repo: https://github.com/pre-commit/mirrors-mypy
+#    rev: v1.8.0
+#    hooks:
+#      - id: mypy
+#        args: ['--ignore-missing-imports']
+#        additional_dependencies: [tensorflow-stubs]

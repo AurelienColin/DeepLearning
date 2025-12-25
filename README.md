@@ -9,7 +9,12 @@ This project is a framework for training image-to-image and image-to-tag models 
     pip install tensorflow
     ```
 
-2.  **Install other dependencies:**
+2.  **Install development dependencies (optional):**
+    ```bash
+    pip install pre-commit flake8 isort
+    ```
+
+3.  **Install other dependencies:**
     Based on the project structure, you might need the following libraries:
     ```bash
     pip install matplotlib numpy
@@ -52,3 +57,26 @@ Replace `your_training_script.py` with the specific script you want to run and `
 5.  **Evaluate the model:** After training, use appropriate metrics or visualization tools to assess the model's performance.
 
 Please refer to the specific scripts within the `run` directories for more detailed examples and available command-line arguments.
+
+## Development Setup
+
+### Pre-commit Hooks
+
+This project uses pre-commit hooks to enforce code quality. To set up:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+Hooks run automatically on `git commit`. To run manually:
+
+```bash
+pre-commit run --all-files
+```
+
+To skip hooks temporarily (not recommended):
+
+```bash
+git commit --no-verify
+```

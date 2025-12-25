@@ -24,7 +24,7 @@ class Comparator(ModelWrapper):
     _input_layers: typing.Optional[typing.Sequence[tf.keras.layers.Layer]] = None
     _post_encoded_layer: typing.Optional[tf.keras.layers.Layer] = None
     _decoded_layer: typing.Optional[tf.keras.layers.Layer] = None
-    
+
     _encoded_input_layer: typing.Optional[tf.keras.layers.Layer] = None
 
     @LazyProperty
@@ -44,8 +44,8 @@ class Comparator(ModelWrapper):
     @LazyProperty
     def encoder(self) -> tf.keras.models.Model:
         return tf.keras.Model(inputs=self.input_layer, outputs=self.encoded_layer, name="shared_encoder")
-        
-    
+
+
     @LazyProperty
     def encoded_input_layer(self) -> tf.keras.layers.Layer:
         return tf.keras.layers.Input(shape=self.encoded_layer.shape[1:])
@@ -60,9 +60,9 @@ class Comparator(ModelWrapper):
     @LazyProperty
     def post_encoder(self) -> tf.keras.models.Model:
         return tf.keras.Model(
-            # inputs=self.encoded_layer, 
-            inputs=self.encoded_input_layer, 
-            outputs=self.post_encoded_layer, 
+            # inputs=self.encoded_layer,
+            inputs=self.encoded_input_layer,
+            outputs=self.post_encoded_layer,
             name="shared_post_encoder"
         )
 
@@ -86,8 +86,8 @@ class Comparator(ModelWrapper):
     @LazyProperty
     def decoder(self) -> tf.keras.models.Model:
         return tf.keras.Model(
-            # inputs=self.encoded_layer, 
-            inputs=self.encoded_input_layer, 
+            # inputs=self.encoded_layer,
+            inputs=self.encoded_input_layer,
             outputs=self.decoded_layer,
              name="shared_decoder"
              )

@@ -65,5 +65,3 @@ def test_diffuser_model(diffuser: Trainer):
 
     assert len(diffuser.input_shape) == 3
     assert len(diffuser.output_shape) == 3
-
-

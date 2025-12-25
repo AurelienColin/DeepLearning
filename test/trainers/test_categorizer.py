@@ -82,5 +82,3 @@ def test_predict_step(categorizer: Trainer):
     predictions = categorizer.model_wrapper.model.predict_on_batch((inputs,), )
     assert predictions.shape == (len(inputs), *categorizer.output_shape)
     assert all(np.isfinite(np.stack(predictions).flatten()))
-
-

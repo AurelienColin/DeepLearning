@@ -96,7 +96,7 @@ class ComparatorTrainer(CategorizerTrainer):
                 x = tf.convert_to_tensor(x, dtype=tf.float32)
                 y_list = [tf.convert_to_tensor(y, dtype=tf.float32) for y in y_list]
                 yield x, tuple(y_list)
-                
+
         sample_x, sample_y_list = next(generator)
 
         output_shapes = (
@@ -104,7 +104,7 @@ class ComparatorTrainer(CategorizerTrainer):
             tuple(tf.TensorShape((None, *y.shape[1:])) for y in sample_y_list)
         )
         output_types = (tf.float32, tuple(tf.float32 for _ in sample_y_list))
-        
+
 
         dataset = tf.data.Dataset.from_generator(
             lambda: wrapped_generator(),

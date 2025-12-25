@@ -7,6 +7,8 @@ notebooks/
 .idea/
 .ipynb_checkpoints/
 *.egg-info/
+.vscode/
+.mypy_cache/
 
 # Ignore Python cache files
 __pycache__/
@@ -14,10 +16,23 @@ __pycache__/
 *.ipynb
 *$py.class
 
+# Data files (NEVER commit)
+*.nc
+*.h5
+*.hdf*
+*.grib*
+*.SAFE/
+*.tar.gz
+*.zip
+
+# Model weights
+*.keras
+*.ckpt*
+*.pb
+saved_model/
 
 # Ignore other common unnecessary files
 *.swp
 *.swo
 *.bak
 *.cache
-*.zip
