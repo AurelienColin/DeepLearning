@@ -837,4 +837,245 @@ return self.add_weight(name='chosen_patterns',
 
 ---
 
-*Last Updated: 2025-12-25*
+## 11. Consolidated Prioritization Matrix (Task X.5.6)
+
+**Generated:** 2025-12-25
+**Agent:** `agent-organizer`, `archivist`
+
+### 11.1 Effort × Impact Summary
+
+#### 11.1.1 Quick Reference: All Items by ID
+
+| ID Range | Category | Count | Section |
+|----------|----------|-------|---------|
+| IMP-001 to IMP-012 | Code Quality | 12 | §5 |
+| IMP-013 to IMP-020 | Performance | 8 | §7 |
+| FG-001 to FG-047 | Feature Gaps | 47 | §8 |
+| TD-001 to TD-031 | Technical Debt | 31 | §9 |
+| DG-001 to DG-024 | Documentation | 24 | §10 |
+| **Total** | | **122** | |
+
+#### 11.1.2 Effort × Impact Matrix
+
+##### High Impact
+
+| Effort | Items | Example IDs |
+|--------|-------|-------------|
+| **S (Small)** | 15 | IMP-001, IMP-002, IMP-013, IMP-015, FG-017, FG-025, FG-033, FG-034, FG-035 |
+| **M (Medium)** | 18 | IMP-004, IMP-014, FG-001, FG-002, FG-012, DG-001, DG-002, DG-003 |
+| **L (Large)** | 6 | FG-039, DG-012, DG-021 |
+
+##### Medium Impact
+
+| Effort | Items | Example IDs |
+|--------|-------|-------------|
+| **S (Small)** | 12 | IMP-005, FG-020, FG-021, FG-028, FG-040, DG-010, DG-014 |
+| **M (Medium)** | 22 | IMP-016, IMP-018, FG-007, FG-008, FG-015, FG-037, FG-038, DG-013, DG-017 |
+| **L (Large)** | 8 | FG-004, FG-005, FG-011, DG-022 |
+
+##### Low Impact
+
+| Effort | Items | Example IDs |
+|--------|-------|-------------|
+| **S (Small)** | 18 | IMP-008, TD-016, DG-023, DG-024 |
+| **M (Medium)** | 15 | IMP-010, IMP-011, TD-009 to TD-015 |
+| **L (Large)** | 8 | IMP-017 (large cache system) |
+
+#### 11.1.3 Priority Quadrant Summary
+
+```
+                        IMPACT
+                Low         Medium        High
+           ┌──────────┬──────────────┬──────────────┐
+    Small  │    18    │      12      │     15       │  ← START HERE
+           │ Backlog  │  Nice-to-have│  QUICK WINS  │
+    E      ├──────────┼──────────────┼──────────────┤
+    F      │    15    │      22      │     18       │
+    F  Med │ Backlog  │  Planned     │  HIGH VALUE  │
+    O      ├──────────┼──────────────┼──────────────┤
+    R      │     8    │       8      │      6       │
+    T Large│ Defer    │  Strategic   │  MAJOR PROJ  │
+           └──────────┴──────────────┴──────────────┘
+```
+
+**Recommended Action Order:**
+1. **Quick Wins (S/High):** 15 items - immediate value
+2. **High Value (M/High):** 18 items - planned sprints
+3. **Nice-to-have (S/Medium):** 12 items - fill gaps
+4. **Strategic (M/Medium + L/High):** 28 items - roadmap items
+5. **Backlog:** Remaining - as capacity allows
+
+---
+
+### 11.2 Unified Phase Roadmap
+
+This roadmap consolidates all improvement categories into coherent execution phases.
+
+#### Phase U1: Foundation Fixes (Week-equivalent effort: S)
+**Goal:** Remove blockers, fix critical issues, enable safer development.
+
+| Priority | ID | Task | Category | Effort | Impact |
+|----------|-----|------|----------|--------|--------|
+| 1 | IMP-001 | Fix undefined names (OutputSpace, typing) | Code Quality | S | High |
+| 2 | IMP-013 | Disable eager execution | Performance | S | High |
+| 3 | IMP-015 | Add dataset.prefetch() | Performance | S | High |
+| 4 | IMP-002 | Add None guards to generators | Code Quality | S | High |
+| 5 | FG-035 | Add ModelCheckpoint callback | Feature Gap | S | High |
+| 6 | FG-036 | Add EarlyStopping callback | Feature Gap | S | High |
+| 7 | TD-029 | Add pre-commit hooks | Tech Debt | S | Medium |
+
+**Deliverables:** Stable, faster training; basic checkpoint safety; CI quality gates.
+
+#### Phase U2: Type Safety & Modernization (Week-equivalent effort: M)
+**Goal:** Improve code robustness and maintainability.
+
+| Priority | ID | Task | Category | Effort | Impact |
+|----------|-----|------|----------|--------|--------|
+| 1 | IMP-004 | Add proper Optional handling | Code Quality | M | Medium |
+| 2 | TD-001-008 | Migrate .h5 → .keras format | Tech Debt | S | Medium |
+| 3 | TD-025 | Create pyproject.toml | Tech Debt | M | Medium |
+| 4 | IMP-005 | Update PIL imports for Pillow 10+ | Code Quality | S | Medium |
+| 5 | IMP-006 | Remove unused imports | Code Quality | S | Low |
+| 6 | TD-019-024 | Pin dependency versions | Tech Debt | S | Medium |
+
+**Deliverables:** Type-safe codebase; modern build system; reproducible builds.
+
+#### Phase U3: Performance Optimization (Week-equivalent effort: M)
+**Goal:** Significant training speed improvements.
+
+| Priority | ID | Task | Category | Effort | Impact |
+|----------|-----|------|----------|--------|--------|
+| 1 | IMP-014 | Implement persistent ThreadPool | Performance | M | High |
+| 2 | FG-034 | Enable mixed precision training | Feature Gap | S | High |
+| 3 | FG-033 | Add gradient accumulation | Feature Gap | S | High |
+| 4 | IMP-016 | Unify image loading backend | Performance | M | Medium |
+| 5 | IMP-018 | Mixed precision policy config | Performance | M | High |
+| 6 | FG-040 | Add gradient clipping | Feature Gap | S | Medium |
+
+**Deliverables:** 2-5x training speedup; larger effective batch sizes.
+
+#### Phase U4: Core Features - Losses & Metrics (Week-equivalent effort: M)
+**Goal:** Essential ML building blocks.
+
+| Priority | ID | Task | Category | Effort | Impact |
+|----------|-----|------|----------|--------|--------|
+| 1 | FG-017 | Implement Focal Loss | Feature Gap | S | High |
+| 2 | FG-025 | Implement IoU/mIoU metric | Feature Gap | S | High |
+| 3 | FG-020 | Implement SSIM loss/metric | Feature Gap | S | High |
+| 4 | FG-027 | Implement PSNR metric | Feature Gap | S | High |
+| 5 | FG-030 | Implement per-class F1/precision/recall | Feature Gap | S | High |
+| 6 | FG-018 | Implement Lovász-Softmax loss | Feature Gap | S | Medium |
+| 7 | FG-021 | Implement Tversky loss | Feature Gap | S | Medium |
+
+**Deliverables:** Standard segmentation losses/metrics; better evaluation capabilities.
+
+#### Phase U5: Modern Backbones (Week-equivalent effort: M-L)
+**Goal:** State-of-the-art encoder architectures.
+
+| Priority | ID | Task | Category | Effort | Impact |
+|----------|-----|------|----------|--------|--------|
+| 1 | FG-001 | Add ResNet backbone support | Feature Gap | M | High |
+| 2 | FG-012 | Implement CBAM attention | Feature Gap | S | High |
+| 3 | FG-013 | Implement SE attention | Feature Gap | S | High |
+| 4 | FG-002 | Add EfficientNetV2 backbone | Feature Gap | M | High |
+| 5 | FG-003 | Add ConvNeXt backbone | Feature Gap | M | High |
+| 6 | FG-019 | Implement Perceptual/VGG loss | Feature Gap | M | High |
+
+**Deliverables:** Pre-trained backbone support; attention mechanisms; perceptual loss.
+
+#### Phase U6: Documentation (Week-equivalent effort: M)
+**Goal:** Usable project for new developers.
+
+| Priority | ID | Task | Category | Effort | Impact |
+|----------|-----|------|----------|--------|--------|
+| 1 | DG-005 | Document config.py | Documentation | S | High |
+| 2 | DG-010 | Document environment variables | Documentation | S | High |
+| 3 | DG-009 | Add working code examples to README | Documentation | M | High |
+| 4 | DG-015 | Create Quick Start Guide | Documentation | M | High |
+| 5 | DG-001-004 | Add docstrings to core classes | Documentation | M | High |
+| 6 | DG-016 | Dataset Preparation guide | Documentation | M | High |
+
+**Deliverables:** Onboarding documentation; runnable examples; core API docs.
+
+#### Phase U7: Advanced Architectures (Week-equivalent effort: L)
+**Goal:** State-of-the-art segmentation architectures.
+
+| Priority | ID | Task | Category | Effort | Impact |
+|----------|-----|------|----------|--------|--------|
+| 1 | FG-007 | Implement UNet++ | Feature Gap | M | High |
+| 2 | FG-008 | Implement DeepLabV3+ | Feature Gap | M | High |
+| 3 | FG-009 | Implement FPN | Feature Gap | M | High |
+| 4 | FG-004 | Add ViT backbone | Feature Gap | L | Medium |
+| 5 | FG-005 | Add Swin Transformer | Feature Gap | L | High |
+
+**Deliverables:** Multiple segmentation architectures; transformer support.
+
+#### Phase U8: Training Ecosystem (Week-equivalent effort: M)
+**Goal:** Production-ready training infrastructure.
+
+| Priority | ID | Task | Category | Effort | Impact |
+|----------|-----|------|----------|--------|--------|
+| 1 | FG-037 | Add LR scheduler support | Feature Gap | M | High |
+| 2 | FG-038 | Add TensorBoard/W&B logging | Feature Gap | M | Medium |
+| 3 | FG-039 | Add multi-GPU training | Feature Gap | M | Medium |
+| 4 | FG-041 | Add EMA model averaging | Feature Gap | S | Medium |
+| 5 | FG-042 | Albumentations integration | Feature Gap | M | High |
+
+**Deliverables:** Experiment tracking; distributed training; rich augmentations.
+
+---
+
+### 11.3 Dependency Graph
+
+```
+Phase U1 (Foundation)
+    ↓
+    ├→ Phase U2 (Type Safety) → Phase U6 (Documentation)
+    │
+    ├→ Phase U3 (Performance) → Phase U8 (Training Ecosystem)
+    │
+    └→ Phase U4 (Losses/Metrics) → Phase U5 (Backbones) → Phase U7 (Architectures)
+```
+
+**Critical Path:** U1 → U3 → U4 → U5 → U7
+
+---
+
+### 11.4 Quick Reference: Top 20 Priority Items
+
+| Rank | ID | Task | Effort | Impact |
+|------|-----|------|--------|--------|
+| 1 | IMP-001 | Fix undefined names | S | High |
+| 2 | IMP-013 | Disable eager execution | S | High |
+| 3 | IMP-015 | Add dataset prefetch | S | High |
+| 4 | FG-035 | ModelCheckpoint callback | S | High |
+| 5 | FG-017 | Focal Loss | S | High |
+| 6 | FG-025 | IoU/mIoU metric | S | High |
+| 7 | FG-033 | Gradient accumulation | S | High |
+| 8 | FG-034 | Mixed precision training | S | High |
+| 9 | IMP-002 | None guards in generators | S | High |
+| 10 | IMP-014 | Persistent ThreadPool | M | High |
+| 11 | FG-001 | ResNet backbone | M | High |
+| 12 | FG-012 | CBAM attention | S | High |
+| 13 | FG-020 | SSIM loss/metric | S | High |
+| 14 | FG-027 | PSNR metric | S | High |
+| 15 | DG-015 | Quick Start Guide | M | High |
+| 16 | TD-029 | Pre-commit hooks | S | Medium |
+| 17 | IMP-004 | Optional type handling | M | Medium |
+| 18 | TD-001-008 | Migrate .h5 → .keras | S | Medium |
+| 19 | FG-002 | EfficientNetV2 backbone | M | High |
+| 20 | FG-036 | EarlyStopping callback | S | High |
+
+---
+
+### 11.5 Acceptance Criteria Verification
+
+- [x] Improvements are clearly described (122 items across 5 categories)
+- [x] Priorities are assigned (S/M/L effort × Low/Med/High impact matrix)
+- [x] Effort estimates are provided (not time-based)
+- [x] Items are actionable (specific files and code locations referenced)
+- [x] All findings documented in improvement backlog file
+
+---
+
+*Last Updated: 2025-12-25 (Task X.5.6 Consolidated)*

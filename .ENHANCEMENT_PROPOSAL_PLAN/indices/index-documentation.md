@@ -2,7 +2,7 @@
 
 > Lookup table: keyword -> document location
 
-**Status**: Populated (Task X.2, X.4) - 21 entries
+**Status**: Populated (Task X.2, X.4, X.5.6) - 30 entries
 
 | Keyword | Location | Description |
 |---------|----------|-------------|
@@ -28,3 +28,12 @@
 | Task X.3 | .ENHANCEMENT_PROPOSAL_PLAN/phases/phase-X-off-chronology/task-X.3-populate-index-lessons-learned.md | Lessons learned index population task |
 | Task X.4 | .ENHANCEMENT_PROPOSAL_PLAN/phases/phase-X-off-chronology/task-X.4-project-overview.md | Architecture overview creation task |
 | Task X.5 | .ENHANCEMENT_PROPOSAL_PLAN/phases/phase-X-off-chronology/task-X.5-potential-improvements.md | Improvements and tech debt documentation |
+| improvement backlog | .ENHANCEMENT_PROPOSAL_PLAN/specs/improvement-backlog.md | Master list of all improvements (122 items) |
+| code quality issues | .ENHANCEMENT_PROPOSAL_PLAN/specs/improvement-backlog.md#1-type-hint-issues-mypy-analysis | Type hints, PEP 8, complexity analysis |
+| performance issues | .ENHANCEMENT_PROPOSAL_PLAN/specs/improvement-backlog.md#7-performance-analysis-task-x52 | Training bottlenecks, GPU memory, generators |
+| feature gaps | .ENHANCEMENT_PROPOSAL_PLAN/specs/improvement-backlog.md#8-feature-gap-analysis-task-x53 | Missing features vs modern frameworks |
+| technical debt | .ENHANCEMENT_PROPOSAL_PLAN/specs/improvement-backlog.md#9-technical-debt-inventory-task-x54 | Deprecated patterns, dependencies, CI/CD |
+| documentation gaps | .ENHANCEMENT_PROPOSAL_PLAN/specs/improvement-backlog.md#10-documentation-gap-analysis-task-x55 | Docstring coverage, README, tutorials |
+| priority matrix | .ENHANCEMENT_PROPOSAL_PLAN/specs/improvement-backlog.md#11-consolidated-prioritization-matrix-task-x56 | Effort×Impact matrix, unified roadmap |
+| unified roadmap | .ENHANCEMENT_PROPOSAL_PLAN/specs/improvement-backlog.md#112-unified-phase-roadmap | 8 proposed implementation phases (U1-U8) |
+| quick wins | .ENHANCEMENT_PROPOSAL_PLAN/specs/improvement-backlog.md#114-quick-reference-top-20-priority-items | Top 20 priority items by impact/effort |
