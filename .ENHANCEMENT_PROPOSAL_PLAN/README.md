@@ -27,13 +27,14 @@ Phase > Task > Step > Atomic Action
 ├── README.md                    # This file
 ├── phases/                      # Phase directories
 │   └── phase-X-off-chronology/  # Ongoing/maintenance tasks
-├── indices/                     # Knowledge indices
-│   ├── index-codebase.md
-│   ├── index-documentation.md
-│   ├── index-lessons-learned.md
-│   ├── index-phases.md
-│   ├── index-repositories.md
-│   └── index-agents.md
+├── indices/                     # Lookup tables (keyword -> reference)
+│   ├── index-codebase.md        # keyword -> file:line
+│   ├── index-documentation.md   # keyword -> doc location
+│   ├── index-lessons-learned.md # keywords -> lesson file
+│   ├── index-phases.md          # phase/task -> status
+│   ├── index-repositories.md    # repo -> path
+│   └── index-agents.md          # agent -> responsibility
+├── lessons-learned/             # Individual lesson files
 └── questions/                   # Pending user clarifications
 ```
 

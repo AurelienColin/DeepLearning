@@ -9,59 +9,68 @@
 
 ## Objective
 
-Extract and document lessons learned from git history, commit messages, and code patterns to prevent future issues.
+1. Create a `lessons-learned/` folder to store individual lesson files
+2. Populate `indices/index-lessons-learned.md` with a lookup table referencing those files
 
-## Scope
+## Directory Structure
 
-Analyze:
-- Git commit history for bug fixes
-- Test failures and resolutions
-- Import/dependency issues
-- CI/CD problems
-- Architectural decisions
+```
+.ENHANCEMENT_PROPOSAL_PLAN/
+├── lessons-learned/
+│   ├── import-circular-dependency.md
+│   ├── test-gpu-memory.md
+│   └── ci-tensorflow-version.md
+└── indices/
+    └── index-lessons-learned.md   # References above files
+```
+
+## Lesson File Format
+
+Each lesson is a standalone markdown file:
+
+```markdown
+# [Short Title]
+
+**Keywords**: keyword1, keyword2
+**Related Commits**: abc1234, def5678
+
+## Problem
+[Brief description of the issue]
+
+## Resolution
+[How it was fixed]
+
+## Prevention
+[How to avoid in future]
+```
+
+## Index Format
+
+```markdown
+| Keywords | Lesson | Summary |
+|----------|--------|---------|
+| circular, import | lessons-learned/import-circular-dependency.md | Resolve via lazy import |
+| GPU, memory, OOM | lessons-learned/test-gpu-memory.md | Reduce batch size in tests |
+```
 
 ## Steps
 
-### Step 1: Analyze Bug Fix Commits
+### Step 1: Create Lessons Folder
+- [ ] Create `lessons-learned/` directory in EPP
+
+### Step 2: Extract Lessons from Git History
 - [ ] Filter commits with "fix", "bug", "issue" keywords
-- [ ] Extract problem-resolution pairs
-- [ ] Categorize by module
+- [ ] For each significant fix, create a lesson file
+- [ ] Use commit message + diff to populate Problem/Resolution
 
-### Step 2: Analyze Test History
-- [ ] Review test-related commits
-- [ ] Document common test failures
-- [ ] Note testing strategies adopted
-
-### Step 3: Document Import Issues
-- [ ] Review "import" related fixes
-- [ ] Document circular import resolutions
-- [ ] Note dependency management patterns
-
-### Step 4: Document CI/CD Learnings
-- [ ] Review CI-related commits
-- [ ] Document pipeline configurations
-- [ ] Note environment issues
-
-### Step 5: Document Architectural Decisions
-- [ ] Review major refactoring commits
-- [ ] Document rationale for changes
-- [ ] Note deprecated approaches
-
-### Step 6: Update Index
-- [ ] Populate `indices/index-lessons-learned.md`
-- [ ] Format as problem -> resolution -> reference
-- [ ] Add preventive measures where applicable
+### Step 3: Populate Index
+- [ ] Add entry for each lesson file
+- [ ] Keywords should be searchable terms
+- [ ] Summary is one-line
 
 ## Acceptance Criteria
 
-- Key lessons from 125 commits are captured
-- Issues are categorized for easy lookup
-- Resolutions are actionable
-- References point to relevant commits/code
-
-## Notes
-
-Useful git commands:
-- `git log --oneline --grep="fix"` - Find fix commits
-- `git log --oneline --grep="test"` - Find test commits
-- `git show <commit>` - View commit details
+- Each lesson is a separate file in `lessons-learned/`
+- Index references all lesson files
+- Keywords enable quick search
+- No prose in index, only table entries

@@ -9,53 +9,41 @@
 
 ## Objective
 
-Create a comprehensive index linking documentation keywords to their sources for easy reference.
+Populate `indices/index-documentation.md` with a searchable lookup table referencing EPP documents and other documentation files.
 
-## Scope
+## Output Format
 
-Catalog all existing documentation:
-- README files
-- Docstrings
-- Comments
-- Configuration examples
-- Training scripts as implicit documentation
+The index is a flat list of entries:
+
+```markdown
+| Keyword | Location | Description |
+|---------|----------|-------------|
+| EPP workflow | .ENHANCEMENT_PROPOSAL_PLAN/README.md | Hierarchy and governance |
+| Phase X | phases/phase-X-off-chronology/README.md | Off-chronology tasks |
+| UNet training | src/trainers/.../run/README.md | Usage example |
+```
 
 ## Steps
 
-### Step 1: Audit README Files
-- [ ] Locate all README/markdown files
-- [ ] Summarize content and purpose
-- [ ] Note any gaps or outdated information
+### Step 1: Index EPP Structure
+- [ ] List all markdown files in `.ENHANCEMENT_PROPOSAL_PLAN/`
+- [ ] Add entry for each with keyword and brief description
 
-### Step 2: Audit Docstrings
-- [ ] Identify modules with comprehensive docstrings
-- [ ] Note modules lacking documentation
-- [ ] Extract key usage patterns
+### Step 2: Index Project Documentation
+- [ ] List README files in `src/` directories
+- [ ] Add entry for each with keyword and brief description
 
-### Step 3: Catalog Configuration
-- [ ] Document configuration patterns used
-- [ ] Note default values and overrides
-- [ ] Identify configuration files if any
+### Step 3: Index Configuration/Examples
+- [ ] Identify any config files or example scripts
+- [ ] Add entry for each with keyword and brief description
 
-### Step 4: Catalog Examples
-- [ ] List training script examples in `run/` directories
-- [ ] Document expected input/output
-- [ ] Note benchmark configurations
-
-### Step 5: Update Index
-- [ ] Populate `indices/index-documentation.md`
-- [ ] Organize by topic
-- [ ] Add cross-references
+### Step 4: Populate Index
+- [ ] Merge all entries into `indices/index-documentation.md`
+- [ ] Sort alphabetically by keyword
 
 ## Acceptance Criteria
 
-- All documentation sources are indexed
-- Topics are logically organized
-- Gaps are identified for future work
-- Index enables quick lookup
-
-## Notes
-
-- Training scripts serve as de-facto documentation
-- Notebooks (if any) should be catalogued
-- External dependencies documentation should be linked
+- Every documentation file has an entry
+- Keywords are searchable terms
+- Descriptions are one-line summaries
+- No prose, only table entries
