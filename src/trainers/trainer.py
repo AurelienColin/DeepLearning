@@ -1,4 +1,5 @@
 import glob
+import os
 import typing
 from dataclasses import dataclass
 
@@ -16,7 +17,8 @@ from src.models.model_wrapper import ModelWrapper
 # os.environ['CUDA_VISIBLE_DEVICES'] = "-1"
 matplotlib.use('agg')
 
-tf.config.run_functions_eagerly(True)
+if os.environ.get('TF_EAGER_DEBUG', '0') == '1':
+    tf.config.run_functions_eagerly(True)
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
     try:
@@ -204,7 +206,7 @@ class Trainer:
             lambda: generator,
             output_types=output_types,
             output_shapes=output_shapes
-        )
+        ).prefetch(tf.data.AUTOTUNE)
         return dataset
 
     def run(self):
