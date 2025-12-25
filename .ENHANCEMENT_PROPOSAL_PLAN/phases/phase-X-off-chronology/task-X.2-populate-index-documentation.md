@@ -26,18 +26,26 @@ The index is a flat list of entries:
 ## Steps
 
 ### Step 1: Index EPP Structure
+**Agent**: `technical-writer`
+**Status**: `[ ]`
 - [ ] List all markdown files in `.ENHANCEMENT_PROPOSAL_PLAN/`
 - [ ] Add entry for each with keyword and brief description
 
 ### Step 2: Index Project Documentation
+**Agent**: `technical-writer`
+**Status**: `[ ]`
 - [ ] List README files in `src/` directories
 - [ ] Add entry for each with keyword and brief description
 
 ### Step 3: Index Configuration/Examples
+**Agent**: `technical-writer`
+**Status**: `[ ]`
 - [ ] Identify any config files or example scripts
 - [ ] Add entry for each with keyword and brief description
 
 ### Step 4: Populate Index
+**Agent**: `archivist`
+**Status**: `[ ]`
 - [ ] Merge all entries into `indices/index-documentation.md`
 - [ ] Sort alphabetically by keyword
 

@@ -56,14 +56,20 @@ Each lesson is a standalone markdown file:
 ## Steps
 
 ### Step 1: Create Lessons Folder
-- [ ] Create `lessons-learned/` directory in EPP
+**Agent**: `archivist`
+**Status**: `[x]` (Folder exists)
+- [x] Create `lessons-learned/` directory in EPP
 
 ### Step 2: Extract Lessons from Git History
+**Agent**: `devops-engineer`
+**Status**: `[ ]`
 - [ ] Filter commits with "fix", "bug", "issue" keywords
 - [ ] For each significant fix, create a lesson file
 - [ ] Use commit message + diff to populate Problem/Resolution
 
 ### Step 3: Populate Index
+**Agent**: `archivist`
+**Status**: `[ ]`
 - [ ] Add entry for each lesson file
 - [ ] Keywords should be searchable terms
 - [ ] Summary is one-line

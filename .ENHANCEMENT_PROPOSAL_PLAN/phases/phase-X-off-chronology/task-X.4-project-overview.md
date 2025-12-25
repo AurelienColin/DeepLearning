@@ -23,32 +23,44 @@ Document:
 ## Steps
 
 ### Step 1: Document Architecture
+**Agent**: `machine-learning-researcher`
+**Status**: `[ ]`
 - [ ] Create architecture diagram (text-based)
 - [ ] Describe module responsibilities
 - [ ] Map dependencies between modules
 
 ### Step 2: Document Data Flow
+**Agent**: `machine-learning-researcher`
+**Status**: `[ ]`
 - [ ] Image-to-Tag pipeline flow
 - [ ] Image-to-Image pipeline flow
 - [ ] Generator -> Model -> Loss relationships
 
 ### Step 3: Document Extension Points
+**Agent**: `python-pro`
+**Status**: `[ ]`
 - [ ] How to add new models
 - [ ] How to add new generators
 - [ ] How to add new loss functions
 - [ ] How to add new callbacks
 
 ### Step 4: Document Design Patterns
+**Agent**: `refactoring-specialist`
+**Status**: `[ ]`
 - [ ] Identify patterns used (Factory, Strategy, etc.)
 - [ ] Document custom patterns
 - [ ] Note conventions
 
 ### Step 5: Summarize Project History
+**Agent**: `devops-engineer`
+**Status**: `[ ]`
 - [ ] Initial purpose and goals
 - [ ] Major milestones (from git history)
 - [ ] Current state and capabilities
 
 ### Step 6: Create Overview Document
+**Agent**: `technical-writer`
+**Status**: `[ ]`
 - [ ] Write comprehensive overview in EPP
 - [ ] Cross-reference with indices
 - [ ] Add to index-documentation

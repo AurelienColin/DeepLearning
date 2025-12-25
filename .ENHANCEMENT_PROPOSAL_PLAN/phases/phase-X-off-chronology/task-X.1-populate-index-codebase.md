@@ -25,18 +25,26 @@ The index is a flat list of entries:
 ## Steps
 
 ### Step 1: Extract Class Definitions
+**Agent**: `python-pro`
+**Status**: `[ ]`
 - [ ] Run `grep -rnH "^class " src/ --include="*.py"`
 - [ ] Format output as `ClassName | file:line | class`
 
 ### Step 2: Extract Function Definitions
+**Agent**: `python-pro`
+**Status**: `[ ]`
 - [ ] Run `grep -rnH "^def " src/ --include="*.py"`
 - [ ] Format output as `function_name | file:line | function`
 
 ### Step 3: Extract Method Definitions (public only)
+**Agent**: `python-pro`
+**Status**: `[ ]`
 - [ ] Run `grep -rnH "    def [^_]" src/ --include="*.py"`
 - [ ] Format output as `ClassName.method_name | file:line | method`
 
 ### Step 4: Populate Index
+**Agent**: `archivist`
+**Status**: `[ ]`
 - [ ] Merge all entries into `indices/index-codebase.md`
 - [ ] Sort alphabetically by keyword
 - [ ] Remove duplicates

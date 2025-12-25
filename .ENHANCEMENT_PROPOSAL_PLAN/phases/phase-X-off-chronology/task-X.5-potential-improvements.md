@@ -23,32 +23,44 @@ Capture:
 ## Steps
 
 ### Step 1: Code Quality Audit
+**Agent**: `code-reviewer`
+**Status**: `[ ]`
 - [ ] Identify missing type hints
 - [ ] Find code duplication
 - [ ] Note complex functions needing refactoring
 - [ ] Check for PEP 8 compliance
 
 ### Step 2: Performance Analysis
+**Agent**: `machine-learning-researcher`
+**Status**: `[ ]`
 - [ ] Identify potential bottlenecks
 - [ ] Note optimization opportunities
 - [ ] Document GPU utilization patterns
 
 ### Step 3: Feature Gap Analysis
+**Agent**: `machine-learning-researcher`
+**Status**: `[ ]`
 - [ ] Compare with similar frameworks
 - [ ] Note missing common features
 - [ ] Identify extension opportunities
 
 ### Step 4: Technical Debt Inventory
+**Agent**: `refactoring-specialist`
+**Status**: `[ ]`
 - [ ] List TODO/FIXME comments in code
 - [ ] Note deprecated patterns still in use
 - [ ] Identify outdated dependencies
 
 ### Step 5: Documentation Gap Analysis
+**Agent**: `technical-writer`
+**Status**: `[ ]`
 - [ ] List undocumented modules
 - [ ] Note missing examples
 - [ ] Identify areas needing tutorials
 
 ### Step 6: Prioritize and Categorize
+**Agent**: `agent-organizer`
+**Status**: `[ ]`
 - [ ] Create improvement backlog
 - [ ] Categorize by effort/impact
 - [ ] Suggest groupings for future phases
