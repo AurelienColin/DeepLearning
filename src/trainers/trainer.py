@@ -6,6 +6,7 @@ from dataclasses import dataclass
 import matplotlib
 import numpy as np
 import tensorflow as tf
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from rignak.src.lazy_property import LazyProperty
 from rignak.src.logging_utils import logger
 
@@ -43,7 +44,9 @@ class Trainer:
     epochs: int = 100
     n_stride: int = 4
 
-    on_start: bool= True
+    on_start: bool = True
+    checkpoint_enabled: bool = True
+    early_stopping_patience: int = 10  # 0 to disable
 
     layer_kernels: typing.Optional[typing.Sequence[int]] = None
     enforced_tag_names: typing.Optional[typing.Sequence[str]] = None
@@ -138,6 +141,25 @@ class Trainer:
             batch_size=self.batch_size,
             training_steps=self.training_steps,
         )]
+
+        if self.checkpoint_enabled:
+            callbacks.append(ModelCheckpoint(
+                filepath=os.path.join(self.model_wrapper.output_folder, 'model_best.keras'),
+                monitor='val_loss',
+                save_best_only=True,
+                mode='min',
+                verbose=1
+            ))
+
+        if self.early_stopping_patience > 0:
+            callbacks.append(EarlyStopping(
+                monitor='val_loss',
+                patience=self.early_stopping_patience,
+                min_delta=1e-4,
+                restore_best_weights=True,
+                verbose=1
+            ))
+
         return callbacks
 
     @LazyProperty
