@@ -4,4 +4,4 @@
 
 | Repository | Path | Description |
 |------------|------|-------------|
-| ML | `/ssd/OneDrive/Mes_documents/Documents/python_scripts/ML` | Image-to-Image/Tag Framework |
+| ML | `/ssd/OneDrive/Mes_documents/Documents/python_scripts/science/ML` | Image-to-Image/Tag Framework |
