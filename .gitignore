@@ -1,6 +1,5 @@
 # Ignore folders
 .tmp/
-.github/
 .pytest_cache/
 .venv/
 notebooks/
